@@ -14,6 +14,7 @@ import tissuMatelasseImg from "@/assets/tissu-matelasse.jpg";
 import tissuSergeImg from "@/assets/tissu-serge-coton.jpg";
 import patronsBurdaImg from "@/assets/patrons-burda.jpg";
 import patronsFauveImg from "@/assets/patrons-maison-fauve.jpg";
+import tricotAmigurumiImg from "@/assets/tricot-amigurumi.jpg";
 
 const navLinks = [
   "Nos magasins",
@@ -232,6 +233,37 @@ const megaMenus: Record<string, MegaMenuData> = {
     images: [
       { src: patronsBurdaImg, alt: "Patrons Burda", label: "Patrons Burda" },
       { src: patronsFauveImg, alt: "Patrons Maison Fauve", label: "Patrons Maison Fauve" },
+    ],
+  },
+  "TRICOT & CROCHET": {
+    columns: [
+      {
+        title: "Marques",
+        items: ["DMC", "Katia", "Rico Design"],
+      },
+      {
+        title: "Fils par matières",
+        items: ["Fils Acrylique", "Fils Alpaga", "Fils Coton", "Fils Laine - Mérino", "Fils nobles - Mohair Soie Cachemire", "Fils naturels - éco-responsables", "Fil pour bébé"],
+      },
+      {
+        title: "Fils fantaisie",
+        items: ["Fils Chenilles", "Fils poilus", "Fils Fourrure", "Fils pailletés", "Fils phosphorescents"],
+      },
+      {
+        title: "Fils par taille",
+        items: ["1,25 à 2,5 mm - super fin", "3 à 4,5 mm - fin", "5 à 7 mm - moyen", "7,5 à 10 mm - épais", "12 à 20 mm - très épais"],
+      },
+      {
+        title: "Accessoires",
+        items: ["Aiguilles à tricoter", "Crochets", "Livres tricot", "Livres crochet"],
+      },
+      {
+        title: "Activités",
+        items: ["Macramé", "Amigurumi"],
+      },
+    ],
+    images: [
+      { src: tricotAmigurumiImg, alt: "Amigurimi", label: "Amigurimi" },
     ],
   },
 };
