@@ -13,12 +13,21 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        logo: ['Dancing Script', 'cursive'],
+        body: ['Montserrat', 'sans-serif'],
+        heading: ['Montserrat', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        announcement: {
+          DEFAULT: "hsl(var(--announcement-bg))",
+          foreground: "hsl(var(--announcement-fg))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
