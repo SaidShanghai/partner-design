@@ -322,7 +322,7 @@ const SiteHeader = () => {
               )}
             </div>
           ))}
-          <a href="#" className="px-3 py-3 text-xs font-semibold tracking-wider text-primary whitespace-nowrap">
+          <a href="/coupons" className="px-3 py-3 text-xs font-semibold tracking-wider text-primary whitespace-nowrap">
             COUPONS À -20%
           </a>
         </div>
