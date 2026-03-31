@@ -12,6 +12,8 @@ import tissuLibertyImg from "@/assets/tissu-liberty.jpg";
 import tissuVichyImg from "@/assets/tissu-vichy.jpg";
 import tissuMatelasseImg from "@/assets/tissu-matelasse.jpg";
 import tissuSergeImg from "@/assets/tissu-serge-coton.jpg";
+import patronsBurdaImg from "@/assets/patrons-burda.jpg";
+import patronsFauveImg from "@/assets/patrons-maison-fauve.jpg";
 
 const navLinks = [
   "Nos magasins",
@@ -206,6 +208,30 @@ const megaMenus: Record<string, MegaMenuData> = {
     images: [
       { src: tissuMatelasseImg, alt: "Tissu matelassé", label: "Tissu matelassé" },
       { src: tissuSergeImg, alt: "Sergé de coton", label: "Sergé de coton" },
+    ],
+  },
+  "PATRONS DE COUTURE": {
+    columns: [
+      {
+        title: "Créateurs",
+        items: ["Atelier Scammit", "Les BG", "Burda", "Clematisse Pattern", "Fibre mood", "Ikatee", "Laboratoire Familial", "Les Enchantées", "Marmai", "Maeli paris", "Maison Fauve", "Majam", "PM Patterns"],
+      },
+      {
+        title: "Je veux coudre",
+        items: ["Blouse & top", "Jupe", "Robe", "Manteau / Cape", "Combinaison", "Pantalon / Short", "Pull / Gilet", "Veste", "Lingerie / Pyjama / Maillot"],
+      },
+      {
+        title: "Patrons de couture",
+        items: ["Accessoires bébé", "Bébé", "Enfant", "Femme", "Grandes Tailles", "Homme", "Sacs", "Déguisement"],
+      },
+      {
+        title: "Livres, Magazines",
+        items: ["Kit couture", "Livres Couture", "Livres Crochet", "Livres Tricot"],
+      },
+    ],
+    images: [
+      { src: patronsBurdaImg, alt: "Patrons Burda", label: "Patrons Burda" },
+      { src: patronsFauveImg, alt: "Patrons Maison Fauve", label: "Patrons Maison Fauve" },
     ],
   },
 };
