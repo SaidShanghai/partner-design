@@ -1,4 +1,5 @@
 import { Search, User, Heart, ShoppingBag } from "lucide-react";
+import { useState } from "react";
 
 const navLinks = [
   "Nos magasins",
@@ -19,9 +20,81 @@ const categories = [
   "TRICOT & CROCHET",
 ];
 
+const mercerieMenu = [
+  {
+    title: "Voir tout",
+    items: [],
+  },
+  {
+    title: "Fils à coudre",
+    items: [],
+  },
+  {
+    title: "Fermetures éclair & zips",
+    items: [],
+  },
+  {
+    title: "Ciseaux et outils de coupe",
+    items: [],
+  },
+  {
+    title: "Essentiels",
+    items: [
+      "Fils à coudre",
+      "Écussons & étiquettes",
+      "Mousquetons",
+      "Fermetures & zip",
+      "Scratch (Velcro)",
+      "Boutons pression et œillets",
+      "Boutons à coudre",
+      "Passant et boucles",
+    ],
+  },
+  {
+    title: "Accessoires de couture",
+    items: [
+      "Aiguilles, épingles, pinces",
+      "Boîte à couture",
+      "Ciseaux, cutters",
+      "Craies, crayons, stylos",
+      "Dé à coudre & découd-vite",
+      "Meubles de couture",
+      "Outils de mesure",
+    ],
+  },
+  {
+    title: "Customisation et entretien",
+    items: [
+      "Colle textile",
+      "Fer à repasser",
+      "Loisirs créatifs",
+      "Renforts & coudières",
+      "Teinture tissu",
+      "Transfert textile",
+    ],
+  },
+  {
+    title: "Rubans, biais et passepoils",
+    items: [
+      "Biais couture",
+      "Appareils à biais",
+      "Passepoils",
+      "Élastiques",
+      "Sangle",
+      "Rubans et galons",
+      "Galons pompons",
+      "Cordon",
+      "Ruban broderie anglaise et dentelle",
+      "Sangle",
+    ],
+  },
+];
+
 const SiteHeader = () => {
+  const [showMercerie, setShowMercerie] = useState(false);
+
   return (
-    <header className="bg-background">
+    <header className="bg-background relative z-50">
       {/* Top bar */}
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Left nav */}
@@ -65,16 +138,58 @@ const SiteHeader = () => {
       </div>
 
       {/* Category bar */}
-      <nav className="border-t border-border overflow-x-auto">
+      <nav className="border-t border-border overflow-x-auto relative">
         <div className="container mx-auto px-4 flex items-center justify-center gap-1">
           {categories.map((cat) => (
-            <a
+            <div
               key={cat}
-              href="#"
-              className="px-3 py-3 text-xs font-semibold tracking-wider text-foreground hover:text-primary transition-colors whitespace-nowrap"
+              className="relative"
+              onMouseEnter={() => cat === "MERCERIE" && setShowMercerie(true)}
+              onMouseLeave={() => cat === "MERCERIE" && setShowMercerie(false)}
             >
-              {cat}
-            </a>
+              <a
+                href="#"
+                className={`block px-3 py-3 text-xs font-semibold tracking-wider transition-colors whitespace-nowrap ${
+                  cat === "MERCERIE" && showMercerie
+                    ? "text-primary"
+                    : "text-foreground hover:text-primary"
+                }`}
+              >
+                {cat}
+              </a>
+
+              {/* Mega menu for MERCERIE */}
+              {cat === "MERCERIE" && showMercerie && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[900px] bg-background border border-border shadow-xl rounded-b-lg z-50 p-6">
+                  <div className="grid grid-cols-4 gap-6">
+                    {mercerieMenu.map((col) => (
+                      <div key={col.title}>
+                        <a
+                          href="#"
+                          className="block text-sm font-bold text-foreground hover:text-primary transition-colors mb-2"
+                        >
+                          {col.title}
+                        </a>
+                        {col.items.length > 0 && (
+                          <ul className="space-y-1.5">
+                            {col.items.map((item) => (
+                              <li key={item}>
+                                <a
+                                  href="#"
+                                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                                >
+                                  {item}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
           <a
             href="#"
