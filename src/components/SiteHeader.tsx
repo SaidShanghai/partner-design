@@ -1,5 +1,7 @@
-import { Search, User, Heart, ShoppingBag } from "lucide-react";
+import { Search, User, Heart, ShoppingBag, ArrowUpRight } from "lucide-react";
 import { useState } from "react";
+import sangleImg from "@/assets/mercerie-sangle.jpg";
+import fermeturesImg from "@/assets/mercerie-fermetures.jpg";
 
 const navLinks = [
   "Nos magasins",
@@ -20,23 +22,13 @@ const categories = [
   "TRICOT & CROCHET",
 ];
 
-const mercerieMenu = [
-  {
-    title: "Voir tout",
-    items: [],
-  },
-  {
-    title: "Fils à coudre",
-    items: [],
-  },
-  {
-    title: "Fermetures éclair & zips",
-    items: [],
-  },
-  {
-    title: "Ciseaux et outils de coupe",
-    items: [],
-  },
+const mercerieButtons = [
+  "Fils à coudre",
+  "Fermetures éclair & zips",
+  "Ciseaux et outils de coupe",
+];
+
+const mercerieColumns = [
   {
     title: "Essentiels",
     items: [
@@ -85,7 +77,6 @@ const mercerieMenu = [
       "Galons pompons",
       "Cordon",
       "Ruban broderie anglaise et dentelle",
-      "Sangle",
     ],
   },
 ];
@@ -160,32 +151,55 @@ const SiteHeader = () => {
 
               {/* Mega menu for MERCERIE */}
               {cat === "MERCERIE" && showMercerie && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[900px] bg-background border border-border shadow-xl rounded-b-lg z-50 p-6">
-                  <div className="grid grid-cols-4 gap-6">
-                    {mercerieMenu.map((col) => (
-                      <div key={col.title}>
+                <div className="fixed left-0 right-0 top-auto w-full bg-background border-t border-border shadow-xl z-50">
+                  <div className="container mx-auto px-6 py-8 flex gap-8">
+                    {/* Left column: Voir tout + buttons */}
+                    <div className="flex flex-col gap-3 min-w-[200px]">
+                      <a href="#" className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-primary transition-colors mb-2">
+                        Voir tout <ArrowUpRight className="w-4 h-4" />
+                      </a>
+                      {mercerieButtons.map((btn) => (
                         <a
+                          key={btn}
                           href="#"
-                          className="block text-sm font-bold text-foreground hover:text-primary transition-colors mb-2"
+                          className="block px-4 py-2.5 text-sm bg-accent/60 text-foreground rounded-lg hover:bg-accent transition-colors"
                         >
-                          {col.title}
+                          {btn}
                         </a>
-                        {col.items.length > 0 && (
+                      ))}
+                    </div>
+
+                    {/* Middle columns */}
+                    <div className="grid grid-cols-4 gap-8 flex-1">
+                      {mercerieColumns.map((col) => (
+                        <div key={col.title}>
+                          <span className="block text-sm font-bold text-foreground mb-3">
+                            {col.title}
+                          </span>
                           <ul className="space-y-1.5">
                             {col.items.map((item) => (
                               <li key={item}>
-                                <a
-                                  href="#"
-                                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
-                                >
+                                <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                                   {item}
                                 </a>
                               </li>
                             ))}
                           </ul>
-                        )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Right images */}
+                    <div className="flex gap-4 min-w-[320px]">
+                      <div className="relative rounded-lg overflow-hidden flex-1">
+                        <img src={sangleImg} alt="Sangle" className="w-full h-full object-cover" loading="lazy" />
+                        <span className="absolute bottom-3 left-3 bg-background/90 text-foreground text-xs font-medium px-3 py-1.5 rounded-full">Sangle</span>
                       </div>
-                    ))}
+                      <div className="relative rounded-lg overflow-hidden flex-1">
+                        <img src={fermeturesImg} alt="Fermetures au mètre" className="w-full h-full object-cover" loading="lazy" />
+                        <span className="absolute bottom-3 left-3 bg-background/90 text-foreground text-xs font-medium px-3 py-1.5 rounded-full">Fermetures au mètre</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
