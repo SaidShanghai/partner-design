@@ -152,9 +152,9 @@ const SiteHeader = () => {
               {/* Mega menu for MERCERIE */}
               {cat === "MERCERIE" && showMercerie && (
                 <div className="fixed left-0 right-0 top-auto w-full bg-background border-t border-border shadow-xl z-50">
-                  <div className="container mx-auto px-6 py-8 flex gap-8">
+                  <div className="container mx-auto px-6 py-8 flex gap-6">
                     {/* Left column: Voir tout + buttons */}
-                    <div className="flex flex-col gap-3 min-w-[200px]">
+                    <div className="flex flex-col gap-3 shrink-0 w-[180px]">
                       <a href="#" className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-primary transition-colors mb-2">
                         Voir tout <ArrowUpRight className="w-4 h-4" />
                       </a>
@@ -170,7 +170,7 @@ const SiteHeader = () => {
                     </div>
 
                     {/* Middle columns */}
-                    <div className="grid grid-cols-4 gap-8 flex-1">
+                    <div className="grid grid-cols-4 gap-6 flex-1 min-w-0">
                       {mercerieColumns.map((col) => (
                         <div key={col.title}>
                           <span className="block text-sm font-bold text-foreground mb-3">
@@ -190,7 +190,7 @@ const SiteHeader = () => {
                     </div>
 
                     {/* Right images */}
-                    <div className="flex gap-4 min-w-[320px]">
+                    <div className="flex gap-3 shrink-0 w-[280px] h-[280px]">
                       <div className="relative rounded-lg overflow-hidden flex-1">
                         <img src={sangleImg} alt="Sangle" className="w-full h-full object-cover" loading="lazy" />
                         <span className="absolute bottom-3 left-3 bg-background/90 text-foreground text-xs font-medium px-3 py-1.5 rounded-full">Sangle</span>
