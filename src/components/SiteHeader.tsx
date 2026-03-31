@@ -1,5 +1,7 @@
-import { Search, User, Heart, ShoppingBag } from "lucide-react";
+import { Search, User, Heart, ShoppingBag, ArrowUpRight } from "lucide-react";
 import { useState } from "react";
+import sangleImg from "@/assets/mercerie-sangle.jpg";
+import fermeturesImg from "@/assets/mercerie-fermetures.jpg";
 
 const navLinks = [
   "Nos magasins",
