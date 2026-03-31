@@ -6,6 +6,8 @@ import fermeturesImg from "@/assets/mercerie-fermetures.jpg";
 import tissuCotonImg from "@/assets/tissu-coton.jpg";
 import tissuVeloursImg from "@/assets/tissu-velours.jpg";
 import tissuNouvelleImg from "@/assets/tissu-nouvelle-collection.jpg";
+import tissuEnfantsImg from "@/assets/tissu-enfants-collection.jpg";
+import tissuSweatImg from "@/assets/tissu-enfants-sweat.jpg";
 
 const navLinks = [
   "Nos magasins",
