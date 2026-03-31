@@ -180,7 +180,7 @@ const megaMenus: Record<string, MegaMenuData> = {
     columns: [
       {
         title: "Simili cuir pour sac",
-        items: ["Simili cuir uni", "Simili cuir fantaisie", "Simili cuir épais", "Tissu liège"],
+        items: ["Simili cuir uni", "Simili cuir fantaisie", "Simili cuir épais", "Tissu liège", "Cretonne coton", "Effet lin", "Carrés jacquards et panneaux coussin", "Tissus couture zero déchet"],
       },
       {
         title: "Sangles pour sac",
