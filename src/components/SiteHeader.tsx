@@ -148,6 +148,66 @@ const megaMenus: Record<string, MegaMenuData> = {
       { src: tissuSweatImg, alt: "Sweat", label: "Sweat" },
     ],
   },
+  "IMPRIMÉS": {
+    columns: [
+      {
+        title: "Intemporels",
+        items: ["Tissu à carreaux", "Tissu fleuri", "Tissu leopard et panthere", "Tissu à pois", "Tissus à rayures", "Tissus vichy"],
+      },
+      {
+        title: "Motifs",
+        items: ["Tissu animal", "Tissu camouflage", "Tissu coeur", "Tissu étoile", "Tissu fruits légumes", "Tissu halloween", "Tissu marin", "Tissu Noël", "Tissu pied de poule"],
+      },
+      {
+        title: "Tissus par style",
+        items: ["Tissu africain", "Tissu ethnique", "Tissu indien", "Tissus japonais"],
+      },
+      {
+        title: "Teinte",
+        items: ["Tissu argenté", "Tissu or", "Tissu multicolore"],
+      },
+      {
+        title: "Tissus par couleur",
+        items: ["Tissu blanc", "Tissu écru", "Tissu jaune", "Tissu orange", "Tissu rose", "Tissu corail", "Tissu rouge", "Tissu violet", "Tissu bleu", "Tissu vert", "Tissu marron", "Tissu gris", "Tissu noir"],
+      },
+    ],
+    images: [
+      { src: tissuLibertyImg, alt: "Liberty Fabrics", label: "Liberty Fabrics" },
+      { src: tissuVichyImg, alt: "Tissu vichy", label: "Tissu vichy" },
+    ],
+  },
+  "SACS": {
+    columns: [
+      {
+        title: "Simili cuir pour sac",
+        items: ["Simili cuir uni", "Simili cuir fantaisie", "Simili cuir épais", "Tissu liège"],
+      },
+      {
+        title: "Sangles pour sac",
+        items: [],
+      },
+      {
+        title: "Attaches et fermoir",
+        items: ["Passant et boucles", "Mousquetons", "Arrêts cordons", "Fermoirs", "Fermoirs premium", "Fond de sac", "Oeillets"],
+      },
+      {
+        title: "Anses et chaînes",
+        items: ["Anses de sacs", "Bandoulières de sac"],
+      },
+      {
+        title: "Patrons couture sac",
+        items: ["Patron sac Burda"],
+      },
+      {
+        title: "Entoilage / thermocollant",
+        items: ["Molleton & Ouate", "Mousse Résille", "Vlieseline / thermocollant"],
+      },
+    ],
+    images: [
+      { src: tissuMatelasseImg, alt: "Tissu matelassé", label: "Tissu matelassé" },
+      { src: tissuSergeImg, alt: "Sergé de coton", label: "Sergé de coton" },
+    ],
+  },
 };
 
 const SiteHeader = () => {
