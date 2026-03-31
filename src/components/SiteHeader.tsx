@@ -120,6 +120,30 @@ const megaMenus: Record<string, MegaMenuData> = {
       { src: tissuNouvelleImg, alt: "Nouvelle collection", label: "Nouvelle collection" },
     ],
   },
+  "TISSUS ENFANTS": {
+    columns: [
+      {
+        title: "Patrons enfant - bébé",
+        items: ["Patron Bébé", "Patron de couture enfant", "Patron Accessoires bébé", "Patron Robe fille", "Patron Vêtement garçon", "Patron de couture ado"],
+      },
+      {
+        title: "Type Tissu",
+        items: ["Jersey imprimé", "Velours milleraies", "Double gaze", "Sweat Molleton", "Bord-côte", "PUL", "Tissu doudou", "Flanelle et pilou", "Tissu matelassé", "Tissu minky", "Tissu velours Nicki", "Tissus Bio"],
+      },
+      {
+        title: "Imprimés",
+        items: ["Tissu Disney© Marvel", "Tissu Harry Potter au mètre", "Voir tous les imprimés"],
+      },
+      {
+        title: "Spectacles et déguisements",
+        items: ["Fausse fourrure déguisement", "Tissu lamé", "Tulle"],
+      },
+    ],
+    images: [
+      { src: tissuEnfantsImg, alt: "Collection Enfants", label: "Collection Enfants" },
+      { src: tissuSweatImg, alt: "Sweat", label: "Sweat" },
+    ],
+  },
 };
 
 const SiteHeader = () => {
