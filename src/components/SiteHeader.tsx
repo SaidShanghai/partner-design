@@ -235,7 +235,6 @@ const megaMenus: Record<string, MegaMenuData> = {
       { src: patronsFauveImg, alt: "Patrons Maison Fauve", label: "Patrons Maison Fauve" },
     ],
   },
-  },
   "TRICOT & CROCHET": {
     columns: [
       {
