@@ -5,6 +5,7 @@ import sangleImg from "@/assets/mercerie-sangle.jpg";
 import fermeturesImg from "@/assets/mercerie-fermetures.jpg";
 import tissuCotonImg from "@/assets/tissu-coton.jpg";
 import tissuVeloursImg from "@/assets/tissu-velours.jpg";
+import tissuNouvelleImg from "@/assets/tissu-nouvelle-collection.jpg";
 
 const navLinks = [
   "Nos magasins",
