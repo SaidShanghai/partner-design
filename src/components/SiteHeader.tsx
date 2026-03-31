@@ -22,23 +22,13 @@ const categories = [
   "TRICOT & CROCHET",
 ];
 
-const mercerieMenu = [
-  {
-    title: "Voir tout",
-    items: [],
-  },
-  {
-    title: "Fils à coudre",
-    items: [],
-  },
-  {
-    title: "Fermetures éclair & zips",
-    items: [],
-  },
-  {
-    title: "Ciseaux et outils de coupe",
-    items: [],
-  },
+const mercerieButtons = [
+  "Fils à coudre",
+  "Fermetures éclair & zips",
+  "Ciseaux et outils de coupe",
+];
+
+const mercerieColumns = [
   {
     title: "Essentiels",
     items: [
@@ -87,7 +77,6 @@ const mercerieMenu = [
       "Galons pompons",
       "Cordon",
       "Ruban broderie anglaise et dentelle",
-      "Sangle",
     ],
   },
 ];
