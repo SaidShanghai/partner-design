@@ -12,6 +12,8 @@ import tissuLibertyImg from "@/assets/tissu-liberty.jpg";
 import tissuVichyImg from "@/assets/tissu-vichy.jpg";
 import tissuMatelasseImg from "@/assets/tissu-matelasse.jpg";
 import tissuSergeImg from "@/assets/tissu-serge-coton.jpg";
+import patronsBurdaImg from "@/assets/patrons-burda.jpg";
+import patronsFauveImg from "@/assets/patrons-maison-fauve.jpg";
 
 const navLinks = [
   "Nos magasins",
