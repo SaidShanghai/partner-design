@@ -46,7 +46,7 @@ const MegaMenu = ({ data }: MegaMenuProps) => {
         </div>
 
         {/* Middle columns */}
-        <div className={`grid gap-6 flex-1 min-w-0`} style={{ gridTemplateColumns: `repeat(${Math.min(data.columns.length, 4)}, 1fr)` }}>
+        <div className={`grid gap-6 flex-1 min-w-0`} style={{ gridTemplateColumns: `repeat(${Math.min(data.columns.length, 6)}, minmax(0, 1fr))` }}>
           {data.columns.map((col) => (
             <div key={col.title}>
               <span className="block text-sm font-bold text-foreground mb-3">
