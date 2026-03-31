@@ -105,6 +105,14 @@ const megaMenus: Record<string, MegaMenuData> = {
         title: "Par projet",
         items: ["Tissu pour robe", "Tissus fêtes & cérémonies"],
       },
+      {
+        title: "Tissus créateurs",
+        items: ["Katia Fabrics", "Liberty Fabrics", "Petit Pan"],
+      },
+      {
+        title: "Tissus techniques",
+        items: ["Doublure", "PUL", "Toile tailleur", "Toile a patron", "Vlieseline / thermocollant"],
+      },
     ],
     images: [
       { src: tissuNouvelleImg, alt: "Nouvelle collection", label: "Nouvelle collection" },
