@@ -8,6 +8,10 @@ import tissuVeloursImg from "@/assets/tissu-velours.jpg";
 import tissuNouvelleImg from "@/assets/tissu-nouvelle-collection.jpg";
 import tissuEnfantsImg from "@/assets/tissu-enfants-collection.jpg";
 import tissuSweatImg from "@/assets/tissu-enfants-sweat.jpg";
+import tissuLibertyImg from "@/assets/tissu-liberty.jpg";
+import tissuVichyImg from "@/assets/tissu-vichy.jpg";
+import tissuMatelasseImg from "@/assets/tissu-matelasse.jpg";
+import tissuSergeImg from "@/assets/tissu-serge-coton.jpg";
 
 const navLinks = [
   "Nos magasins",
