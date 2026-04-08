@@ -10,6 +10,7 @@ import Coupons from "./pages/Coupons.tsx";
 import Category from "./pages/Category.tsx";
 import Nouveautes from "./pages/Nouveautes.tsx";
 import Login from "./pages/Login.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 
 const queryClient = new QueryClient();
 
