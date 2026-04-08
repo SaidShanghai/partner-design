@@ -176,14 +176,14 @@ const Category = () => {
             className="text-2xl md:text-3xl mb-6 text-foreground"
             style={{ fontFamily: "'Dancing Script', cursive", fontStyle: "italic" }}
           >
-            {category.seo.title}
+            <T>{category.seo.title}</T>
           </h2>
           <div className="space-y-4">
             {category.seo.paragraphs.map((paragraph, index) => (
-              <p
+              <TranslatedHtml
                 key={index}
+                html={paragraph}
                 className="text-sm text-muted-foreground leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: paragraph }}
               />
             ))}
           </div>
