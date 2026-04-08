@@ -178,6 +178,12 @@ const Category = () => {
       </main>
 
       <SiteFooter />
+
+      <ProductFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        initialData={{ categoryName: category.name }}
+      />
     </div>
   );
 };
