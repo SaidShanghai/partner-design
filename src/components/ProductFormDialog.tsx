@@ -246,6 +246,26 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
             </div>
           </div>
 
+          {/* Badges */}
+          <div className="space-y-2">
+            <Label>Badges</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {BADGE_OPTIONS.map((opt) => (
+                <label key={opt} className="flex items-center gap-2 cursor-pointer text-sm">
+                  <Checkbox
+                    checked={badges.includes(opt)}
+                    onCheckedChange={(checked) => {
+                      setBadges((prev) =>
+                        checked ? [...prev, opt] : prev.filter((b) => b !== opt)
+                      );
+                    }}
+                  />
+                  {opt}
+                </label>
+              ))}
+            </div>
+          </div>
+
           <Button onClick={handleSave} disabled={saving || uploading} className="w-full">
             {saving ? "Enregistrement..." : "Enregistrer le produit"}
           </Button>
