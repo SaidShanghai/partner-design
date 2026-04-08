@@ -131,7 +131,11 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
       <ProductFormDialog
         open={formOpen}
         onOpenChange={setFormOpen}
-        initialData={{ name, imageUrl: displayImage }}
+        onSaved={(data) => {
+          if (data.name) setDisplayName(data.name);
+          if (data.price) setDisplayPrice(data.price);
+        }}
+        initialData={{ name: displayName, imageUrl: displayImage }}
       />
     </>
   );
