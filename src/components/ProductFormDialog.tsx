@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 interface ProductFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSaved?: (data: { name: string; price: string }) => void;
   initialData?: {
     name?: string;
     imageUrl?: string;
@@ -17,7 +18,7 @@ interface ProductFormDialogProps {
   };
 }
 
-const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialogProps) => {
+const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: ProductFormDialogProps) => {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [unb, setUnb] = useState("");
