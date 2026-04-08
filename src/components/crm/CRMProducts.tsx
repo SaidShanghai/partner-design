@@ -124,8 +124,8 @@ const CRMProducts = () => {
         <Input placeholder="Rechercher par nom, ref, UNB..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 border-primary focus-visible:ring-primary" />
       </div>
 
-      <div className="border rounded-lg overflow-x-auto">
-        <Table className="[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0 [&_th]:border-border [&_td]:border-border [&_tr]:border-b [&_tr]:border-border">
+      <div className="border border-border rounded-lg overflow-x-auto">
+        <Table className="[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0 [&_th]:border-border/60 [&_td]:border-border/60 [&_tr]:border-b-2 [&_tr]:border-border">
           <TableHeader>
             <TableRow className="text-xs">
               <TableHead className="whitespace-nowrap px-2 !font-bold text-foreground">UNB</TableHead>
