@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Camera, ImagePlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -10,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 interface ProductFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSaved?: (data: { name: string; price: string }) => void;
+  onSaved?: (data: { name: string; price: string; imageUrl?: string }) => void;
   initialData?: {
     name?: string;
     imageUrl?: string;
@@ -20,8 +21,11 @@ interface ProductFormDialogProps {
 
 const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: ProductFormDialogProps) => {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [unb, setUnb] = useState("");
+  const [previewUrl, setPreviewUrl] = useState("");
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -38,9 +42,9 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
   useEffect(() => {
     if (!open) return;
 
-    // Generate UNB — 6 digits
     const code = String(Math.floor(100000 + Math.random() * 900000));
     setUnb(code);
+    setPreviewUrl(initialData?.imageUrl ?? "");
 
     setForm({
       name: initialData?.name ?? "",
@@ -57,6 +61,31 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
   }, [open, initialData?.name, initialData?.imageUrl, initialData?.categoryName]);
 
   const update = (field: string, value: string) => setForm((current) => ({ ...current, [field]: value }));
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const ext = file.name.split(".").pop() || "jpg";
+    const filePath = `${crypto.randomUUID()}.${ext}`;
+
+    const { error } = await supabase.storage
+      .from("product-images")
+      .upload(filePath, file, { upsert: true });
+
+    if (error) {
+      toast({ title: "Erreur d'upload", description: error.message, variant: "destructive" });
+    } else {
+      const { data } = supabase.storage.from("product-images").getPublicUrl(filePath);
+      setPreviewUrl(data.publicUrl);
+      update("image_url", data.publicUrl);
+      toast({ title: "Photo ajoutée !" });
+    }
+
+    setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const handleSave = async () => {
     if (!form.name.trim()) {
@@ -91,7 +120,7 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
         title: "Produit enregistré",
         description: `"${form.name}" a été ajouté.`,
       });
-      onSaved?.({ name: form.name, price: form.price ? `${parseFloat(form.price).toFixed(2)} €` : "" });
+      onSaved?.({ name: form.name, price: form.price ? `${parseFloat(form.price).toFixed(2)} €` : "", imageUrl: form.image_url });
       onOpenChange(false);
     }
 
@@ -106,6 +135,39 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
         </DialogHeader>
 
         <div className="space-y-4 pt-2">
+          {/* Photo upload zone */}
+          <div className="space-y-1.5">
+            <Label>Photo du produit</Label>
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="relative cursor-pointer rounded-lg border-2 border-dashed border-border hover:border-primary transition-colors bg-muted/30 flex items-center justify-center overflow-hidden"
+              style={{ minHeight: previewUrl ? "auto" : "120px" }}
+            >
+              {previewUrl ? (
+                <>
+                  <img src={previewUrl} alt="Aperçu" className="w-full max-h-48 object-contain rounded-lg" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                    <Camera className="w-8 h-8 text-white" />
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center gap-2 py-6 text-muted-foreground">
+                  <ImagePlus className="w-8 h-8" />
+                  <span className="text-sm font-medium">
+                    {uploading ? "Upload en cours..." : "Cliquez pour ajouter une photo"}
+                  </span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handlePhotoUpload}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2 space-y-1.5">
               <Label>UNB (identifiant unique)</Label>
@@ -158,7 +220,7 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
             </div>
           </div>
 
-          <Button onClick={handleSave} disabled={saving} className="w-full">
+          <Button onClick={handleSave} disabled={saving || uploading} className="w-full">
             {saving ? "Enregistrement..." : "Enregistrer le produit"}
           </Button>
         </div>
