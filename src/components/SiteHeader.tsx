@@ -304,22 +304,37 @@ const SiteHeader = () => {
         onMouseLeave={() => setActiveMenu(null)}
       >
         <div className="container mx-auto px-4 flex items-center justify-center gap-1">
-          {categories.map((cat) => (
-            <div
-              key={cat}
-              className="relative"
-              onMouseEnter={() => megaMenus[cat] ? setActiveMenu(cat) : setActiveMenu(null)}
-            >
-              <a
-                href="#"
-                className={`block px-3 py-3 text-xs font-semibold tracking-wider transition-colors whitespace-nowrap ${
-                  activeMenu === cat ? "text-primary" : "text-foreground hover:text-primary"
-                }`}
+          {categories.map((cat) => {
+            // NOUVEAU links directly to /nouveautes
+            if (cat === "NOUVEAU") {
+              return (
+                <div key={cat} className="relative">
+                  <a
+                    href="/nouveautes"
+                    className="block px-3 py-3 text-xs font-semibold tracking-wider text-foreground hover:text-primary transition-colors whitespace-nowrap"
+                  >
+                    {cat}
+                  </a>
+                </div>
+              );
+            }
+            return (
+              <div
+                key={cat}
+                className="relative"
+                onMouseEnter={() => megaMenus[cat] ? setActiveMenu(cat) : setActiveMenu(null)}
               >
-                {cat}
-              </a>
-            </div>
-          ))}
+                <a
+                  href="#"
+                  className={`block px-3 py-3 text-xs font-semibold tracking-wider transition-colors whitespace-nowrap ${
+                    activeMenu === cat ? "text-primary" : "text-foreground hover:text-primary"
+                  }`}
+                >
+                  {cat}
+                </a>
+              </div>
+            );
+          })}
           <a href="/coupons" className="px-3 py-3 text-xs font-semibold tracking-wider text-primary whitespace-nowrap">
             COUPONS À -20%
           </a>
