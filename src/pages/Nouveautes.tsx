@@ -53,6 +53,66 @@ const products = [
 
 const filters = ["COULEUR", "MOTIF", "FABRICANTS", "PLUS DE FILTRES"];
 
+const NouveauteCard = ({ product, idx }: { product: typeof products[0]; idx: number }) => {
+  const [liked, setLiked] = useState(false);
+  const [showMetrage, setShowMetrage] = useState(false);
+  const [metrage, setMetrage] = useState(1);
+
+  return (
+    <div className="group cursor-pointer">
+      <div className="relative aspect-square rounded-lg overflow-hidden mb-3 bg-accent/20">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          loading={idx < 5 ? undefined : "lazy"}
+          width={640}
+          height={640}
+        />
+        <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded">
+          NOUVEAUTÉ
+        </span>
+        <button
+          onClick={() => setLiked((v) => !v)}
+          className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-sm ${liked ? "bg-background text-red-500" : "bg-background/80 text-foreground hover:text-primary"}`}
+        >
+          <Heart className="w-4 h-4" fill={liked ? "currentColor" : "none"} />
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); setShowMetrage((v) => !v); }}
+          className="absolute bottom-2 right-2 z-10 w-10 h-10 bg-background rounded-full flex items-center justify-center shadow-md border border-border text-foreground hover:text-primary hover:border-primary transition-colors"
+        >
+          <ShoppingBag className="w-5 h-5" />
+        </button>
+      </div>
+
+      {showMetrage && (
+        <div className="mb-2 flex items-center justify-center gap-0 rounded-full border border-border bg-background shadow-sm overflow-hidden">
+          <button onClick={() => setMetrage((v) => Math.max(1, v - 1))} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
+            <Minus className="w-4 h-4" />
+          </button>
+          <span className="px-4 py-2 text-sm font-medium text-foreground min-w-[80px] text-center">
+            {(metrage * 0.5).toFixed(2)} m
+          </span>
+          <button onClick={() => setMetrage((v) => v + 1)} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      <h3 className="text-xs font-medium text-foreground leading-tight mb-1 line-clamp-2">
+        {product.name}
+      </h3>
+      <div className="flex items-baseline gap-1">
+        <span className="text-sm font-bold text-foreground">{product.price}</span>
+        {product.unit && (
+          <span className="text-[10px] text-muted-foreground">{product.unit}</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const Nouveautes = () => {
   return (
     <div className="min-h-screen bg-background">
