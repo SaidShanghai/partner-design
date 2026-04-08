@@ -127,20 +127,20 @@ const CRMProducts = () => {
       <div className="border rounded-lg overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="whitespace-nowrap">UNB</TableHead>
-              <TableHead className="whitespace-nowrap">Nom</TableHead>
-              <TableHead className="whitespace-nowrap">Catégorie</TableHead>
-              <TableHead className="whitespace-nowrap">Référence</TableHead>
-              <TableHead className="whitespace-nowrap">Composition</TableHead>
-              <TableHead className="whitespace-nowrap">Couleur</TableHead>
-              <TableHead className="whitespace-nowrap text-right">Largeur (cm)</TableHead>
-              <TableHead className="whitespace-nowrap text-right">Poids (g/m²)</TableHead>
-              <TableHead className="whitespace-nowrap text-right">Prix vente</TableHead>
-              <TableHead className="whitespace-nowrap text-right">Prix achat (¥)</TableHead>
-              <TableHead className="whitespace-nowrap text-right">Marge</TableHead>
-              <TableHead className="whitespace-nowrap">Fournisseur</TableHead>
-              <TableHead className="w-10"></TableHead>
+            <TableRow className="text-xs">
+              <TableHead className="whitespace-nowrap px-2">UNB</TableHead>
+              <TableHead className="whitespace-nowrap px-2">Nom</TableHead>
+              <TableHead className="whitespace-nowrap px-2">Cat.</TableHead>
+              <TableHead className="whitespace-nowrap px-2">Réf.</TableHead>
+              <TableHead className="whitespace-nowrap px-2">Compo.</TableHead>
+              <TableHead className="whitespace-nowrap px-2">Couleur</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right">Larg.</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right">Poids</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right">Vente €</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right">Achat ¥</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right">Marge</TableHead>
+              <TableHead className="whitespace-nowrap px-2">Fournisseur</TableHead>
+              <TableHead className="w-16 px-2"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
