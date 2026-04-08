@@ -141,13 +141,22 @@ const Category = () => {
           <div className="text-center py-16">
             <p className="text-muted-foreground mb-6"><T>Les produits arrivent bientôt !</T></p>
             {isAdmin && (
-              <button
-                onClick={() => setFormOpen(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm"
-              >
-                <Plus className="w-5 h-5" />
-                <T>Ajouter un produit</T>
-              </button>
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  onClick={() => navigate("/admin/crm")}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors font-medium"
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  CRM
+                </button>
+                <button
+                  onClick={() => setFormOpen(true)}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm"
+                >
+                  <Plus className="w-5 h-5" />
+                  <T>Ajouter un produit</T>
+                </button>
+              </div>
             )}
           </div>
         )}
