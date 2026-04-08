@@ -53,6 +53,11 @@ const SiteFooter = () => {
                 <Mail className="w-4 h-4 shrink-0" />
                 <span>contact@textilepartner.fr</span>
               </li>
+              <li className="flex items-center gap-3 mt-2">
+                <span className="text-lg" title="Français">🇫🇷</span>
+                <span className="text-lg" title="English">🇬🇧</span>
+                <span className="text-lg" title="中文">🇨🇳</span>
+              </li>
             </ul>
           </div>
         </div>
