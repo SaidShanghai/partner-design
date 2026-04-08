@@ -81,7 +81,7 @@ const CategoryProductCard = ({
           {canManage && (
             <button
               onClick={() => setFormOpen(true)}
-              className="absolute top-3 left-3 w-8 h-8 rounded-full bg-background/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background z-20"
+              className="absolute bottom-3 left-3 w-8 h-8 rounded-full bg-background/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background z-20"
               aria-label="Ouvrir la fiche produit"
               title="Fiche produit"
               type="button"
