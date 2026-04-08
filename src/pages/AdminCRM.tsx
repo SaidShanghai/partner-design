@@ -23,7 +23,7 @@ const AdminCRM = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-3 flex items-center gap-4">
+        <div className="px-6 py-3 flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -31,7 +31,7 @@ const AdminCRM = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="px-6 py-6">
         <Tabs defaultValue="orders" className="space-y-6">
           <TabsList className="grid grid-cols-6 w-full max-w-3xl">
             <TabsTrigger value="orders" className="flex items-center gap-1.5 text-xs">
