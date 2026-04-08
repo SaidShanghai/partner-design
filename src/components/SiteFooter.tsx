@@ -49,7 +49,7 @@ const SiteFooter = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold text-sm uppercase tracking-wider mb-4">Contact</h4>
+            <h4 className="font-semibold text-sm uppercase tracking-wider mb-4"><T>Contact</T></h4>
             <ul className="space-y-3 text-sm opacity-70">
               <li className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 shrink-0" />
