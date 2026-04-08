@@ -3,7 +3,7 @@ import { Heart, ShoppingBag, ChevronDown } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
-import { categoriesData } from "@/data/categories";
+import { categoriesData, type CategoryData } from "@/data/categories";
 
 // Dynamic image imports
 const imageModules = import.meta.glob("@/assets/cat-*.jpg", { eager: true, import: "default" }) as Record<string, string>;
@@ -13,9 +13,38 @@ function getImage(key: string): string {
   return match ? match[1] : "/placeholder.svg";
 }
 
+// Generate a nice display name from a slug
+function slugToName(slug: string): string {
+  return slug
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+// Build a fallback category from the slug when not in data
+function buildFallbackCategory(slug: string): CategoryData {
+  const name = slugToName(slug);
+  return {
+    slug,
+    name,
+    parentName: "Catalogue",
+    shortDescription: `Découvrez notre sélection de ${name.toLowerCase()}. De nouveaux produits sont ajoutés régulièrement.`,
+    products: [],
+    filters: ["COULEUR", "PLUS DE FILTRES"],
+    seo: {
+      title: `${name} — Textile Partner`,
+      paragraphs: [
+        `Retrouvez bientôt notre gamme complète de <strong>${name.toLowerCase()}</strong>. Nous préparons une sélection de qualité pour répondre à tous vos projets couture.`,
+      ],
+    },
+  };
+}
+
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
-  const category = slug ? categoriesData[slug] : null;
+  const category = slug
+    ? categoriesData[slug] || buildFallbackCategory(slug)
+    : null;
 
   if (!category) {
     return (
