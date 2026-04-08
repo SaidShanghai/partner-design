@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import { ChevronDown, Plus } from "lucide-react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { ChevronDown, Plus, LayoutDashboard } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
@@ -58,6 +58,7 @@ function buildFallbackCategory(slug: string): CategoryData {
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
   const { isAdmin } = useAuth();
+  const navigate = useNavigate();
   const [formOpen, setFormOpen] = useState(false);
   const category = slug ? categoriesData[slug] || buildFallbackCategory(slug) : null;
 
