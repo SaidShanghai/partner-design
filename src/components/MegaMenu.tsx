@@ -24,9 +24,10 @@ export interface MegaMenuData {
 
 interface MegaMenuProps {
   data: MegaMenuData;
+  onClose?: () => void;
 }
 
-const MegaMenu = ({ data }: MegaMenuProps) => {
+const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
   return (
     <div className="fixed left-0 right-0 top-auto w-full bg-background border-t border-border shadow-xl z-50">
       <div className="container mx-auto px-6 py-8 flex gap-6">
@@ -59,6 +60,7 @@ const MegaMenu = ({ data }: MegaMenuProps) => {
                     <Link
                       to={`/categorie/${toSlug(item)}`}
                       className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                      onClick={onClose}
                     >
                       {item}
                     </Link>
