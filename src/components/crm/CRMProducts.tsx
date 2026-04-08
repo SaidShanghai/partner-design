@@ -127,7 +127,7 @@ const CRMProducts = () => {
       <div className="border rounded-lg overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="text-xs">
+            <TableRow className="text-xs font-bold">
               <TableHead className="whitespace-nowrap px-2">UNB</TableHead>
               <TableHead className="whitespace-nowrap px-2">Nom</TableHead>
               <TableHead className="whitespace-nowrap px-2">Cat.</TableHead>
