@@ -7,6 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+
+const BADGE_OPTIONS = [
+  "Nouveauté",
+  "Oeko-Tex",
+  "GOTS",
+  "Bio",
+  "Promo",
+  "Exclusivité",
+  "Stock limité",
+] as const;
 
 interface ProductFormDialogProps {
   open: boolean;
