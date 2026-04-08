@@ -61,7 +61,7 @@ const SiteFooter = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 shrink-0" />
-                <span>contact@textilepartner.fr</span>
+                <span>contact@textile-partner.eu</span>
               </li>
               <li className="flex items-center gap-3 mt-2">
                 {isTranslating && <Loader2 className="w-4 h-4 animate-spin opacity-70" />}
