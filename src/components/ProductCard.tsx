@@ -68,8 +68,8 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
           {/* Admin: (+) button - bottom left */}
           {isAdmin && (
             <button
-              onClick={() => setFormOpen(true)}
-              className="absolute bottom-3 left-3 z-20 w-7 h-7 flex items-center justify-center rounded-full bg-background/90 border border-border text-foreground hover:text-primary hover:border-primary transition-colors shadow-sm"
+              onClick={(e) => { e.stopPropagation(); setFormOpen(true); }}
+              className="absolute bottom-3 left-3 z-30 w-7 h-7 flex items-center justify-center rounded-full bg-background/90 border border-border text-foreground hover:text-primary hover:border-primary transition-colors shadow-sm"
               aria-label="Fiche produit"
               title="Fiche produit"
             >
@@ -81,12 +81,12 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
           {isAdmin && (
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
               aria-label="Changer la photo"
               title="Changer la photo"
               disabled={uploading}
             >
-              <span className="w-10 h-10 flex items-center justify-center rounded-full bg-background/90 border border-border text-foreground hover:text-primary hover:border-primary transition-colors shadow-sm">
+              <span className="w-10 h-10 flex items-center justify-center rounded-full bg-background/90 border border-border text-foreground hover:text-primary hover:border-primary transition-colors shadow-sm pointer-events-auto">
                 <Camera className="w-5 h-5" />
               </span>
             </button>
