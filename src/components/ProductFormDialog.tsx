@@ -152,23 +152,21 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[95vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Fiche produit</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 pt-2">
-          {/* Photo upload zone */}
-          <div className="space-y-1.5">
-            <Label>Photo du produit</Label>
+        <div className="flex gap-6 pt-2">
+          {/* Left side: Photo */}
+          <div className="w-64 shrink-0 space-y-3">
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="relative cursor-pointer rounded-lg border-2 border-dashed border-border hover:border-primary transition-colors bg-muted/30 flex items-center justify-center overflow-hidden"
-              style={{ minHeight: previewUrl ? "auto" : "120px" }}
+              className="relative cursor-pointer rounded-lg border-2 border-dashed border-border hover:border-primary transition-colors bg-muted/30 flex items-center justify-center overflow-hidden aspect-[4/5]"
             >
               {previewUrl ? (
                 <>
-                  <img src={previewUrl} alt="Aperçu" className="w-full max-h-48 object-contain rounded-lg" />
+                  <img src={previewUrl} alt="Aperçu" className="w-full h-full object-cover rounded-lg" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-4 rounded-lg">
                     <Camera className="w-8 h-8 text-white" />
                   </div>
@@ -189,7 +187,7 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
               ) : (
                 <div className="flex flex-col items-center gap-2 py-6 text-muted-foreground">
                   <ImagePlus className="w-8 h-8" />
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium text-center px-2">
                     {uploading ? "Upload en cours..." : "Cliquez pour ajouter une photo"}
                   </span>
                 </div>
@@ -202,83 +200,86 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
               className="hidden"
               onChange={handlePhotoUpload}
             />
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2 space-y-1.5">
-              <Label>UNB (identifiant unique)</Label>
-              <Input value={unb} readOnly className="bg-muted font-mono text-sm" />
-            </div>
-
-            <div className="col-span-2 space-y-1.5">
-              <Label htmlFor="pf-name">Nom *</Label>
-              <Input id="pf-name" value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="Nom du tissu" />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="pf-ref">Référence</Label>
-              <Input id="pf-ref" value={form.reference} onChange={(e) => update("reference", e.target.value)} placeholder="REF-001" />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="pf-price">Prix (€)</Label>
-              <Input id="pf-price" type="number" step="0.01" value={form.price} onChange={(e) => update("price", e.target.value)} placeholder="12.90" />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="pf-color">Couleur</Label>
-              <Input id="pf-color" value={form.color} onChange={(e) => update("color", e.target.value)} placeholder="Bleu marine" />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="pf-category">Catégorie</Label>
-              <Input id="pf-category" value={form.category} onChange={(e) => update("category", e.target.value)} placeholder="Coton" />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="pf-width">Largeur (cm)</Label>
-              <Input id="pf-width" type="number" step="0.1" value={form.width_cm} onChange={(e) => update("width_cm", e.target.value)} placeholder="150" />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="pf-weight">Grammage (g/m²)</Label>
-              <Input id="pf-weight" type="number" step="0.1" value={form.weight_gsm} onChange={(e) => update("weight_gsm", e.target.value)} placeholder="130" />
-            </div>
-
-            <div className="col-span-2 space-y-1.5">
-              <Label htmlFor="pf-compo">Composition</Label>
-              <Input id="pf-compo" value={form.composition} onChange={(e) => update("composition", e.target.value)} placeholder="100% coton" />
-            </div>
-
-            <div className="col-span-2 space-y-1.5">
-              <Label htmlFor="pf-desc">Description</Label>
-              <Textarea id="pf-desc" value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Description du produit..." rows={3} />
+            {/* Badges under photo */}
+            <div className="space-y-2">
+              <Label>Badges</Label>
+              <div className="space-y-1.5">
+                {BADGE_OPTIONS.map((opt) => (
+                  <label key={opt} className="flex items-center gap-2 cursor-pointer text-sm">
+                    <Checkbox
+                      checked={badges.includes(opt)}
+                      onCheckedChange={(checked) => {
+                        setBadges((prev) =>
+                          checked ? [...prev, opt] : prev.filter((b) => b !== opt)
+                        );
+                      }}
+                    />
+                    {opt}
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Badges */}
-          <div className="space-y-2">
-            <Label>Badges</Label>
-            <div className="grid grid-cols-2 gap-2">
-              {BADGE_OPTIONS.map((opt) => (
-                <label key={opt} className="flex items-center gap-2 cursor-pointer text-sm">
-                  <Checkbox
-                    checked={badges.includes(opt)}
-                    onCheckedChange={(checked) => {
-                      setBadges((prev) =>
-                        checked ? [...prev, opt] : prev.filter((b) => b !== opt)
-                      );
-                    }}
-                  />
-                  {opt}
-                </label>
-              ))}
-            </div>
-          </div>
+          {/* Right side: Fields */}
+          <div className="flex-1 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label>UNB (identifiant unique)</Label>
+                <Input value={unb} readOnly className="bg-muted font-mono text-sm" />
+              </div>
 
-          <Button onClick={handleSave} disabled={saving || uploading} className="w-full">
-            {saving ? "Enregistrement..." : "Enregistrer le produit"}
-          </Button>
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-category">Catégorie</Label>
+                <Input id="pf-category" value={form.category} onChange={(e) => update("category", e.target.value)} placeholder="Coton" />
+              </div>
+
+              <div className="col-span-2 space-y-1.5">
+                <Label htmlFor="pf-name">Nom *</Label>
+                <Input id="pf-name" value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="Nom du tissu" />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-ref">Référence</Label>
+                <Input id="pf-ref" value={form.reference} onChange={(e) => update("reference", e.target.value)} placeholder="REF-001" />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-price">Prix (€)</Label>
+                <Input id="pf-price" type="number" step="0.01" value={form.price} onChange={(e) => update("price", e.target.value)} placeholder="12.90" />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-color">Couleur</Label>
+                <Input id="pf-color" value={form.color} onChange={(e) => update("color", e.target.value)} placeholder="Bleu marine" />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-compo">Composition</Label>
+                <Input id="pf-compo" value={form.composition} onChange={(e) => update("composition", e.target.value)} placeholder="100% coton" />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-width">Largeur (cm)</Label>
+                <Input id="pf-width" type="number" step="0.1" value={form.width_cm} onChange={(e) => update("width_cm", e.target.value)} placeholder="150" />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-weight">Grammage (g/m²)</Label>
+                <Input id="pf-weight" type="number" step="0.1" value={form.weight_gsm} onChange={(e) => update("weight_gsm", e.target.value)} placeholder="130" />
+              </div>
+
+              <div className="col-span-2 space-y-1.5">
+                <Label htmlFor="pf-desc">Description</Label>
+                <Textarea id="pf-desc" value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Description du produit..." rows={3} />
+              </div>
+            </div>
+
+            <Button onClick={handleSave} disabled={saving || uploading} className="w-full">
+              {saving ? "Enregistrement..." : "Enregistrer le produit"}
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
