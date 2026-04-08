@@ -138,7 +138,7 @@ const CRMProducts = () => {
               const isEditing = editingId === p.id;
 
               return (
-                <TableRow key={p.id} className={`align-middle ${isEditing ? "bg-accent/30" : ""}`}>
+                <TableRow key={p.id} className={`align-middle ${isEditing ? "bg-primary/10" : ""}`}>
                   <TableCell className="font-mono text-xs whitespace-nowrap">{p.unb || "—"}</TableCell>
                   <TableCell className="whitespace-nowrap">{isEditing ? <EditInput field="name" /> : <span className="font-medium">{p.name}</span>}</TableCell>
                   <TableCell className="whitespace-nowrap">{isEditing ? <EditInput field="category" /> : <span className="text-sm">{p.category || "—"}</span>}</TableCell>
