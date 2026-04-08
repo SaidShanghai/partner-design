@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
 import CategoryProductCard from "@/components/CategoryProductCard";
+import ProductFormDialog from "@/components/ProductFormDialog";
+import { useAuth } from "@/hooks/useAuth";
 import { categoriesData, type CategoryData } from "@/data/categories";
 
 const imageModules = import.meta.glob("@/assets/cat-*.jpg", { eager: true, import: "default" }) as Record<string, string>;
