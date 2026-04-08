@@ -4,6 +4,7 @@ import { Heart, ShoppingBag, ChevronDown, Minus, Plus, Check } from "lucide-reac
 import SiteHeader from "@/components/SiteHeader";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
+import T from "@/components/T";
 
 import nouveaute1 from "@/assets/nouveaute-1.jpg";
 import nouveaute2 from "@/assets/nouveaute-2.jpg";
@@ -129,19 +130,15 @@ const Nouveautes = () => {
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-8">
-          <Link to="/" className="hover:text-foreground transition-colors">Accueil</Link>
+          <Link to="/" className="hover:text-foreground transition-colors"><T>Accueil</T></Link>
         </nav>
 
-        {/* Title & Description */}
         <div className="text-center mb-10 max-w-3xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight uppercase mb-4">
-            Nouveautés Tissus et Mercerie
+            <T>Nouveautés Tissus et Mercerie</T>
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Découvrez les nouveautés Textile Partner : une sélection de{" "} : une sélection de{" "}
-            <Link to="/categorie/coton" className="text-primary hover:underline">tissus tendance</Link>,
-            mercerie créative et accessoires couture pour vos projets du moment.
-            De nouvelles matières, couleurs et idées arrivent chaque saison pour vous inspirer vos créations !
+            <T>Découvrez les nouveautés Textile Partner : une sélection de tissus tendance, mercerie créative et accessoires couture pour vos projets du moment. De nouvelles matières, couleurs et idées arrivent chaque saison pour vous inspirer vos créations !</T>
           </p>
         </div>
 
@@ -179,16 +176,14 @@ const Nouveautes = () => {
         <div className="max-w-4xl mx-auto mb-16">
           <div className="bg-accent/30 rounded-xl p-8">
             <h2 className="text-lg font-bold text-foreground mb-4 font-serif italic">
-              Nos Dernières Nouveautés Tissus & Mercerie
+              <T>Nos Dernières Nouveautés Tissus et Mercerie</T>
             </h2>
             <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
               <p>
-                Retrouvez chaque semaine de nouveaux tissus et accessoires de mercerie soigneusement sélectionnés pour vous. 
-                Cotons imprimés, viscoses fluides, matelassés originaux… notre catalogue s'enrichit au fil des saisons.
+                <T>Retrouvez chaque semaine de nouveaux tissus et accessoires de mercerie soigneusement sélectionnés pour vous. Cotons imprimés, viscoses fluides, matelassés originaux… notre catalogue s'enrichit au fil des saisons.</T>
               </p>
               <p>
-                Que vous cherchiez un tissu pour une robe d'été, un projet de couture pour enfant ou des fournitures de mercerie créative, 
-                nos nouveautés vous offrent un large choix de matières, couleurs et motifs tendance.
+                <T>Que vous cherchiez un tissu pour une robe d'été, un projet de couture pour enfant ou des fournitures de mercerie créative, nos nouveautés vous offrent un large choix de matières, couleurs et motifs tendance.</T>
               </p>
             </div>
           </div>
