@@ -1,4 +1,4 @@
-import { Search, User, Heart, ShoppingBag, LogOut, Shield } from "lucide-react";
+import { Search, User, Heart, ShoppingBag, LogOut, Shield, LayoutDashboard } from "lucide-react";
 import { useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -347,6 +347,15 @@ const SiteHeader = () => {
         onMouseLeave={handleMenuLeave}
       >
         <div className="container mx-auto px-4 flex items-center justify-center gap-1">
+          {isAdmin && (
+            <Link
+              to="/admin/crm"
+              className="block px-3 py-3 text-xs font-semibold tracking-wider text-primary hover:text-primary/80 transition-colors whitespace-nowrap flex items-center gap-1"
+            >
+              <LayoutDashboard className="w-3.5 h-3.5" />
+              CRM
+            </Link>
+          )}
           {categories.map((cat) => {
             // NOUVEAU links directly to /nouveautes
             if (cat === "NOUVEAU") {
