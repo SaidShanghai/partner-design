@@ -70,6 +70,7 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
       category: initialData?.categoryName ?? "",
       image_url: initialData?.imageUrl ?? "",
     });
+    setBadges([]);
   }, [open, initialData?.name, initialData?.imageUrl, initialData?.categoryName]);
 
   const update = (field: string, value: string) => setForm((current) => ({ ...current, [field]: value }));
