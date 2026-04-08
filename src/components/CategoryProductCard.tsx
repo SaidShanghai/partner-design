@@ -79,6 +79,13 @@ const CategoryProductCard = ({
             loading="lazy"
           />
 
+          {/* Badge Nouveauté - top left on image */}
+          {badge && badge.split(",").some((b) => b.trim().toLowerCase() === "nouveauté") && (
+            <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm">
+              Nouveauté
+            </span>
+          )}
+
           {/* Heart - top right */}
           <button
             onClick={() => setLiked((v) => !v)}
