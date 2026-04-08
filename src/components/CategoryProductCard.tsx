@@ -149,7 +149,7 @@ const CategoryProductCard = ({
 
         {showMetrage && (
           <div className="mb-2 flex items-center justify-center gap-0 rounded-full border border-border bg-background shadow-sm overflow-hidden">
-            <button onClick={() => setMetrage((v) => Math.max(1, v - 1))} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
+            <button onClick={() => setMetrage((v) => Math.max(0, v - 1))} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
               <Minus className="w-4 h-4" />
             </button>
             <span className="px-4 py-2 text-sm font-medium text-foreground min-w-[80px] text-center">
