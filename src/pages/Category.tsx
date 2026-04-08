@@ -32,7 +32,7 @@ function buildFallbackCategory(slug: string): CategoryData {
     products: [],
     filters: ["COULEUR", "PLUS DE FILTRES"],
     seo: {
-      title: `${name} — Land of Fabrics`,
+      title: `${name} — Textile Partner`,
       paragraphs: [
         `Retrouvez bientôt notre gamme complète de <strong>${name.toLowerCase()}</strong>. Nous préparons une sélection de qualité pour répondre à tous vos projets couture.`,
       ],

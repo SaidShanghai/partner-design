@@ -7,7 +7,7 @@ const SiteFooter = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div>
-            <h3 className="font-logo text-3xl mb-4">land of fabrics</h3>
+            <h3 className="font-logo text-3xl mb-4">textile partner</h3>
             <p className="text-sm opacity-70 leading-relaxed">
               Votre partenaire textile pour tous vos projets couture et décoration.
             </p>
@@ -51,14 +51,14 @@ const SiteFooter = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 shrink-0" />
-                <span>contact@landoffabrics.fr</span>
+                <span>contact@textilepartner.fr</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-background/20 mt-10 pt-6 text-center text-xs opacity-50">
-          © 2026 Land of Fabrics. Tous droits réservés.
+          © 2026 Textile Partner. Tous droits réservés.
         </div>
       </div>
     </footer>
