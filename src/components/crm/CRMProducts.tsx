@@ -43,13 +43,11 @@ const CRMProducts = () => {
       // Update or create pricing
       const buyPrice = Number(values.buyPrice) || 0;
       const sellPrice = Number(values.sellPrice) || 0;
-      const margin = sellPrice - buyPrice;
 
       if (pricingId) {
         const { error } = await supabase.from("product_pricing").update({
           buy_price: buyPrice,
           sell_price: sellPrice,
-          margin,
         }).eq("id", pricingId);
         if (error) throw error;
       } else if (buyPrice > 0 || sellPrice > 0) {
@@ -57,7 +55,6 @@ const CRMProducts = () => {
           product_id: id,
           buy_price: buyPrice,
           sell_price: sellPrice,
-          margin,
         });
         if (error) throw error;
       }
