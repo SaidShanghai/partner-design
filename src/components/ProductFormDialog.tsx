@@ -50,13 +50,6 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
     category: "",
     image_url: "",
   });
-    composition: "",
-    width_cm: "",
-    weight_gsm: "",
-    color: "",
-    category: "",
-    image_url: "",
-  });
 
   useEffect(() => {
     if (!open) return;
