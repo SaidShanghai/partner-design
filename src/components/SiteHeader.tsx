@@ -1,5 +1,7 @@
-import { Search, User, Heart, ShoppingBag } from "lucide-react";
+import { Search, User, Heart, ShoppingBag, LogOut, Shield } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import MegaMenu, { type MegaMenuData } from "./MegaMenu";
 import sangleImg from "@/assets/mercerie-sangle.jpg";
 import fermeturesImg from "@/assets/mercerie-fermetures.jpg";
@@ -270,6 +272,7 @@ const megaMenus: Record<string, MegaMenuData> = {
 
 const SiteHeader = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const { user, isAdmin, signOut } = useAuth();
 
   return (
     <header className="bg-background relative z-50">
@@ -292,7 +295,22 @@ const SiteHeader = () => {
             <Search className="w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Rechercher" className="bg-transparent text-sm outline-none w-32 lg:w-48 text-foreground placeholder:text-muted-foreground" />
           </div>
-          <button className="p-2 hover:text-primary transition-colors" aria-label="Compte"><User className="w-5 h-5" /></button>
+          {user ? (
+            <>
+              {isAdmin && (
+                <span className="hidden md:flex items-center gap-1 text-xs font-medium text-primary">
+                  <Shield className="w-4 h-4" /> Admin
+                </span>
+              )}
+              <button onClick={signOut} className="p-2 hover:text-primary transition-colors" aria-label="Déconnexion" title="Se déconnecter">
+                <LogOut className="w-5 h-5" />
+              </button>
+            </>
+          ) : (
+            <Link to="/connexion" className="p-2 hover:text-primary transition-colors" aria-label="Compte">
+              <User className="w-5 h-5" />
+            </Link>
+          )}
           <button className="p-2 hover:text-primary transition-colors" aria-label="Favoris"><Heart className="w-5 h-5" /></button>
           <button className="p-2 hover:text-primary transition-colors" aria-label="Panier"><ShoppingBag className="w-5 h-5" /></button>
         </div>
