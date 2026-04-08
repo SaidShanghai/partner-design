@@ -6,6 +6,7 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
 import CategoryProductCard from "@/components/CategoryProductCard";
 import ProductFormDialog from "@/components/ProductFormDialog";
+import T from "@/components/T";
 import { useAuth } from "@/hooks/useAuth";
 import { categoriesData, type CategoryData } from "@/data/categories";
 
