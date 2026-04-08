@@ -108,7 +108,54 @@ export const categoriesData: Record<string, CategoryData> = {
     shortDescription:
       "Tissu délicat et ajouré, la broderie anglaise apporte une touche romantique et féminine à vos créations. Parfaite pour des robes, blouses et accessoires raffinés.",
     filters: ["COULEUR", "MOTIF", "LAIZE", "PLUS DE FILTRES"],
-    products: [],
+    products: [
+      {
+        image: "cat-broderie-blanche",
+        name: "Broderie Anglaise Coton Blanc Festonnée",
+        price: "14,90 €",
+        unit: "le mètre",
+        badge: "Oeko-Tex Standard 100",
+      },
+      {
+        image: "cat-broderie-ecru",
+        name: "Broderie Anglaise Coton Écru Motif Floral",
+        price: "13,50 €",
+        unit: "le mètre",
+        variants: "3 teintes",
+      },
+      {
+        image: "cat-broderie-rose",
+        name: "Broderie Anglaise Rose Poudré Fleurs Délicates",
+        price: "15,90 €",
+        unit: "le mètre",
+      },
+      {
+        image: "cat-broderie-marine",
+        name: "Broderie Anglaise Coton Bleu Marine",
+        price: "14,90 €",
+        unit: "le mètre",
+        variants: "2 teintes",
+      },
+      {
+        image: "cat-broderie-noire",
+        name: "Broderie Anglaise Noire Bordure Festonnée",
+        price: "16,50 €",
+        unit: "le mètre",
+      },
+      {
+        image: "cat-broderie-lavande",
+        name: "Broderie Anglaise Lavande Coton Oeko-Tex",
+        price: "14,90 €",
+        unit: "le mètre",
+        badge: "Oeko-Tex",
+      },
+      {
+        image: "cat-broderie-ciel",
+        name: "Broderie Anglaise Bleu Ciel Petites Fleurs",
+        price: "13,90 €",
+        unit: "le mètre",
+      },
+    ],
     seo: {
       title: "Broderie Anglaise : Délicatesse et Romantisme",
       paragraphs: [
