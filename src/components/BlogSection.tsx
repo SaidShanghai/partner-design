@@ -1,6 +1,7 @@
 import blog1 from "@/assets/blog-1.jpg";
 import blog2 from "@/assets/blog-2.jpg";
 import blog3 from "@/assets/blog-3.jpg";
+import T from "@/components/T";
 
 const posts = [
   {
@@ -26,11 +27,11 @@ const BlogSection = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h3 className="font-logo text-3xl md:text-4xl text-foreground">
-            Notre blog couture
+            <T>Notre blog couture</T>
           </h3>
           <div className="flex gap-3">
             <a href="#" className="text-sm text-foreground hover:text-primary transition-colors">
-              Découvrir toutes nos actualités
+              <T>Découvrir toutes nos actualités</T>
             </a>
           </div>
         </div>
@@ -38,26 +39,16 @@ const BlogSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {posts.map((post, i) => (
             <div key={i} className="bg-background rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <img
-                src={post.image}
-                alt={post.title}
-                className="w-full h-48 object-cover"
-                loading="lazy"
-                width={640}
-                height={512}
-              />
+              <img src={post.image} alt={post.title} className="w-full h-48 object-cover" loading="lazy" width={640} height={512} />
               <div className="p-5">
                 <h4 className="font-semibold text-foreground text-sm mb-2 line-clamp-2">
-                  {post.title}
+                  <T>{post.title}</T>
                 </h4>
                 <p className="text-xs text-muted-foreground line-clamp-3 mb-3">
-                  {post.excerpt}
+                  <T>{post.excerpt}</T>
                 </p>
-                <a
-                  href="#"
-                  className="text-xs font-semibold text-primary hover:underline"
-                >
-                  Découvrir →
+                <a href="#" className="text-xs font-semibold text-primary hover:underline">
+                  <T>Découvrir</T> →
                 </a>
               </div>
             </div>
