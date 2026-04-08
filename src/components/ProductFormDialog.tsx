@@ -37,11 +37,19 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
   const [uploading, setUploading] = useState(false);
   const [unb, setUnb] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
+  const [badges, setBadges] = useState<string[]>([]);
   const [form, setForm] = useState({
     name: "",
     description: "",
     price: "",
     reference: "",
+    composition: "",
+    width_cm: "",
+    weight_gsm: "",
+    color: "",
+    category: "",
+    image_url: "",
+  });
     composition: "",
     width_cm: "",
     weight_gsm: "",
