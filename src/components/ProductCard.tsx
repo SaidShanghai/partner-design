@@ -63,11 +63,11 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
             <Heart className="w-5 h-5" />
           </button>
 
-          {/* Admin: (+) button - top left */}
+          {/* Admin: (+) button - bottom left */}
           {isAdmin && (
             <button
               onClick={() => setFormOpen(true)}
-              className="absolute top-3 left-3 z-20 w-7 h-7 flex items-center justify-center rounded-full bg-background/90 border border-border text-foreground hover:text-primary hover:border-primary transition-colors shadow-sm"
+              className="absolute bottom-3 left-3 z-20 w-7 h-7 flex items-center justify-center rounded-full bg-background/90 border border-border text-foreground hover:text-primary hover:border-primary transition-colors shadow-sm"
               aria-label="Fiche produit"
               title="Fiche produit"
             >
