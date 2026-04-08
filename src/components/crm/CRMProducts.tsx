@@ -125,7 +125,7 @@ const CRMProducts = () => {
       </div>
 
       <div className="border rounded-lg overflow-x-auto">
-        <Table className="[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0 [&_th]:border-border [&_td]:border-border">
+        <Table className="[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0 [&_th]:border-border [&_td]:border-border [&_tr]:border-b [&_tr]:border-border">
           <TableHeader>
             <TableRow className="text-xs font-bold">
               <TableHead className="whitespace-nowrap px-2">UNB</TableHead>
