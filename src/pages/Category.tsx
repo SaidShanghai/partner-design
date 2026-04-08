@@ -125,7 +125,29 @@ const Category = () => {
           </div>
         ) : (
           <div className="text-center py-16">
-            <p className="text-muted-foreground">Les produits arrivent bientôt !</p>
+            <p className="text-muted-foreground mb-6">Les produits arrivent bientôt !</p>
+            {isAdmin && (
+              <button
+                onClick={() => setFormOpen(true)}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm"
+              >
+                <Plus className="w-5 h-5" />
+                Ajouter un produit
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Admin: also show add button after existing products */}
+        {isAdmin && category.products.length > 0 && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setFormOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-dashed border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Ajouter un produit
+            </button>
           </div>
         )}
 
