@@ -8,7 +8,19 @@ import CategoryProductCard from "@/components/CategoryProductCard";
 import ProductFormDialog from "@/components/ProductFormDialog";
 import T from "@/components/T";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { categoriesData, type CategoryData } from "@/data/categories";
+
+/** Translates an HTML string while preserving tags */
+const TranslatedHtml = ({ html, className }: { html: string; className?: string }) => {
+  const { translate, registerText, language } = useLanguage();
+  useEffect(() => {
+    if (language !== "fr" && html) {
+      registerText(html);
+    }
+  }, [html, language, registerText]);
+  return <p className={className} dangerouslySetInnerHTML={{ __html: translate(html) }} />;
+};
 
 const imageModules = import.meta.glob("@/assets/cat-*.jpg", { eager: true, import: "default" }) as Record<string, string>;
 
