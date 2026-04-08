@@ -180,7 +180,7 @@ const CategoryProductCard = ({
               return (
                 <span
                   key={trimmed}
-                  className={`text-xs font-medium px-1.5 py-0.5 rounded ${isNew ? "bg-red-50 text-red-600" : "bg-primary/10 text-primary"}`}
+                  className={`text-xs font-semibold px-2 py-0.5 rounded ${isNew ? "bg-red-500 text-white" : "bg-primary/10 text-primary"}`}
                 >
                   {trimmed}
                 </span>
