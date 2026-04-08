@@ -116,7 +116,6 @@ const CRMProducts = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-10"></TableHead>
               <TableHead>UNB</TableHead>
               <TableHead>Nom</TableHead>
               <TableHead>Catégorie</TableHead>
@@ -129,6 +128,7 @@ const CRMProducts = () => {
               <TableHead className="text-right">Prix achat (¥)</TableHead>
               <TableHead className="text-right">Marge</TableHead>
               <TableHead>Fournisseur</TableHead>
+              <TableHead className="w-10"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
