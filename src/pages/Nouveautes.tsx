@@ -104,39 +104,7 @@ const Nouveautes = () => {
         {/* Product Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-16">
           {products.map((product, idx) => (
-            <div key={idx} className="group cursor-pointer">
-              <div className="relative aspect-square rounded-lg overflow-hidden mb-3 bg-accent/20">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading={idx < 5 ? undefined : "lazy"}
-                  width={640}
-                  height={640}
-                />
-                {/* Badge NOUVEAUTÉ */}
-                <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded">
-                  NOUVEAUTÉ
-                </span>
-                {/* Wishlist */}
-                <button className="absolute top-2 right-2 w-8 h-8 bg-background/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background">
-                  <Heart className="w-4 h-4 text-foreground" />
-                </button>
-                {/* Quick add */}
-                <button className="absolute bottom-2 right-2 w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-foreground/80">
-                  <ShoppingBag className="w-4 h-4" />
-                </button>
-              </div>
-              <h3 className="text-xs font-medium text-foreground leading-tight mb-1 line-clamp-2">
-                {product.name}
-              </h3>
-              <div className="flex items-baseline gap-1">
-                <span className="text-sm font-bold text-foreground">{product.price}</span>
-                {product.unit && (
-                  <span className="text-[10px] text-muted-foreground">{product.unit}</span>
-                )}
-              </div>
-            </div>
+            <NouveauteCard key={idx} product={product} idx={idx} />
           ))}
         </div>
 
