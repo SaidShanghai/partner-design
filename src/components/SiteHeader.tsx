@@ -318,7 +318,7 @@ const SiteHeader = () => {
               </a>
 
               {activeMenu === cat && megaMenus[cat] && (
-                <MegaMenu data={megaMenus[cat]} />
+                <MegaMenu data={megaMenus[cat]} onClose={() => setActiveMenu(null)} />
               )}
             </div>
           ))}
