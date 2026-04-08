@@ -44,6 +44,8 @@ function buildFallbackCategory(slug: string): CategoryData {
 
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
+  const { isAdmin } = useAuth();
+  const [formOpen, setFormOpen] = useState(false);
   const category = slug ? categoriesData[slug] || buildFallbackCategory(slug) : null;
 
   if (!category) {
