@@ -160,11 +160,16 @@ const CategoryProductCard = ({
             </button>
             <button
               onClick={() => {
+                if (metrage === 0) {
+                  setShowMetrage(false);
+                  setMetrage(1);
+                  return;
+                }
                 toast({ title: "Ajouté au panier", description: `${displayName} — ${(metrage * 0.5).toFixed(2)} m` });
                 setShowMetrage(false);
                 setMetrage(1);
               }}
-              className="px-3 py-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              className={`px-3 py-2 transition-colors ${metrage === 0 ? "bg-muted text-muted-foreground" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
               aria-label="Valider"
             >
               <Check className="w-4 h-4" />
