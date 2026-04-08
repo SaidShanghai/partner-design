@@ -284,7 +284,7 @@ const SiteHeader = () => {
         </nav>
 
         <a href="/" className="font-logo text-4xl md:text-5xl text-foreground tracking-wide">
-          textile partner
+          land of fabrics
         </a>
 
         <div className="flex items-center gap-3">

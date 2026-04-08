@@ -19,7 +19,7 @@ const StoreSection = () => {
             Des magasins de tissus uniques au style affirmé
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-            Pour tous vos projets couture et décoration, Textile Partner vous propose des milliers de mètres de tissus. Nous vous proposons des tissus en fonction de leur adéquation à vos projets et disponibles au meilleur rapport qualité / prix. Nos tissus d'ameublement, tissus habillement sont en stock dans nos locaux.
+            Pour tous vos projets couture et décoration, Land of Fabrics vous propose des milliers de mètres de tissus. Nous vous proposons des tissus en fonction de leur adéquation à vos projets et disponibles au meilleur rapport qualité / prix. Nos tissus d'ameublement, tissus habillement sont en stock dans nos locaux. des milliers de mètres de tissus. Nous vous proposons des tissus en fonction de leur adéquation à vos projets et disponibles au meilleur rapport qualité / prix. Nos tissus d'ameublement, tissus habillement sont en stock dans nos locaux.
           </p>
           <div className="flex gap-4">
             <a
