@@ -1,4 +1,5 @@
 import ProductCard from "./ProductCard";
+import T from "@/components/T";
 import product1 from "@/assets/product-1.jpg";
 import product2 from "@/assets/product-2.jpg";
 import product3 from "@/assets/product-3.jpg";
@@ -22,18 +23,18 @@ const ProductSection = () => {
   return (
     <section className="container mx-auto px-4 py-12">
       <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-2">
-        Tissus et mercerie : découvrez nos nouveautés
+        <T>Tissus et mercerie : découvrez nos nouveautés</T>
       </h2>
 
       <div className="flex items-center gap-6 mb-8 mt-8">
         <h3 className="font-logo text-3xl md:text-4xl text-foreground whitespace-nowrap">
-          Nos dernières pépites tissus
+          <T>Nos dernières pépites tissus</T>
         </h3>
         <a
           href="#"
           className="text-sm text-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
         >
-          Explorez nos nouveaux tissus ✨ 😍 <span className="text-xs">↗</span>
+          <T>Explorez nos nouveaux tissus</T> ✨ 😍 <span className="text-xs">↗</span>
         </a>
       </div>
 
