@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Camera, ImagePlus } from "lucide-react";
+import { Camera, ImagePlus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -146,9 +146,22 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
               {previewUrl ? (
                 <>
                   <img src={previewUrl} alt="Aperçu" className="w-full max-h-48 object-contain rounded-lg" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-4 rounded-lg">
                     <Camera className="w-8 h-8 text-white" />
                   </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPreviewUrl("");
+                      update("image_url", "");
+                    }}
+                    className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow-sm hover:bg-destructive/90 transition-colors"
+                    aria-label="Supprimer la photo"
+                    title="Supprimer la photo"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </>
               ) : (
                 <div className="flex flex-col items-center gap-2 py-6 text-muted-foreground">
