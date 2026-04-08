@@ -3,6 +3,7 @@ import { Search, Pencil, X, Check } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -25,9 +26,20 @@ const CRMProducts = () => {
     },
   });
 
+  const { data: suppliers = [] } = useQuery({
+    queryKey: ["crm-suppliers-list"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("suppliers")
+        .select("id, company_name")
+        .order("company_name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const updateProduct = useMutation({
     mutationFn: async ({ id, values, pricingId }: { id: string; values: Record<string, string>; pricingId?: string }) => {
-      // Update product fields
       const { error: prodErr } = await supabase.from("products").update({
         name: values.name || undefined,
         category: values.category || null,
@@ -40,21 +52,23 @@ const CRMProducts = () => {
       }).eq("id", id);
       if (prodErr) throw prodErr;
 
-      // Update or create pricing
       const buyPrice = Number(values.buyPrice) || 0;
       const sellPrice = Number(values.sellPrice) || 0;
+      const supplierId = values.supplierId || null;
 
       if (pricingId) {
         const { error } = await supabase.from("product_pricing").update({
           buy_price: buyPrice,
           sell_price: sellPrice,
+          supplier_id: supplierId,
         }).eq("id", pricingId);
         if (error) throw error;
-      } else if (buyPrice > 0 || sellPrice > 0) {
+      } else if (buyPrice > 0 || sellPrice > 0 || supplierId) {
         const { error } = await supabase.from("product_pricing").insert({
           product_id: id,
           buy_price: buyPrice,
           sell_price: sellPrice,
+          supplier_id: supplierId,
         });
         if (error) throw error;
       }
@@ -80,6 +94,7 @@ const CRMProducts = () => {
       buyPrice: pricing ? String(pricing.buy_price) : "",
       width: p.width_cm ? String(p.width_cm) : "",
       weight: p.weight_gsm ? String(p.weight_gsm) : "",
+      supplierId: pricing?.supplier_id || "",
     });
   };
 
@@ -150,7 +165,26 @@ const CRMProducts = () => {
                   <TableCell className="text-right whitespace-nowrap">{isEditing ? <EditInput field="sellPrice" className="w-20 ml-auto" /> : (p.price ? `${Number(p.price).toFixed(2)} €` : pricing ? `${Number(pricing.sell_price).toFixed(2)} €` : "—")}</TableCell>
                   <TableCell className="text-right whitespace-nowrap">{isEditing ? <EditInput field="buyPrice" className="w-20 ml-auto" /> : (pricing ? `${Number(pricing.buy_price).toFixed(2)} ¥` : "—")}</TableCell>
                   <TableCell className="text-right whitespace-nowrap font-medium">{pricing ? <span className={Number(pricing.margin) > 0 ? "text-green-600" : "text-destructive"}>{Number(pricing.margin).toFixed(2)} €</span> : "—"}</TableCell>
-                  <TableCell className="text-sm whitespace-nowrap">{pricing?.suppliers?.company_name || "—"}</TableCell>
+                  <TableCell className="text-sm whitespace-nowrap">
+                    {isEditing ? (
+                      <Select
+                        value={editValues.supplierId || "none"}
+                        onValueChange={(val) => setEditValues((v) => ({ ...v, supplierId: val === "none" ? "" : val }))}
+                      >
+                        <SelectTrigger className="h-7 text-sm w-[180px]">
+                          <SelectValue placeholder="Choisir..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">— Aucun —</SelectItem>
+                          {suppliers.map((s) => (
+                            <SelectItem key={s.id} value={s.id}>{s.company_name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      pricing?.suppliers?.company_name || "—"
+                    )}
+                  </TableCell>
                   <TableCell>
                     {isEditing ? (
                       <div className="flex gap-1">
