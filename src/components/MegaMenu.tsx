@@ -29,7 +29,7 @@ interface MegaMenuProps {
 
 const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
   return (
-    <div className="fixed left-0 right-0 top-auto w-full bg-background border-t border-border shadow-xl z-50">
+    <div className="absolute left-0 right-0 top-full w-full bg-background border-t border-border shadow-xl z-50">
       <div className="container mx-auto px-6 py-8 flex gap-6">
         {/* Left column: Voir tout + buttons */}
         <div className="flex flex-col gap-3 shrink-0 w-[180px]">
