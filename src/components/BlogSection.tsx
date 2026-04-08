@@ -16,7 +16,7 @@ const posts = [
   {
     image: blog3,
     title: "Défi couture du mois",
-    excerpt: "Challenge couture Textile Partner : Cousez un sac demi-lune et tentez de gagner de jolis cadeaux 🎁",
+    excerpt: "Challenge couture Land of Fabrics : Cousez un sac demi-lune et tentez de gagner de jolis cadeaux 🎁",
   },
 ];
 

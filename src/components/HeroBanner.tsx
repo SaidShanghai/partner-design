@@ -6,7 +6,7 @@ const HeroBanner = () => {
     <section className="relative w-full h-[500px] md:h-[550px] overflow-hidden">
       <img
         src={heroImage}
-        alt="Collection de tissus Textile Partner"
+        alt="Collection de tissus Land of Fabrics"
         className="w-full h-full object-cover"
         width={1920}
         height={800}
