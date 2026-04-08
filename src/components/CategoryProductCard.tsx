@@ -179,20 +179,13 @@ const CategoryProductCard = ({
           {unit && <span className="text-xs text-muted-foreground">{unit}</span>}
         </div>
         {variants && <p className="text-xs text-muted-foreground mt-0.5">{variants}</p>}
-        {badge && (
+        {badge && !badge.split(",").every((b) => b.trim().toLowerCase() === "nouveauté") && (
           <div className="flex flex-wrap gap-1.5 mt-1">
-            {badge.split(",").map((b) => {
-              const trimmed = b.trim();
-              const isNew = trimmed.toLowerCase() === "nouveauté";
-              return (
-                <span
-                  key={trimmed}
-                  className={`text-xs font-semibold px-2 py-0.5 rounded ${isNew ? "bg-red-500 text-white" : "bg-primary/10 text-primary"}`}
-                >
-                  {trimmed}
-                </span>
-              );
-            })}
+            {badge.split(",").filter((b) => b.trim().toLowerCase() !== "nouveauté").map((b) => (
+              <span key={b.trim()} className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary">
+                {b.trim()}
+              </span>
+            ))}
           </div>
         )}
       </div>
