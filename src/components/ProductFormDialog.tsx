@@ -37,6 +37,11 @@ const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialo
   useEffect(() => {
     if (!open) return;
 
+    // Generate UNB
+    const ts = Date.now().toString(36).toUpperCase();
+    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+    setUnb(`UNB-${ts}-${rand}`);
+
     setForm({
       name: initialData?.name ?? "",
       description: "",
