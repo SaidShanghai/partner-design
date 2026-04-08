@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ChevronDown, Plus } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
