@@ -126,7 +126,7 @@ const CRMProducts = () => {
               <TableHead className="text-right">Largeur (cm)</TableHead>
               <TableHead className="text-right">Grammage (g/m²)</TableHead>
               <TableHead className="text-right">Prix vente</TableHead>
-              <TableHead className="text-right">Prix achat</TableHead>
+              <TableHead className="text-right">Prix achat (¥)</TableHead>
               <TableHead className="text-right">Marge</TableHead>
               <TableHead>Fournisseur</TableHead>
             </TableRow>
@@ -167,7 +167,7 @@ const CRMProducts = () => {
                   <TableCell className="text-right">{isEditing ? <EditInput field="width" className="w-20 ml-auto" /> : (p.width_cm || "—")}</TableCell>
                   <TableCell className="text-right">{isEditing ? <EditInput field="weight" className="w-20 ml-auto" /> : (p.weight_gsm || "—")}</TableCell>
                   <TableCell className="text-right">{isEditing ? <EditInput field="sellPrice" className="w-20 ml-auto" /> : (p.price ? `${Number(p.price).toFixed(2)} €` : pricing ? `${Number(pricing.sell_price).toFixed(2)} €` : "—")}</TableCell>
-                  <TableCell className="text-right">{isEditing ? <EditInput field="buyPrice" className="w-20 ml-auto" /> : (pricing ? `${Number(pricing.buy_price).toFixed(2)} €` : "—")}</TableCell>
+                  <TableCell className="text-right">{isEditing ? <EditInput field="buyPrice" className="w-20 ml-auto" /> : (pricing ? `${Number(pricing.buy_price).toFixed(2)} ¥` : "—")}</TableCell>
                   <TableCell className="text-right font-medium">{pricing ? <span className={Number(pricing.margin) > 0 ? "text-green-600" : "text-destructive"}>{Number(pricing.margin).toFixed(2)} €</span> : "—"}</TableCell>
                   <TableCell className="text-sm">{pricing?.suppliers?.company_name || "—"}</TableCell>
                 </TableRow>
