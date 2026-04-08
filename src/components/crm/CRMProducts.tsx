@@ -121,7 +121,7 @@ const CRMProducts = () => {
     <div className="space-y-4">
       <div className="relative w-72">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input placeholder="Rechercher par nom, ref, UNB..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+        <Input placeholder="Rechercher par nom, ref, UNB..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 border-primary focus-visible:ring-primary" />
       </div>
 
       <div className="border rounded-lg overflow-x-auto">
