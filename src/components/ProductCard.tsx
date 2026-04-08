@@ -57,7 +57,7 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
 
           {/* Heart - top right (always visible) */}
           <button
-            className="absolute top-3 right-3 z-10 text-foreground/60 hover:text-primary transition-colors"
+            className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-background/80 flex items-center justify-center hover:bg-background text-foreground hover:text-primary transition-colors shadow-sm"
             aria-label="Ajouter aux favoris"
           >
             <Heart className="w-5 h-5" />
