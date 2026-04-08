@@ -1,6 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toSlug } from "@/data/categories";
+import T from "@/components/T";
+
 export interface MegaMenuColumn {
   title: string;
   items: string[];
@@ -34,7 +36,7 @@ const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
         {/* Left column: Voir tout + buttons */}
         <div className="flex flex-col gap-3 shrink-0 w-[180px]">
           <a href="#" className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-primary transition-colors mb-2">
-            Voir tout <ArrowUpRight className="w-4 h-4" />
+            <T>Voir tout</T> <ArrowUpRight className="w-4 h-4" />
           </a>
           {data.buttons?.map((btn) => (
             <a
@@ -42,7 +44,7 @@ const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
               href="#"
               className="block px-4 py-2.5 text-sm bg-accent/60 text-foreground rounded-lg hover:bg-accent transition-colors"
             >
-              {btn.label}
+              <T>{btn.label}</T>
             </a>
           ))}
         </div>
@@ -52,7 +54,7 @@ const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
           {data.columns.map((col) => (
             <div key={col.title}>
               <span className="block text-sm font-bold text-foreground mb-3">
-                {col.title}
+                <T>{col.title}</T>
               </span>
               <ul className="space-y-1.5">
                 {col.items.map((item) => (
@@ -62,7 +64,7 @@ const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
                       className="text-sm text-muted-foreground hover:text-primary transition-colors"
                       onClick={onClose}
                     >
-                      {item}
+                      <T>{item}</T>
                     </Link>
                   </li>
                 ))}
@@ -77,7 +79,7 @@ const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
             <div key={img.label} className="relative rounded-lg overflow-hidden flex-1">
               <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" />
               <span className="absolute bottom-3 left-3 bg-background/90 text-foreground text-xs font-medium px-3 py-1.5 rounded-full">
-                {img.label}
+                <T>{img.label}</T>
               </span>
             </div>
           ))}
