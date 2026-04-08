@@ -91,6 +91,7 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
         title: "Produit enregistré",
         description: `"${form.name}" a été ajouté.`,
       });
+      onSaved?.({ name: form.name, price: form.price ? `${parseFloat(form.price).toFixed(2)} €` : "" });
       onOpenChange(false);
     }
 
