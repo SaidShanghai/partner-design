@@ -30,6 +30,7 @@ const CategoryProductCard = ({
   const [displayImage, setDisplayImage] = useState(image);
   const [displayName, setDisplayName] = useState(name);
   const [displayPrice, setDisplayPrice] = useState(price);
+  const [displayBadge, setDisplayBadge] = useState(badge ?? "");
   const [formOpen, setFormOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -37,6 +38,12 @@ const CategoryProductCard = ({
   const [metrage, setMetrage] = useState(1);
 
   const canManage = !loading && isAdmin;
+  const displayBadges = displayBadge
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+  const hasNewBadge = displayBadges.some((value) => value.toLowerCase() === "nouveauté");
+  const secondaryBadges = displayBadges.filter((value) => value.toLowerCase() !== "nouveauté");
 
   const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -79,14 +86,12 @@ const CategoryProductCard = ({
             loading="lazy"
           />
 
-          {/* Badge Nouveauté - top left on image */}
-          {badge && badge.split(",").some((b) => b.trim().toLowerCase() === "nouveauté") && (
-            <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm">
+          {hasNewBadge && (
+            <span className="absolute top-3 left-3 z-10 bg-destructive text-destructive-foreground text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm">
               Nouveauté
             </span>
           )}
 
-          {/* Heart - top right */}
           <button
             onClick={() => setLiked((v) => !v)}
             className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-sm z-10 ${liked ? "bg-background text-red-500" : "bg-background/80 text-foreground hover:text-primary"}`}
@@ -95,7 +100,6 @@ const CategoryProductCard = ({
             <Heart className="w-4 h-4" fill={liked ? "currentColor" : "none"} />
           </button>
 
-          {/* Admin: (+) fiche produit */}
           {canManage && (
             <button
               onClick={(e) => { e.stopPropagation(); setFormOpen(true); }}
@@ -108,7 +112,6 @@ const CategoryProductCard = ({
             </button>
           )}
 
-          {/* Admin: Camera */}
           {canManage && (
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
               <button
@@ -124,7 +127,6 @@ const CategoryProductCard = ({
             </div>
           )}
 
-          {/* Shopping bag - bottom right */}
           <button
             onClick={(e) => { e.stopPropagation(); setShowMetrage((v) => !v); }}
             className="absolute bottom-3 right-3 z-30 w-10 h-10 rounded-full bg-background flex items-center justify-center shadow-md border border-border text-foreground hover:text-primary hover:border-primary transition-colors"
@@ -145,7 +147,6 @@ const CategoryProductCard = ({
           )}
         </div>
 
-        {/* Metrage selector */}
         {showMetrage && (
           <div className="mb-2 flex items-center justify-center gap-0 rounded-full border border-border bg-background shadow-sm overflow-hidden">
             <button onClick={() => setMetrage((v) => Math.max(1, v - 1))} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
@@ -179,11 +180,11 @@ const CategoryProductCard = ({
           {unit && <span className="text-xs text-muted-foreground">{unit}</span>}
         </div>
         {variants && <p className="text-xs text-muted-foreground mt-0.5">{variants}</p>}
-        {badge && !badge.split(",").every((b) => b.trim().toLowerCase() === "nouveauté") && (
+        {secondaryBadges.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-1">
-            {badge.split(",").filter((b) => b.trim().toLowerCase() !== "nouveauté").map((b) => (
-              <span key={b.trim()} className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary">
-                {b.trim()}
+            {secondaryBadges.map((value) => (
+              <span key={value} className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary">
+                {value}
               </span>
             ))}
           </div>
@@ -191,17 +192,19 @@ const CategoryProductCard = ({
       </div>
 
       <ProductFormDialog
-        key={`${displayName}-${displayImage}`}
+        key={`${displayName}-${displayImage}-${displayBadge}`}
         open={formOpen}
         onOpenChange={setFormOpen}
         onSaved={(data) => {
           if (data.name) setDisplayName(data.name);
           if (data.price) setDisplayPrice(data.price);
+          setDisplayBadge(data.badge ?? "");
         }}
         initialData={{
           name: displayName,
           imageUrl: displayImage,
           categoryName,
+          badge: displayBadge,
         }}
       />
     </>

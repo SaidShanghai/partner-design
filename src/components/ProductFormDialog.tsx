@@ -22,11 +22,12 @@ const BADGE_OPTIONS = [
 interface ProductFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSaved?: (data: { name: string; price: string; imageUrl?: string }) => void;
+  onSaved?: (data: { name: string; price: string; imageUrl?: string; badge: string }) => void;
   initialData?: {
     name?: string;
     imageUrl?: string;
     categoryName?: string;
+    badge?: string;
   };
 }
 
@@ -55,9 +56,14 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
     if (!open) return;
 
     const code = String(Math.floor(100000 + Math.random() * 900000));
+    const initialBadges = (initialData?.badge ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+
     setUnb(code);
     setPreviewUrl(initialData?.imageUrl ?? "");
-
+    setBadges(initialBadges);
     setForm({
       name: initialData?.name ?? "",
       description: "",
@@ -70,8 +76,7 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
       category: initialData?.categoryName ?? "",
       image_url: initialData?.imageUrl ?? "",
     });
-    setBadges([]);
-  }, [open, initialData?.name, initialData?.imageUrl, initialData?.categoryName]);
+  }, [open, initialData?.name, initialData?.imageUrl, initialData?.categoryName, initialData?.badge]);
 
   const update = (field: string, value: string) => setForm((current) => ({ ...current, [field]: value }));
 
@@ -133,7 +138,12 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
         title: "Produit enregistré",
         description: `"${form.name}" a été ajouté.`,
       });
-      onSaved?.({ name: form.name, price: form.price ? `${parseFloat(form.price).toFixed(2)} €` : "", imageUrl: form.image_url });
+      onSaved?.({
+        name: form.name,
+        price: form.price ? `${parseFloat(form.price).toFixed(2)} €` : "",
+        imageUrl: form.image_url,
+        badge: badges.join(", "),
+      });
       onOpenChange(false);
     }
 
