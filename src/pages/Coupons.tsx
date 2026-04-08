@@ -141,7 +141,7 @@ const Coupons = () => {
             LES COUPONS
           </h1>
           <p className="mt-3 text-sm text-muted-foreground max-w-2xl mx-auto">
-            C'est le bon plan Land of Fabrics ! Nos coupons de tissus : un large choix de matières, Nos coupons de tissus : un large choix de matières,
+            C'est le bon plan Textile Partner ! Nos coupons de tissus : un large choix de matières, Nos coupons de tissus : un large choix de matières,
             couleurs et motifs à prix mini pour toutes vos créations couture !
           </p>
           <p className="mt-1 text-xs text-muted-foreground">

@@ -70,7 +70,7 @@ const Nouveautes = () => {
             Nouveautés Tissus et Mercerie
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Découvrez les nouveautés Land of Fabrics : une sélection de{" "} : une sélection de{" "}
+            Découvrez les nouveautés Textile Partner : une sélection de{" "} : une sélection de{" "}
             <Link to="/categorie/coton" className="text-primary hover:underline">tissus tendance</Link>,
             mercerie créative et accessoires couture pour vos projets du moment.
             De nouvelles matières, couleurs et idées arrivent chaque saison pour vous inspirer vos créations !
