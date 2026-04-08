@@ -1,6 +1,6 @@
 import { Search, User, Heart, ShoppingBag, LogOut, Shield } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import MegaMenu, { type MegaMenuData } from "./MegaMenu";
 import sangleImg from "@/assets/mercerie-sangle.jpg";
@@ -273,6 +273,7 @@ const megaMenus: Record<string, MegaMenuData> = {
 const SiteHeader = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const { user, isAdmin, signOut } = useAuth();
+  const location = useLocation();
 
   return (
     <header className="bg-background relative z-50">
@@ -308,7 +309,7 @@ const SiteHeader = () => {
             </>
           ) : (
             <Link to="/connexion" className="p-2 hover:text-primary transition-colors" aria-label="Compte">
-              <User className="w-5 h-5" />
+              <User className={`w-5 h-5 ${location.pathname === "/connexion" ? "text-primary" : ""}`} />
             </Link>
           )}
           <button className="p-2 hover:text-primary transition-colors" aria-label="Favoris"><Heart className="w-5 h-5" /></button>
