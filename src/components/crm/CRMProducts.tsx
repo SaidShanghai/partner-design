@@ -113,18 +113,18 @@ const CRMProducts = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>UNB</TableHead>
-              <TableHead>Nom</TableHead>
-              <TableHead>Catégorie</TableHead>
-              <TableHead>Référence</TableHead>
-              <TableHead>Composition</TableHead>
-              <TableHead>Couleur</TableHead>
-              <TableHead className="text-right">Largeur (cm)</TableHead>
-              <TableHead className="text-right">Grammage (g/m²)</TableHead>
-              <TableHead className="text-right">Prix vente</TableHead>
-              <TableHead className="text-right">Prix achat (¥)</TableHead>
-              <TableHead className="text-right">Marge</TableHead>
-              <TableHead>Fournisseur</TableHead>
+              <TableHead className="whitespace-nowrap">UNB</TableHead>
+              <TableHead className="whitespace-nowrap">Nom</TableHead>
+              <TableHead className="whitespace-nowrap">Catégorie</TableHead>
+              <TableHead className="whitespace-nowrap">Référence</TableHead>
+              <TableHead className="whitespace-nowrap">Composition</TableHead>
+              <TableHead className="whitespace-nowrap">Couleur</TableHead>
+              <TableHead className="whitespace-nowrap text-right">Largeur (cm)</TableHead>
+              <TableHead className="whitespace-nowrap text-right">Grammage (g/m²)</TableHead>
+              <TableHead className="whitespace-nowrap text-right">Prix vente</TableHead>
+              <TableHead className="whitespace-nowrap text-right">Prix achat (¥)</TableHead>
+              <TableHead className="whitespace-nowrap text-right">Marge</TableHead>
+              <TableHead className="whitespace-nowrap">Fournisseur</TableHead>
               <TableHead className="w-10"></TableHead>
             </TableRow>
           </TableHeader>
@@ -138,19 +138,19 @@ const CRMProducts = () => {
               const isEditing = editingId === p.id;
 
               return (
-                <TableRow key={p.id} className={`align-top ${isEditing ? "bg-accent/30" : ""}`}>
-                  <TableCell className="font-mono text-xs">{p.unb || "—"}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="name" /> : <span className="font-medium">{p.name}</span>}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="category" /> : <span className="text-sm">{p.category || "—"}</span>}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="reference" /> : <span className="text-sm">{p.reference || "—"}</span>}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="composition" /> : <span className="text-sm">{p.composition || "—"}</span>}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="color" /> : <span className="text-sm">{p.color || "—"}</span>}</TableCell>
-                  <TableCell className="text-right">{isEditing ? <EditInput field="width" className="w-20 ml-auto" /> : (p.width_cm || "—")}</TableCell>
-                  <TableCell className="text-right">{isEditing ? <EditInput field="weight" className="w-20 ml-auto" /> : (p.weight_gsm || "—")}</TableCell>
-                  <TableCell className="text-right">{isEditing ? <EditInput field="sellPrice" className="w-20 ml-auto" /> : (p.price ? `${Number(p.price).toFixed(2)} €` : pricing ? `${Number(pricing.sell_price).toFixed(2)} €` : "—")}</TableCell>
-                  <TableCell className="text-right">{isEditing ? <EditInput field="buyPrice" className="w-20 ml-auto" /> : (pricing ? `${Number(pricing.buy_price).toFixed(2)} ¥` : "—")}</TableCell>
-                  <TableCell className="text-right font-medium">{pricing ? <span className={Number(pricing.margin) > 0 ? "text-green-600" : "text-destructive"}>{Number(pricing.margin).toFixed(2)} €</span> : "—"}</TableCell>
-                  <TableCell className="text-sm">{pricing?.suppliers?.company_name || "—"}</TableCell>
+                <TableRow key={p.id} className={`align-middle ${isEditing ? "bg-accent/30" : ""}`}>
+                  <TableCell className="font-mono text-xs whitespace-nowrap">{p.unb || "—"}</TableCell>
+                  <TableCell className="whitespace-nowrap">{isEditing ? <EditInput field="name" /> : <span className="font-medium">{p.name}</span>}</TableCell>
+                  <TableCell className="whitespace-nowrap">{isEditing ? <EditInput field="category" /> : <span className="text-sm">{p.category || "—"}</span>}</TableCell>
+                  <TableCell className="whitespace-nowrap">{isEditing ? <EditInput field="reference" /> : <span className="text-sm">{p.reference || "—"}</span>}</TableCell>
+                  <TableCell className="whitespace-nowrap">{isEditing ? <EditInput field="composition" /> : <span className="text-sm">{p.composition || "—"}</span>}</TableCell>
+                  <TableCell className="whitespace-nowrap">{isEditing ? <EditInput field="color" /> : <span className="text-sm">{p.color || "—"}</span>}</TableCell>
+                  <TableCell className="text-right whitespace-nowrap">{isEditing ? <EditInput field="width" className="w-20 ml-auto" /> : (p.width_cm || "—")}</TableCell>
+                  <TableCell className="text-right whitespace-nowrap">{isEditing ? <EditInput field="weight" className="w-20 ml-auto" /> : (p.weight_gsm || "—")}</TableCell>
+                  <TableCell className="text-right whitespace-nowrap">{isEditing ? <EditInput field="sellPrice" className="w-20 ml-auto" /> : (p.price ? `${Number(p.price).toFixed(2)} €` : pricing ? `${Number(pricing.sell_price).toFixed(2)} €` : "—")}</TableCell>
+                  <TableCell className="text-right whitespace-nowrap">{isEditing ? <EditInput field="buyPrice" className="w-20 ml-auto" /> : (pricing ? `${Number(pricing.buy_price).toFixed(2)} ¥` : "—")}</TableCell>
+                  <TableCell className="text-right whitespace-nowrap font-medium">{pricing ? <span className={Number(pricing.margin) > 0 ? "text-green-600" : "text-destructive"}>{Number(pricing.margin).toFixed(2)} €</span> : "—"}</TableCell>
+                  <TableCell className="text-sm whitespace-nowrap">{pricing?.suppliers?.company_name || "—"}</TableCell>
                   <TableCell>
                     {isEditing ? (
                       <div className="flex gap-1">
