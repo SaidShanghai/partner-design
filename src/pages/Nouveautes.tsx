@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Heart, ShoppingBag, ChevronDown, Minus, Plus } from "lucide-react";
+import { Heart, ShoppingBag, ChevronDown, Minus, Plus, Check } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
@@ -96,6 +96,13 @@ const NouveauteCard = ({ product, idx }: { product: typeof products[0]; idx: num
           </span>
           <button onClick={() => setMetrage((v) => v + 1)} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
             <Plus className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => { setShowMetrage(false); setMetrage(1); }}
+            className="px-3 py-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            aria-label="Valider"
+          >
+            <Check className="w-4 h-4" />
           </button>
         </div>
       )}
