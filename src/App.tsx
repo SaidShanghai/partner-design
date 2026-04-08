@@ -10,6 +10,7 @@ import Coupons from "./pages/Coupons.tsx";
 import Category from "./pages/Category.tsx";
 import Nouveautes from "./pages/Nouveautes.tsx";
 import Login from "./pages/Login.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/nouveautes" element={<Nouveautes />} />
             <Route path="/categorie/:slug" element={<Category />} />
             <Route path="/connexion" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
