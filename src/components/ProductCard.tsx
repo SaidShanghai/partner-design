@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { Heart, Plus, Camera, ShoppingBag, Minus } from "lucide-react";
+import { Heart, Plus, Camera, ShoppingBag, Minus, Check } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -146,6 +146,17 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
               aria-label="Augmenter"
             >
               <Plus className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => {
+                toast({ title: "Ajouté au panier", description: `${displayName} — ${(metrage * 0.5).toFixed(2)} m` });
+                setShowMetrage(false);
+                setMetrage(1);
+              }}
+              className="px-3 py-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              aria-label="Valider"
+            >
+              <Check className="w-4 h-4" />
             </button>
           </div>
         )}
