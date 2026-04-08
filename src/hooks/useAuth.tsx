@@ -59,8 +59,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    setLoading(true);
+    setUser(null);
+    setSession(null);
     setIsAdmin(false);
+
+    try {
+      await supabase.auth.signOut();
+    } finally {
+      Object.keys(window.localStorage)
+        .filter((key) => key.startsWith("sb-"))
+        .forEach((key) => window.localStorage.removeItem(key));
+
+      setLoading(false);
+      window.location.replace("/");
+    }
   };
 
   return (
