@@ -7,6 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+
+const BADGE_OPTIONS = [
+  "Nouveauté",
+  "Oeko-Tex",
+  "GOTS",
+  "Bio",
+  "Promo",
+  "Exclusivité",
+  "Stock limité",
+] as const;
 
 interface ProductFormDialogProps {
   open: boolean;
@@ -26,6 +37,7 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
   const [uploading, setUploading] = useState(false);
   const [unb, setUnb] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
+  const [badges, setBadges] = useState<string[]>([]);
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -58,6 +70,7 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
       category: initialData?.categoryName ?? "",
       image_url: initialData?.imageUrl ?? "",
     });
+    setBadges([]);
   }, [open, initialData?.name, initialData?.imageUrl, initialData?.categoryName]);
 
   const update = (field: string, value: string) => setForm((current) => ({ ...current, [field]: value }));
@@ -230,6 +243,26 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
             <div className="col-span-2 space-y-1.5">
               <Label htmlFor="pf-desc">Description</Label>
               <Textarea id="pf-desc" value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Description du produit..." rows={3} />
+            </div>
+          </div>
+
+          {/* Badges */}
+          <div className="space-y-2">
+            <Label>Badges</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {BADGE_OPTIONS.map((opt) => (
+                <label key={opt} className="flex items-center gap-2 cursor-pointer text-sm">
+                  <Checkbox
+                    checked={badges.includes(opt)}
+                    onCheckedChange={(checked) => {
+                      setBadges((prev) =>
+                        checked ? [...prev, opt] : prev.filter((b) => b !== opt)
+                      );
+                    }}
+                  />
+                  {opt}
+                </label>
+              ))}
             </div>
           </div>
 

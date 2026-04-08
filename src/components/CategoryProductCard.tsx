@@ -172,7 +172,22 @@ const CategoryProductCard = ({
           {unit && <span className="text-xs text-muted-foreground">{unit}</span>}
         </div>
         {variants && <p className="text-xs text-muted-foreground mt-0.5">{variants}</p>}
-        {badge && <p className="text-xs text-primary mt-0.5">{badge}</p>}
+        {badge && (
+          <div className="flex flex-wrap gap-1.5 mt-1">
+            {badge.split(",").map((b) => {
+              const trimmed = b.trim();
+              const isNew = trimmed.toLowerCase() === "nouveauté";
+              return (
+                <span
+                  key={trimmed}
+                  className={`text-xs font-medium px-1.5 py-0.5 rounded ${isNew ? "bg-red-50 text-red-600" : "bg-primary/10 text-primary"}`}
+                >
+                  {trimmed}
+                </span>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <ProductFormDialog
