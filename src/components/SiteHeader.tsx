@@ -1,5 +1,5 @@
 import { Search, User, Heart, ShoppingBag, LogOut, Shield } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import MegaMenu, { type MegaMenuData } from "./MegaMenu";
@@ -274,6 +274,27 @@ const SiteHeader = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const { user, isAdmin, signOut } = useAuth();
   const location = useLocation();
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleMenuEnter = useCallback((cat: string) => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    hoverTimeout.current = setTimeout(() => {
+      if (megaMenus[cat]) {
+        setActiveMenu(cat);
+      }
+    }, 200);
+  }, []);
+
+  const handleMenuLeave = useCallback(() => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    hoverTimeout.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 150);
+  }, []);
+
+  const handleMegaMenuEnter = useCallback(() => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+  }, []);
 
   return (
     <header className="bg-background relative z-50">
@@ -320,7 +341,7 @@ const SiteHeader = () => {
       {/* Category bar */}
       <nav
         className="border-t border-border relative"
-        onMouseLeave={() => setActiveMenu(null)}
+        onMouseLeave={handleMenuLeave}
       >
         <div className="container mx-auto px-4 flex items-center justify-center gap-1">
           {categories.map((cat) => {
@@ -341,7 +362,7 @@ const SiteHeader = () => {
               <div
                 key={cat}
                 className="relative"
-                onMouseEnter={() => megaMenus[cat] ? setActiveMenu(cat) : setActiveMenu(null)}
+                onMouseEnter={() => handleMenuEnter(cat)}
               >
                 <a
                   href="#"
@@ -359,7 +380,9 @@ const SiteHeader = () => {
           </a>
         </div>
         {activeMenu && megaMenus[activeMenu] && (
-          <MegaMenu data={megaMenus[activeMenu]} onClose={() => setActiveMenu(null)} />
+          <div onMouseEnter={handleMegaMenuEnter} onMouseLeave={handleMenuLeave}>
+            <MegaMenu data={megaMenus[activeMenu]} onClose={() => setActiveMenu(null)} />
+          </div>
         )}
       </nav>
     </header>
