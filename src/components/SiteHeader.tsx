@@ -356,7 +356,7 @@ const SiteHeader = () => {
                     href="/nouveautes"
                     className="block px-3 py-3 text-xs font-semibold tracking-wider text-foreground hover:text-primary transition-colors whitespace-nowrap"
                   >
-                    {cat}
+                    <T>{cat}</T>
                   </a>
                 </div>
               );
@@ -373,13 +373,13 @@ const SiteHeader = () => {
                     activeMenu === cat ? "text-primary" : "text-foreground hover:text-primary"
                   }`}
                 >
-                  {cat}
+                  <T>{cat}</T>
                 </a>
               </div>
             );
           })}
           <a href="/coupons" className="px-3 py-3 text-xs font-semibold tracking-wider text-primary whitespace-nowrap">
-            COUPONS À -20%
+            <T>COUPONS À -20%</T>
           </a>
         </div>
         {activeMenu && megaMenus[activeMenu] && (
