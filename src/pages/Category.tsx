@@ -22,7 +22,7 @@ const TranslatedHtml = ({ html, className }: { html: string; className?: string 
   return <p className={className} dangerouslySetInnerHTML={{ __html: translate(html) }} />;
 };
 
-const imageModules = import.meta.glob("@/assets/cat-*.jpg", { eager: true, import: "default" }) as Record<string, string>;
+const imageModules = import.meta.glob("@/assets/{cat-*,burlington-*}.jpg", { eager: true, import: "default" }) as Record<string, string>;
 
 function getImage(key: string): string {
   const match = Object.entries(imageModules).find(([path]) => path.includes(key));
