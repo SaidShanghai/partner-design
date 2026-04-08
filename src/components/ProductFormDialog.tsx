@@ -1,0 +1,123 @@
+import { useState, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
+interface ProductFormDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  initialData?: {
+    name?: string;
+    imageUrl?: string;
+  };
+}
+
+const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialogProps) => {
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+
+  const [form, setForm] = useState({
+    name: initialData?.name ?? "",
+    description: "",
+    price: "",
+    reference: "",
+    composition: "",
+    width_cm: "",
+    weight_gsm: "",
+    color: "",
+    category: "",
+    image_url: initialData?.imageUrl ?? "",
+  });
+
+  const update = (field: string, value: string) => setForm((f) => ({ ...f, [field]: value }));
+
+  const handleSave = async () => {
+    if (!form.name.trim()) {
+      toast({ title: "Erreur", description: "Le nom du produit est requis.", variant: "destructive" });
+      return;
+    }
+
+    setSaving(true);
+
+    const { error } = await supabase.from("products").insert({
+      name: form.name,
+      description: form.description || null,
+      price: form.price ? parseFloat(form.price) : null,
+      reference: form.reference || null,
+      composition: form.composition || null,
+      width_cm: form.width_cm ? parseFloat(form.width_cm) : null,
+      weight_gsm: form.weight_gsm ? parseFloat(form.weight_gsm) : null,
+      color: form.color || null,
+      category: form.category || null,
+      image_url: form.image_url || null,
+    });
+
+    if (error) {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Produit enregistré", description: `"${form.name}" a été ajouté.` });
+      onOpenChange(false);
+    }
+
+    setSaving(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Fiche produit</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 pt-2">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 space-y-1.5">
+              <Label htmlFor="pf-name">Nom *</Label>
+              <Input id="pf-name" value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="Nom du tissu" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pf-ref">Référence</Label>
+              <Input id="pf-ref" value={form.reference} onChange={(e) => update("reference", e.target.value)} placeholder="REF-001" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pf-price">Prix (€)</Label>
+              <Input id="pf-price" type="number" step="0.01" value={form.price} onChange={(e) => update("price", e.target.value)} placeholder="12.90" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pf-color">Couleur</Label>
+              <Input id="pf-color" value={form.color} onChange={(e) => update("color", e.target.value)} placeholder="Bleu marine" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pf-category">Catégorie</Label>
+              <Input id="pf-category" value={form.category} onChange={(e) => update("category", e.target.value)} placeholder="Coton" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pf-width">Largeur (cm)</Label>
+              <Input id="pf-width" type="number" step="0.1" value={form.width_cm} onChange={(e) => update("width_cm", e.target.value)} placeholder="150" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pf-weight">Grammage (g/m²)</Label>
+              <Input id="pf-weight" type="number" step="0.1" value={form.weight_gsm} onChange={(e) => update("weight_gsm", e.target.value)} placeholder="130" />
+            </div>
+            <div className="col-span-2 space-y-1.5">
+              <Label htmlFor="pf-compo">Composition</Label>
+              <Input id="pf-compo" value={form.composition} onChange={(e) => update("composition", e.target.value)} placeholder="100% coton" />
+            </div>
+            <div className="col-span-2 space-y-1.5">
+              <Label htmlFor="pf-desc">Description</Label>
+              <Textarea id="pf-desc" value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Description du produit..." rows={3} />
+            </div>
+          </div>
+          <Button onClick={handleSave} disabled={saving} className="w-full">
+            {saving ? "Enregistrement..." : "Enregistrer le produit"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default ProductFormDialog;
