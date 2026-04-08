@@ -327,6 +327,39 @@ export const categoriesData: Record<string, CategoryData> = {
       ],
     },
   },
+  "jacquards-habillement": {
+    slug: "jacquards-habillement",
+    name: "Jacquards habillement",
+    parentName: "Tissu Habillement",
+    shortDescription:
+      "Le jacquard habillement se distingue par ses motifs tissés et son rendu sophistiqué. Idéal pour vestes, jupes, robes structurées et pièces fortes du vestiaire couture.",
+    filters: ["COULEUR", "MOTIF", "COMPOSITION", "PLUS DE FILTRES"],
+    products: [
+      { image: "jacquard-floral-noir-ivoire", name: "Jacquard Floral Noir & Ivoire", price: "16,90 €", unit: "le mètre", badge: "Motif tissé" },
+      { image: "jacquard-geometrique-bleu-or", name: "Jacquard Géométrique Bleu Nuit Or", price: "17,90 €", unit: "le mètre" },
+      { image: "jacquard-feuillage-terracotta", name: "Jacquard Feuillage Terracotta Sable", price: "15,90 €", unit: "le mètre" },
+      { image: "jacquard-baroque-bordeaux", name: "Jacquard Baroque Bordeaux Ton sur Ton", price: "18,50 €", unit: "le mètre" },
+      { image: "jacquard-floral-sauge", name: "Jacquard Floral Sauge Clair", price: "16,50 €", unit: "le mètre" },
+      { image: "jacquard-floral-noir-ivoire", name: "Jacquard Fleurs Graphiques Noir Naturel", price: "16,90 €", unit: "le mètre" },
+      { image: "jacquard-geometrique-bleu-or", name: "Jacquard Carreaux Bijou Marine", price: "17,90 €", unit: "le mètre" },
+      { image: "jacquard-feuillage-terracotta", name: "Jacquard Arabesque Abricot Corail", price: "15,90 €", unit: "le mètre" },
+      { image: "jacquard-baroque-bordeaux", name: "Jacquard Rosaces Grenat", price: "18,50 €", unit: "le mètre" },
+      { image: "jacquard-floral-sauge", name: "Jacquard Botanique Vert Amande", price: "16,50 €", unit: "le mètre" },
+      { image: "jacquard-floral-noir-ivoire", name: "Jacquard Grande Fleur Écru & Noir", price: "16,90 €", unit: "le mètre", variants: "2 teintes" },
+      { image: "jacquard-geometrique-bleu-or", name: "Jacquard Ruban Bleu Royal Doré", price: "17,90 €", unit: "le mètre" },
+      { image: "jacquard-feuillage-terracotta", name: "Jacquard Volutes Ocre Terracotta", price: "15,90 €", unit: "le mètre" },
+      { image: "jacquard-baroque-bordeaux", name: "Jacquard Damassé Framboise", price: "18,50 €", unit: "le mètre" },
+      { image: "jacquard-floral-sauge", name: "Jacquard Feuilles Amande Douce", price: "16,50 €", unit: "le mètre" }
+    ],
+    seo: {
+      title: "Tissu Jacquard Habillement : Relief et Élégance",
+      paragraphs: [
+        "Le <strong>jacquard habillement</strong> séduit par ses motifs tissés directement dans la matière, offrant du relief, de la tenue et une vraie personnalité à vos créations.",
+        "Parfait pour des vestes courtes, jupes structurées, robes habillées ou pantalons de cérémonie, il apporte immédiatement une finition plus couture à un projet.",
+        "Associez-le avec notre <a href='/categorie/satin' class='text-primary hover:underline'>satin</a> pour les doublures élégantes ou avec du <a href='/categorie/lin' class='text-primary hover:underline'>lin</a> pour des contrastes de texture plus naturels.",
+      ],
+    },
+  },
   burlington: {
     slug: "burlington",
     name: "Burlington",
