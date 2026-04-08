@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import { ChevronDown, Plus } from "lucide-react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { ChevronDown, Plus, LayoutDashboard } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
@@ -58,6 +58,7 @@ function buildFallbackCategory(slug: string): CategoryData {
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
   const { isAdmin } = useAuth();
+  const navigate = useNavigate();
   const [formOpen, setFormOpen] = useState(false);
   const category = slug ? categoriesData[slug] || buildFallbackCategory(slug) : null;
 
@@ -153,7 +154,14 @@ const Category = () => {
 
         {/* Admin: also show add button after existing products */}
         {isAdmin && category.products.length > 0 && (
-          <div className="mt-6 text-center">
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <button
+              onClick={() => navigate("/admin/crm")}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors font-medium text-sm"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              CRM
+            </button>
             <button
               onClick={() => setFormOpen(true)}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-dashed border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors"

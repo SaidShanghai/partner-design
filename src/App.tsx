@@ -12,6 +12,7 @@ import Category from "./pages/Category.tsx";
 import Nouveautes from "./pages/Nouveautes.tsx";
 import Login from "./pages/Login.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
+import AdminCRM from "./pages/AdminCRM.tsx";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/categorie/:slug" element={<Category />} />
               <Route path="/connexion" element={<Login />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/admin/crm" element={<AdminCRM />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
