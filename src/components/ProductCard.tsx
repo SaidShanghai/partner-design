@@ -23,6 +23,8 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
   const [displayPrice, setDisplayPrice] = useState(price);
   const [uploading, setUploading] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [showMetrage, setShowMetrage] = useState(false);
+  const [metrage, setMetrage] = useState(1); // in units of 0.5m
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
