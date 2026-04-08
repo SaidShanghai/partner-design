@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from "react";
+import { useState, useEffect, createContext, useContext, ReactNode, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
@@ -24,39 +24,60 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const checkAdmin = async (userId: string) => {
-    const { data } = await supabase.rpc("has_role", {
+  const checkAdmin = useCallback(async (userId: string) => {
+    const { data, error } = await supabase.rpc("has_role", {
       _user_id: userId,
       _role: "admin",
     });
-    setIsAdmin(!!data);
-  };
+
+    if (error) {
+      console.error("Erreur lors de la vérification du rôle admin", error);
+      return false;
+    }
+
+    return !!data;
+  }, []);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await checkAdmin(session.user.id);
-        } else {
-          setIsAdmin(false);
-        }
-        setLoading(false);
-      }
-    );
+    let isMounted = true;
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        checkAdmin(session.user.id);
+    const syncAuthState = async (nextSession: Session | null) => {
+      if (!isMounted) return;
+
+      setSession(nextSession);
+      const nextUser = nextSession?.user ?? null;
+      setUser(nextUser);
+
+      if (!nextUser) {
+        setIsAdmin(false);
+        setLoading(false);
+        return;
       }
+
+      const admin = await checkAdmin(nextUser.id);
+
+      if (!isMounted) return;
+
+      setIsAdmin(admin);
       setLoading(false);
+    };
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setLoading(true);
+      void syncAuthState(nextSession);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    void supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      void syncAuthState(currentSession);
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, [checkAdmin]);
 
   const signOut = async () => {
     setLoading(true);
