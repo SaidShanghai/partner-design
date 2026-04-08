@@ -116,9 +116,9 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
         </div>
         <div className="mt-3">
           <h3 className="text-sm font-medium text-foreground leading-tight line-clamp-2">
-            {name}
+            {displayName}
           </h3>
-          <p className="mt-1 text-sm font-semibold text-foreground">{price}</p>
+          <p className="mt-1 text-sm font-semibold text-foreground">{displayPrice}</p>
           {variants && (
             <p className="mt-0.5 text-xs text-muted-foreground">
               {variants} teintes
