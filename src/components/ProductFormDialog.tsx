@@ -107,6 +107,11 @@ const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialo
         <div className="space-y-4 pt-2">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2 space-y-1.5">
+              <Label>UNB (identifiant unique)</Label>
+              <Input value={unb} readOnly className="bg-muted font-mono text-sm" />
+            </div>
+
+            <div className="col-span-2 space-y-1.5">
               <Label htmlFor="pf-name">Nom *</Label>
               <Input id="pf-name" value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="Nom du tissu" />
             </div>
