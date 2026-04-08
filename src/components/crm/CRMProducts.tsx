@@ -116,7 +116,6 @@ const CRMProducts = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-10"></TableHead>
               <TableHead>UNB</TableHead>
               <TableHead>Nom</TableHead>
               <TableHead>Catégorie</TableHead>
@@ -129,6 +128,7 @@ const CRMProducts = () => {
               <TableHead className="text-right">Prix achat (¥)</TableHead>
               <TableHead className="text-right">Marge</TableHead>
               <TableHead>Fournisseur</TableHead>
+              <TableHead className="w-10"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -142,6 +142,18 @@ const CRMProducts = () => {
 
               return (
                 <TableRow key={p.id} className={isEditing ? "bg-accent/30" : ""}>
+                  <TableCell className="font-mono text-xs">{p.unb || "—"}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="name" /> : <span className="font-medium">{p.name}</span>}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="category" /> : <span className="text-sm">{p.category || "—"}</span>}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="reference" /> : <span className="text-sm">{p.reference || "—"}</span>}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="composition" /> : <span className="text-sm">{p.composition || "—"}</span>}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="color" /> : <span className="text-sm">{p.color || "—"}</span>}</TableCell>
+                  <TableCell className="text-right">{isEditing ? <EditInput field="width" className="w-20 ml-auto" /> : (p.width_cm || "—")}</TableCell>
+                  <TableCell className="text-right">{isEditing ? <EditInput field="weight" className="w-20 ml-auto" /> : (p.weight_gsm || "—")}</TableCell>
+                  <TableCell className="text-right">{isEditing ? <EditInput field="sellPrice" className="w-20 ml-auto" /> : (p.price ? `${Number(p.price).toFixed(2)} €` : pricing ? `${Number(pricing.sell_price).toFixed(2)} €` : "—")}</TableCell>
+                  <TableCell className="text-right">{isEditing ? <EditInput field="buyPrice" className="w-20 ml-auto" /> : (pricing ? `${Number(pricing.buy_price).toFixed(2)} ¥` : "—")}</TableCell>
+                  <TableCell className="text-right font-medium">{pricing ? <span className={Number(pricing.margin) > 0 ? "text-green-600" : "text-destructive"}>{Number(pricing.margin).toFixed(2)} €</span> : "—"}</TableCell>
+                  <TableCell className="text-sm">{pricing?.suppliers?.company_name || "—"}</TableCell>
                   <TableCell>
                     {isEditing ? (
                       <div className="flex gap-1">
@@ -158,18 +170,6 @@ const CRMProducts = () => {
                       </Button>
                     )}
                   </TableCell>
-                  <TableCell className="font-mono text-xs">{p.unb || "—"}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="name" /> : <span className="font-medium">{p.name}</span>}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="category" /> : <span className="text-sm">{p.category || "—"}</span>}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="reference" /> : <span className="text-sm">{p.reference || "—"}</span>}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="composition" /> : <span className="text-sm">{p.composition || "—"}</span>}</TableCell>
-                  <TableCell>{isEditing ? <EditInput field="color" /> : <span className="text-sm">{p.color || "—"}</span>}</TableCell>
-                  <TableCell className="text-right">{isEditing ? <EditInput field="width" className="w-20 ml-auto" /> : (p.width_cm || "—")}</TableCell>
-                  <TableCell className="text-right">{isEditing ? <EditInput field="weight" className="w-20 ml-auto" /> : (p.weight_gsm || "—")}</TableCell>
-                  <TableCell className="text-right">{isEditing ? <EditInput field="sellPrice" className="w-20 ml-auto" /> : (p.price ? `${Number(p.price).toFixed(2)} €` : pricing ? `${Number(pricing.sell_price).toFixed(2)} €` : "—")}</TableCell>
-                  <TableCell className="text-right">{isEditing ? <EditInput field="buyPrice" className="w-20 ml-auto" /> : (pricing ? `${Number(pricing.buy_price).toFixed(2)} ¥` : "—")}</TableCell>
-                  <TableCell className="text-right font-medium">{pricing ? <span className={Number(pricing.margin) > 0 ? "text-green-600" : "text-destructive"}>{Number(pricing.margin).toFixed(2)} €</span> : "—"}</TableCell>
-                  <TableCell className="text-sm">{pricing?.suppliers?.company_name || "—"}</TableCell>
                 </TableRow>
               );
             })}
