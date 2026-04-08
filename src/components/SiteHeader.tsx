@@ -275,6 +275,7 @@ const megaMenus: Record<string, MegaMenuData> = {
 const SiteHeader = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const { user, isAdmin, signOut } = useAuth();
+  const { language } = useLanguage();
   const location = useLocation();
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -317,7 +318,7 @@ const SiteHeader = () => {
         <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center border border-border rounded-full px-4 py-2 gap-2">
             <Search className="w-4 h-4 text-muted-foreground" />
-            <input type="text" placeholder={useLanguage().language === "fr" ? "Rechercher" : useLanguage().language === "en" ? "Search" : "搜索"} className="bg-transparent text-sm outline-none w-32 lg:w-48 text-foreground placeholder:text-muted-foreground" />
+            <input type="text" placeholder={language === "en" ? "Search" : language === "zh" ? "搜索" : "Rechercher"} className="bg-transparent text-sm outline-none w-32 lg:w-48 text-foreground placeholder:text-muted-foreground" />
           </div>
           {user ? (
             <>
