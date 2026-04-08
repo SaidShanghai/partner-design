@@ -19,6 +19,8 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [displayImage, setDisplayImage] = useState(image);
+  const [displayName, setDisplayName] = useState(name);
+  const [displayPrice, setDisplayPrice] = useState(price);
   const [uploading, setUploading] = useState(false);
   const [liked, setLiked] = useState(false);
 
@@ -114,9 +116,9 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
         </div>
         <div className="mt-3">
           <h3 className="text-sm font-medium text-foreground leading-tight line-clamp-2">
-            {name}
+            {displayName}
           </h3>
-          <p className="mt-1 text-sm font-semibold text-foreground">{price}</p>
+          <p className="mt-1 text-sm font-semibold text-foreground">{displayPrice}</p>
           {variants && (
             <p className="mt-0.5 text-xs text-muted-foreground">
               {variants} teintes
@@ -129,7 +131,11 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
       <ProductFormDialog
         open={formOpen}
         onOpenChange={setFormOpen}
-        initialData={{ name, imageUrl: displayImage }}
+        onSaved={(data) => {
+          if (data.name) setDisplayName(data.name);
+          if (data.price) setDisplayPrice(data.price);
+        }}
+        initialData={{ name: displayName, imageUrl: displayImage }}
       />
     </>
   );
