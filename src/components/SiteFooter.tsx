@@ -1,4 +1,6 @@
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, Mail, Loader2 } from "lucide-react";
+import { useLanguage, type Language } from "@/hooks/useLanguage";
+import T from "@/components/T";
 
 const SiteFooter = () => {
   return (
