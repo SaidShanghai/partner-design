@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Heart, Plus, Camera } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +20,7 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
   const [formOpen, setFormOpen] = useState(false);
   const [displayImage, setDisplayImage] = useState(image);
   const [uploading, setUploading] = useState(false);
+  const [liked, setLiked] = useState(false);
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -57,10 +58,11 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
 
           {/* Heart - top right (always visible) */}
           <button
-            className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-background/80 flex items-center justify-center hover:bg-background text-foreground hover:text-primary transition-colors shadow-sm"
+            onClick={() => setLiked((v) => !v)}
+            className={`absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-background/80 flex items-center justify-center hover:bg-background transition-colors shadow-sm ${liked ? "text-red-500" : "text-foreground hover:text-primary"}`}
             aria-label="Ajouter aux favoris"
           >
-            <Heart className="w-5 h-5" />
+            <Heart className="w-5 h-5" fill={liked ? "currentColor" : "none"} />
           </button>
 
           {/* Admin: (+) button - bottom left */}
