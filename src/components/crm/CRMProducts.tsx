@@ -127,19 +127,19 @@ const CRMProducts = () => {
       <div className="border rounded-lg overflow-x-auto">
         <Table className="[&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0 [&_th]:border-border [&_td]:border-border [&_tr]:border-b [&_tr]:border-border">
           <TableHeader>
-            <TableRow className="text-xs font-bold">
-              <TableHead className="whitespace-nowrap px-2">UNB</TableHead>
-              <TableHead className="whitespace-nowrap px-2">Nom</TableHead>
-              <TableHead className="whitespace-nowrap px-2">Cat.</TableHead>
-              <TableHead className="whitespace-nowrap px-2">Réf.</TableHead>
-              <TableHead className="whitespace-nowrap px-2">Compo.</TableHead>
-              <TableHead className="whitespace-nowrap px-2">Couleur</TableHead>
-              <TableHead className="whitespace-nowrap px-2 text-right">Larg.</TableHead>
-              <TableHead className="whitespace-nowrap px-2 text-right">Poids</TableHead>
-              <TableHead className="whitespace-nowrap px-2 text-right">Vente €</TableHead>
-              <TableHead className="whitespace-nowrap px-2 text-right">Achat ¥</TableHead>
-              <TableHead className="whitespace-nowrap px-2 text-right">Marge</TableHead>
-              <TableHead className="whitespace-nowrap px-2">Fournisseur</TableHead>
+            <TableRow className="text-xs">
+              <TableHead className="whitespace-nowrap px-2 !font-bold text-foreground">UNB</TableHead>
+              <TableHead className="whitespace-nowrap px-2 !font-bold text-foreground">Nom</TableHead>
+              <TableHead className="whitespace-nowrap px-2 !font-bold text-foreground">Cat.</TableHead>
+              <TableHead className="whitespace-nowrap px-2 !font-bold text-foreground">Réf.</TableHead>
+              <TableHead className="whitespace-nowrap px-2 !font-bold text-foreground">Compo.</TableHead>
+              <TableHead className="whitespace-nowrap px-2 !font-bold text-foreground">Couleur</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right !font-bold text-foreground">Larg.</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right !font-bold text-foreground">Poids</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right !font-bold text-foreground">Vente €</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right !font-bold text-foreground">Achat ¥</TableHead>
+              <TableHead className="whitespace-nowrap px-2 text-right !font-bold text-foreground">Marge</TableHead>
+              <TableHead className="whitespace-nowrap px-2 !font-bold text-foreground">Fournisseur</TableHead>
               <TableHead className="w-16 px-2"></TableHead>
             </TableRow>
           </TableHeader>
