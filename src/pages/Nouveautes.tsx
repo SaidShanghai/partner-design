@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Heart, ShoppingBag, ChevronDown } from "lucide-react";
+import { Heart, ShoppingBag, ChevronDown, Minus, Plus } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
