@@ -7,6 +7,7 @@ import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Coupons from "./pages/Coupons.tsx";
 import Category from "./pages/Category.tsx";
+import Nouveautes from "./pages/Nouveautes.tsx";
 
 const queryClient = new QueryClient();
 
