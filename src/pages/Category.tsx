@@ -111,11 +111,11 @@ const Category = () => {
               </button>
             ))}
             <div className="ml-auto flex items-center gap-4">
-              <span className="text-xs text-muted-foreground whitespace-nowrap">Trier par :</span>
+              <span className="text-xs text-muted-foreground whitespace-nowrap"><T>Trier par</T> :</span>
               <select className="text-xs bg-transparent text-foreground border border-border rounded px-2 py-1">
-                <option>Nouveaux produits en premier</option>
-                <option>Prix croissant</option>
-                <option>Prix décroissant</option>
+                <option><T>Nouveaux produits en premier</T></option>
+                <option><T>Prix croissant</T></option>
+                <option><T>Prix décroissant</T></option>
               </select>
             </div>
           </div>
