@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { Heart, Plus, Camera } from "lucide-react";
+import { Heart, Plus, Camera, ShoppingBag, Minus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
