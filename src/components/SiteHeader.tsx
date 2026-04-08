@@ -318,7 +318,7 @@ const SiteHeader = () => {
 
       {/* Category bar */}
       <nav
-        className="border-t border-border overflow-x-auto relative"
+        className="border-t border-border relative"
         onMouseLeave={() => setActiveMenu(null)}
       >
         <div className="container mx-auto px-4 flex items-center justify-center gap-1">
