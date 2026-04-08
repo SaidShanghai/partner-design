@@ -171,7 +171,14 @@ export const categoriesData: Record<string, CategoryData> = {
     shortDescription:
       "Le bord-côte est un tissu extensible tricoté, idéal pour les finitions de vêtements : poignets, cols, ceintures et bas de vêtements.",
     filters: ["COULEUR", "COMPOSITION", "PLUS DE FILTRES"],
-    products: [],
+    products: [
+      { image: "cat-chambray-uni", name: "Bord-côte Tubulaire Coton Bio Noir", price: "8,90 €", unit: "le mètre", badge: "Oeko-Tex Standard 100" },
+      { image: "cat-chambray-lin", name: "Bord-côte Côtelé Gris Chiné", price: "7,50 €", unit: "le mètre", variants: "8 coloris" },
+      { image: "cat-broderie-ecru", name: "Bord-côte Lurex Doré Fond Écru", price: "10,90 €", unit: "le mètre" },
+      { image: "cat-broderie-rose", name: "Bord-côte Uni Rose Dragée", price: "7,50 €", unit: "le mètre" },
+      { image: "cat-chambray-brode-floral", name: "Bord-côte Rayé Marine et Blanc", price: "9,50 €", unit: "le mètre", variants: "3 coloris" },
+      { image: "cat-broderie-marine", name: "Bord-côte Tubulaire Bleu Canard", price: "7,50 €", unit: "le mètre" },
+    ],
     seo: {
       title: "Bord-côte : Finitions Parfaites pour Vos Vêtements",
       paragraphs: [
@@ -186,7 +193,15 @@ export const categoriesData: Record<string, CategoryData> = {
     shortDescription:
       "Le tissu coton est la matière la plus utilisée en couture. Naturel, respirant et facile à coudre, il convient à tous les projets.",
     filters: ["COULEUR", "MOTIF", "GRAMMAGE", "PLUS DE FILTRES"],
-    products: [],
+    products: [
+      { image: "cat-chambray-uni", name: "Popeline de Coton Unie Blanc Optique", price: "7,90 €", unit: "le mètre", variants: "24 coloris", badge: "Oeko-Tex" },
+      { image: "cat-broderie-ecru", name: "Coton Imprimé Petites Fleurs Fond Écru", price: "9,50 €", unit: "le mètre" },
+      { image: "cat-chambray-cerises", name: "Cretonne Coton Cerises Rouge", price: "8,90 €", unit: "le mètre" },
+      { image: "cat-broderie-rose", name: "Coton Plumetis Rose Tendre", price: "10,50 €", unit: "le mètre", variants: "6 coloris" },
+      { image: "cat-chambray-brode-floral", name: "Popeline Coton Motif Cachemire Terracotta", price: "9,90 €", unit: "le mètre" },
+      { image: "cat-broderie-marine", name: "Tissu Coton Uni Marine Épais", price: "8,50 €", unit: "le mètre", variants: "18 coloris" },
+      { image: "cat-chambray-lin", name: "Coton Bio Sergé Naturel", price: "11,90 €", unit: "le mètre", badge: "GOTS Certifié" },
+    ],
     seo: {
       title: "Tissu Coton : Le Classique Indémodable",
       paragraphs: [
@@ -201,7 +216,15 @@ export const categoriesData: Record<string, CategoryData> = {
     shortDescription:
       "La double gaze est un tissu léger et aérien composé de deux couches de gaze assemblées. Douce au toucher, elle est parfaite pour les vêtements d'été et la layette.",
     filters: ["COULEUR", "MOTIF", "PLUS DE FILTRES"],
-    products: [],
+    products: [
+      { image: "cat-broderie-blanche", name: "Double Gaze Coton Blanc Cassé", price: "9,90 €", unit: "le mètre", variants: "15 coloris", badge: "Oeko-Tex" },
+      { image: "cat-broderie-rose", name: "Double Gaze Unie Rose Poudré", price: "9,90 €", unit: "le mètre" },
+      { image: "cat-chambray-cerises", name: "Double Gaze Imprimée Cerises Fond Crème", price: "11,50 €", unit: "le mètre" },
+      { image: "cat-broderie-lavande", name: "Double Gaze Plumetis Doré Fond Lilas", price: "12,50 €", unit: "le mètre" },
+      { image: "cat-chambray-uni", name: "Double Gaze Unie Vert Sauge", price: "9,90 €", unit: "le mètre", variants: "15 coloris" },
+      { image: "cat-broderie-ecru", name: "Double Gaze Bio Imprimée Feuillages Naturel", price: "12,90 €", unit: "le mètre", badge: "GOTS" },
+      { image: "cat-broderie-marine", name: "Double Gaze Unie Bleu Orage", price: "9,90 €", unit: "le mètre" },
+    ],
     seo: {
       title: "Double Gaze : Douceur et Légèreté",
       paragraphs: [
@@ -216,7 +239,14 @@ export const categoriesData: Record<string, CategoryData> = {
     shortDescription:
       "Le jersey est un tissu tricoté extensible et confortable, idéal pour les t-shirts, robes et vêtements du quotidien.",
     filters: ["COULEUR", "MOTIF", "COMPOSITION", "PLUS DE FILTRES"],
-    products: [],
+    products: [
+      { image: "cat-chambray-uni", name: "Jersey Coton Uni Noir Premium", price: "9,90 €", unit: "le mètre", variants: "22 coloris", badge: "Oeko-Tex" },
+      { image: "cat-broderie-ecru", name: "Jersey Viscose Chiné Écru", price: "11,50 €", unit: "le mètre" },
+      { image: "cat-broderie-rose", name: "Jersey Coton Bio Imprimé Fleurs des Champs Rose", price: "13,90 €", unit: "le mètre" },
+      { image: "cat-chambray-brode-floral", name: "Jersey Milano Uni Camel", price: "14,50 €", unit: "le mètre", variants: "8 coloris" },
+      { image: "cat-chambray-cerises", name: "Jersey Imprimé Léopard Fond Terracotta", price: "12,90 €", unit: "le mètre" },
+      { image: "cat-broderie-marine", name: "Jersey Maille Polo Bleu Marine", price: "12,50 €", unit: "le mètre" },
+    ],
     seo: {
       title: "Tissu Jersey : Confort et Extensibilité",
       paragraphs: [
@@ -231,7 +261,15 @@ export const categoriesData: Record<string, CategoryData> = {
     shortDescription:
       "La viscose est une fibre artificielle au tombé fluide et soyeux. Légère et agréable à porter, elle est parfaite pour les vêtements d'été.",
     filters: ["COULEUR", "MOTIF", "PLUS DE FILTRES"],
-    products: [],
+    products: [
+      { image: "cat-broderie-ecru", name: "Viscose Fluide Unie Écru Naturel", price: "9,50 €", unit: "le mètre", variants: "16 coloris" },
+      { image: "cat-chambray-brode-floral", name: "Viscose Imprimée Bouquets Champêtres Ocre", price: "12,95 €", unit: "le mètre" },
+      { image: "cat-broderie-rose", name: "Viscose Crêpée Unie Rose Ballerine", price: "10,50 €", unit: "le mètre", variants: "12 coloris" },
+      { image: "cat-chambray-cerises", name: "Viscose Imprimée Feuilles Tropicales Vert", price: "12,95 €", unit: "le mètre" },
+      { image: "cat-broderie-marine", name: "Viscose Twill Unie Bleu Nuit", price: "11,50 €", unit: "le mètre" },
+      { image: "cat-chambray-uni", name: "Viscose Satinée Imprimée Chaînes Dorées Noir", price: "13,90 €", unit: "le mètre" },
+      { image: "cat-broderie-lavande", name: "Viscose Lin Mélangée Rayures Lavande", price: "12,50 €", unit: "le mètre" },
+    ],
     seo: {
       title: "Tissu Viscose : Fluidité et Élégance",
       paragraphs: [
@@ -244,13 +282,26 @@ export const categoriesData: Record<string, CategoryData> = {
     name: "Lin",
     parentName: "Tissu Habillement",
     shortDescription:
-      "Le lin est une fibre naturelle noble, thermorégulatrice et écologique. Son froissé naturel lui donne un charme authentique.",
-    filters: ["COULEUR", "GRAMMAGE", "PLUS DE FILTRES"],
-    products: [],
+      "Le lin est une fibre naturelle noble, thermorégulatrice et écologique. Son froissé naturel lui donne un charme authentique. Idéal pour robes, pantalons, tops et chemises d'été.",
+    filters: ["COULEUR", "GRAMMAGE", "COMPOSITION", "PLUS DE FILTRES"],
+    products: [
+      { image: "cat-broderie-blanche", name: "Lin Lavé Uni Blanc Naturel", price: "14,90 €", unit: "le mètre", variants: "20 coloris", badge: "Oeko-Tex Standard 100" },
+      { image: "cat-broderie-ecru", name: "Lin Coton Mélangé Uni Écru", price: "11,90 €", unit: "le mètre", variants: "14 coloris" },
+      { image: "cat-chambray-uni", name: "Lin Lavé Uni Bleu Cobalt", price: "14,90 €", unit: "le mètre" },
+      { image: "cat-broderie-rose", name: "Lin Viscose Imprimé Floral Rose Ancien", price: "12,95 €", unit: "le mètre" },
+      { image: "cat-chambray-brode-floral", name: "Lin Lavé Uni Terracotta", price: "14,90 €", unit: "le mètre", variants: "20 coloris" },
+      { image: "cat-chambray-cerises", name: "Lin Imprimé Rayures Fines Marine et Écru", price: "13,50 €", unit: "le mètre" },
+      { image: "cat-broderie-marine", name: "Lin Pur Uni Bleu Marine Épais", price: "16,50 €", unit: "le mètre", badge: "100% Lin" },
+      { image: "cat-broderie-lavande", name: "Lin Viscose Uni Lilas Pastel", price: "12,50 €", unit: "le mètre", variants: "10 coloris" },
+      { image: "cat-chambray-lin", name: "Lin Coton Bio Uni Vert Sauge", price: "13,90 €", unit: "le mètre", badge: "GOTS" },
+      { image: "cat-broderie-noire", name: "Lin Lavé Uni Noir Profond", price: "14,90 €", unit: "le mètre" },
+    ],
     seo: {
       title: "Tissu Lin : Naturel et Authentique",
       paragraphs: [
         "Le lin est l'une des fibres les plus anciennes et les plus nobles. Thermorégulateur, il garde au frais en été et au chaud en hiver. Son aspect froissé naturel lui confère un style décontracté et élégant.",
+        "Idéal pour confectionner des robes, pantalons, chemises et tops d'été, le <strong>tissu lin</strong> se décline en pur lin, lin lavé ou mélanges lin-viscose et lin-coton pour plus de souplesse.",
+        "Retrouvez également nos <a href='/categorie/viscose' class='text-primary hover:underline'>viscoses</a> et <a href='/categorie/coton' class='text-primary hover:underline'>cotons</a> pour varier les textures dans vos projets couture.",
       ],
     },
   },
@@ -261,7 +312,14 @@ export const categoriesData: Record<string, CategoryData> = {
     shortDescription:
       "Le satin est un tissu au fini brillant et luxueux, parfait pour les créations habillées, la lingerie et les doublures.",
     filters: ["COULEUR", "COMPOSITION", "PLUS DE FILTRES"],
-    products: [],
+    products: [
+      { image: "cat-broderie-blanche", name: "Satin Duchesse Uni Ivoire", price: "12,90 €", unit: "le mètre", variants: "15 coloris" },
+      { image: "cat-broderie-noire", name: "Satin de Coton Uni Noir", price: "11,50 €", unit: "le mètre", badge: "Oeko-Tex" },
+      { image: "cat-broderie-rose", name: "Satin Crêpe Back Uni Rose Poudré", price: "13,90 €", unit: "le mètre" },
+      { image: "cat-broderie-marine", name: "Satin Fluide Uni Bleu Royal", price: "10,90 €", unit: "le mètre", variants: "20 coloris" },
+      { image: "cat-chambray-brode-floral", name: "Satin Imprimé Floral Aquarelle Pastel", price: "14,90 €", unit: "le mètre" },
+      { image: "cat-broderie-ecru", name: "Satin de Soie Mélangée Champagne", price: "18,90 €", unit: "le mètre" },
+    ],
     seo: {
       title: "Tissu Satin : Brillance et Luxe",
       paragraphs: [
