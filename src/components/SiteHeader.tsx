@@ -299,14 +299,16 @@ const SiteHeader = () => {
       </div>
 
       {/* Category bar */}
-      <nav className="border-t border-border overflow-x-auto relative">
+      <nav
+        className="border-t border-border overflow-x-auto relative"
+        onMouseLeave={() => setActiveMenu(null)}
+      >
         <div className="container mx-auto px-4 flex items-center justify-center gap-1">
           {categories.map((cat) => (
             <div
               key={cat}
               className="relative"
-              onMouseEnter={() => megaMenus[cat] && setActiveMenu(cat)}
-              onMouseLeave={() => megaMenus[cat] && setActiveMenu(null)}
+              onMouseEnter={() => megaMenus[cat] ? setActiveMenu(cat) : setActiveMenu(null)}
             >
               <a
                 href="#"
@@ -316,16 +318,15 @@ const SiteHeader = () => {
               >
                 {cat}
               </a>
-
-              {activeMenu === cat && megaMenus[cat] && (
-                <MegaMenu data={megaMenus[cat]} onClose={() => setActiveMenu(null)} />
-              )}
             </div>
           ))}
           <a href="/coupons" className="px-3 py-3 text-xs font-semibold tracking-wider text-primary whitespace-nowrap">
             COUPONS À -20%
           </a>
         </div>
+        {activeMenu && megaMenus[activeMenu] && (
+          <MegaMenu data={megaMenus[activeMenu]} onClose={() => setActiveMenu(null)} />
+        )}
       </nav>
     </header>
   );
