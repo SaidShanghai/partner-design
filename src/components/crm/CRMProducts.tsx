@@ -135,7 +135,7 @@ const CRMProducts = () => {
               <TableHead className="whitespace-nowrap">Composition</TableHead>
               <TableHead className="whitespace-nowrap">Couleur</TableHead>
               <TableHead className="whitespace-nowrap text-right">Largeur (cm)</TableHead>
-              <TableHead className="whitespace-nowrap text-right">Grammage (g/m²)</TableHead>
+              <TableHead className="whitespace-nowrap text-right">Poids (g/m²)</TableHead>
               <TableHead className="whitespace-nowrap text-right">Prix vente</TableHead>
               <TableHead className="whitespace-nowrap text-right">Prix achat (¥)</TableHead>
               <TableHead className="whitespace-nowrap text-right">Marge</TableHead>
