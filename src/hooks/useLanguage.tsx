@@ -96,9 +96,15 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     const cached = translationCache[lang] || {};
     setTranslations({ ...cached });
 
-    // Re-register all visible texts after a tick
+    // Clear pending so components re-register on the next render cycle
     pendingTexts.current.clear();
-  }, []);
+    if (batchTimer.current) clearTimeout(batchTimer.current);
+
+    // Schedule a flush after components have re-registered
+    batchTimer.current = setTimeout(() => {
+      flushBatch(lang);
+    }, 250);
+  }, [flushBatch]);
 
   const registerText = useCallback((text: string) => {
     if (language === "fr") return;
