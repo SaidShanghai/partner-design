@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
-
+import { Link } from "react-router-dom";
+import { toSlug } from "@/data/categories";
 export interface MegaMenuColumn {
   title: string;
   items: string[];
@@ -55,9 +56,12 @@ const MegaMenu = ({ data }: MegaMenuProps) => {
               <ul className="space-y-1.5">
                 {col.items.map((item) => (
                   <li key={item}>
-                    <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    <Link
+                      to={`/categorie/${toSlug(item)}`}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
                       {item}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
