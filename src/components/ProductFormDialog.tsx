@@ -81,6 +81,7 @@ const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialo
       color: form.color || null,
       category: form.category || null,
       image_url: form.image_url || null,
+      unb,
     });
 
     if (error) {
