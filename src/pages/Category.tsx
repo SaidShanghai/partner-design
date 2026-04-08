@@ -6,6 +6,7 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
 import CategoryProductCard from "@/components/CategoryProductCard";
 import ProductFormDialog from "@/components/ProductFormDialog";
+import T from "@/components/T";
 import { useAuth } from "@/hooks/useAuth";
 import { categoriesData, type CategoryData } from "@/data/categories";
 
@@ -54,10 +55,10 @@ const Category = () => {
         <AnnouncementBar />
         <SiteHeader />
         <main className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Catégorie introuvable</h1>
-          <p className="text-muted-foreground mb-6">Cette catégorie n'existe pas encore.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4"><T>Catégorie introuvable</T></h1>
+          <p className="text-muted-foreground mb-6"><T>Cette catégorie n'existe pas encore.</T></p>
           <Link to="/" className="text-primary hover:underline">
-            ← Retour à l'accueil
+            ← <T>Retour à l'accueil</T>
           </Link>
         </main>
         <SiteFooter />
@@ -73,17 +74,17 @@ const Category = () => {
       <main className="container mx-auto px-4 py-8">
         <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-8">
           <Link to="/" className="hover:text-foreground transition-colors">
-            Accueil
+            <T>Accueil</T>
           </Link>
           <span>/</span>
-          <span className="hover:text-foreground transition-colors cursor-pointer">{category.parentName}</span>
+          <span className="hover:text-foreground transition-colors cursor-pointer"><T>{category.parentName}</T></span>
         </nav>
 
         <div className="text-center mb-10 max-w-3xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight uppercase mb-4">
-            {category.name}
+            <T>{category.name}</T>
           </h1>
-          <p className="text-sm text-muted-foreground leading-relaxed">{category.shortDescription}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed"><T>{category.shortDescription}</T></p>
         </div>
 
         {category.filters && (
@@ -93,7 +94,7 @@ const Category = () => {
                 key={filter}
                 className="flex items-center gap-1 text-xs font-semibold tracking-wider text-foreground hover:text-primary transition-colors whitespace-nowrap"
               >
-                {filter}
+                <T>{filter}</T>
                 <ChevronDown className="w-3 h-3" />
               </button>
             ))}
@@ -125,14 +126,14 @@ const Category = () => {
           </div>
         ) : (
           <div className="text-center py-16">
-            <p className="text-muted-foreground mb-6">Les produits arrivent bientôt !</p>
+            <p className="text-muted-foreground mb-6"><T>Les produits arrivent bientôt !</T></p>
             {isAdmin && (
               <button
                 onClick={() => setFormOpen(true)}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm"
               >
                 <Plus className="w-5 h-5" />
-                Ajouter un produit
+                <T>Ajouter un produit</T>
               </button>
             )}
           </div>
@@ -146,15 +147,15 @@ const Category = () => {
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-dashed border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors"
             >
               <Plus className="w-4 h-4" />
-              Ajouter un produit
+              <T>Ajouter un produit</T>
             </button>
           </div>
         )}
 
         <div className="mt-12 bg-primary text-primary-foreground rounded-lg p-8 max-w-md">
-          <h2 className="text-xl font-bold uppercase">Arrivage quotidien, coup de cœur assuré !</h2>
+          <h2 className="text-xl font-bold uppercase"><T>Arrivage quotidien, coup de cœur assuré !</T></h2>
           <Link to="/" className="mt-3 inline-block text-sm underline">
-            Je m'inspire →
+            <T>Je m'inspire</T> →
           </Link>
         </div>
 

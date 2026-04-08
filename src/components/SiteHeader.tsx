@@ -2,6 +2,8 @@ import { Search, User, Heart, ShoppingBag, LogOut, Shield } from "lucide-react";
 import { useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
+import T from "@/components/T";
 import MegaMenu, { type MegaMenuData } from "./MegaMenu";
 import sangleImg from "@/assets/mercerie-sangle.jpg";
 import fermeturesImg from "@/assets/mercerie-fermetures.jpg";
@@ -273,6 +275,7 @@ const megaMenus: Record<string, MegaMenuData> = {
 const SiteHeader = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const { user, isAdmin, signOut } = useAuth();
+  const { language } = useLanguage();
   const location = useLocation();
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -303,7 +306,7 @@ const SiteHeader = () => {
         <nav className="hidden lg:flex items-center gap-6">
           {navLinks.map((link) => (
             <a key={link} href="#" className="text-sm text-foreground hover:text-primary transition-colors">
-              {link}
+              <T>{link}</T>
             </a>
           ))}
         </nav>
@@ -315,7 +318,7 @@ const SiteHeader = () => {
         <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center border border-border rounded-full px-4 py-2 gap-2">
             <Search className="w-4 h-4 text-muted-foreground" />
-            <input type="text" placeholder="Rechercher" className="bg-transparent text-sm outline-none w-32 lg:w-48 text-foreground placeholder:text-muted-foreground" />
+            <input type="text" placeholder={language === "en" ? "Search" : language === "zh" ? "搜索" : "Rechercher"} className="bg-transparent text-sm outline-none w-32 lg:w-48 text-foreground placeholder:text-muted-foreground" />
           </div>
           {user ? (
             <>
