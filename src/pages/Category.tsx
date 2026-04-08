@@ -153,9 +153,9 @@ const Category = () => {
         )}
 
         <div className="mt-12 bg-primary text-primary-foreground rounded-lg p-8 max-w-md">
-          <h2 className="text-xl font-bold uppercase">Arrivage quotidien, coup de cœur assuré !</h2>
+          <h2 className="text-xl font-bold uppercase"><T>Arrivage quotidien, coup de cœur assuré !</T></h2>
           <Link to="/" className="mt-3 inline-block text-sm underline">
-            Je m'inspire →
+            <T>Je m'inspire</T> →
           </Link>
         </div>
 
