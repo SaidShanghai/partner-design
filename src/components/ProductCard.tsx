@@ -19,6 +19,8 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [displayImage, setDisplayImage] = useState(image);
+  const [displayName, setDisplayName] = useState(name);
+  const [displayPrice, setDisplayPrice] = useState(price);
   const [uploading, setUploading] = useState(false);
   const [liked, setLiked] = useState(false);
 
