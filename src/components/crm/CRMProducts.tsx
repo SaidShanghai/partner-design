@@ -1,29 +1,108 @@
-import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Search, Pencil, X, Check } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const CRMProducts = () => {
   const [search, setSearch] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValues, setEditValues] = useState<Record<string, string>>({});
+  const queryClient = useQueryClient();
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["crm-products"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("*, product_pricing(buy_price, sell_price, margin, suppliers(company_name))")
+        .select("*, product_pricing(id, buy_price, sell_price, margin, supplier_id, suppliers(company_name))")
         .order("name");
       if (error) throw error;
       return data;
     },
   });
 
+  const updateProduct = useMutation({
+    mutationFn: async ({ id, values, pricingId }: { id: string; values: Record<string, string>; pricingId?: string }) => {
+      // Update product fields
+      const { error: prodErr } = await supabase.from("products").update({
+        name: values.name || undefined,
+        category: values.category || null,
+        reference: values.reference || null,
+        composition: values.composition || null,
+        color: values.color || null,
+        price: values.sellPrice ? Number(values.sellPrice) : null,
+        width_cm: values.width ? Number(values.width) : null,
+        weight_gsm: values.weight ? Number(values.weight) : null,
+      }).eq("id", id);
+      if (prodErr) throw prodErr;
+
+      // Update or create pricing
+      const buyPrice = Number(values.buyPrice) || 0;
+      const sellPrice = Number(values.sellPrice) || 0;
+      const margin = sellPrice - buyPrice;
+
+      if (pricingId) {
+        const { error } = await supabase.from("product_pricing").update({
+          buy_price: buyPrice,
+          sell_price: sellPrice,
+          margin,
+        }).eq("id", pricingId);
+        if (error) throw error;
+      } else if (buyPrice > 0 || sellPrice > 0) {
+        const { error } = await supabase.from("product_pricing").insert({
+          product_id: id,
+          buy_price: buyPrice,
+          sell_price: sellPrice,
+          margin,
+        });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crm-products"] });
+      toast.success("Produit mis à jour");
+      setEditingId(null);
+    },
+    onError: () => toast.error("Erreur lors de la mise à jour"),
+  });
+
+  const startEdit = (p: any) => {
+    const pricing = p.product_pricing?.[0];
+    setEditingId(p.id);
+    setEditValues({
+      name: p.name || "",
+      category: p.category || "",
+      reference: p.reference || "",
+      composition: p.composition || "",
+      color: p.color || "",
+      sellPrice: p.price ? String(p.price) : pricing ? String(pricing.sell_price) : "",
+      buyPrice: pricing ? String(pricing.buy_price) : "",
+      width: p.width_cm ? String(p.width_cm) : "",
+      weight: p.weight_gsm ? String(p.weight_gsm) : "",
+    });
+  };
+
+  const saveEdit = (p: any) => {
+    const pricingId = p.product_pricing?.[0]?.id;
+    updateProduct.mutate({ id: p.id, values: editValues, pricingId });
+  };
+
   const filtered = products.filter((p: any) =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     (p.reference || "").toLowerCase().includes(search.toLowerCase()) ||
     (p.unb || "").includes(search)
+  );
+
+  const EditInput = ({ field, className = "w-full" }: { field: string; className?: string }) => (
+    <Input
+      value={editValues[field] || ""}
+      onChange={(e) => setEditValues((v) => ({ ...v, [field]: e.target.value }))}
+      className={`h-7 text-sm ${className}`}
+    />
   );
 
   return (
@@ -33,14 +112,19 @@ const CRMProducts = () => {
         <Input placeholder="Rechercher par nom, ref, UNB..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-10"></TableHead>
               <TableHead>UNB</TableHead>
               <TableHead>Nom</TableHead>
               <TableHead>Catégorie</TableHead>
               <TableHead>Référence</TableHead>
+              <TableHead>Composition</TableHead>
+              <TableHead>Couleur</TableHead>
+              <TableHead className="text-right">Largeur (cm)</TableHead>
+              <TableHead className="text-right">Grammage (g/m²)</TableHead>
               <TableHead className="text-right">Prix vente</TableHead>
               <TableHead className="text-right">Prix achat</TableHead>
               <TableHead className="text-right">Marge</TableHead>
@@ -49,19 +133,41 @@ const CRMProducts = () => {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Chargement...</TableCell></TableRow>
+              <TableRow><TableCell colSpan={13} className="text-center text-muted-foreground py-8">Chargement...</TableCell></TableRow>
             ) : filtered.length === 0 ? (
-              <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Aucun produit</TableCell></TableRow>
+              <TableRow><TableCell colSpan={13} className="text-center text-muted-foreground py-8">Aucun produit</TableCell></TableRow>
             ) : filtered.map((p: any) => {
               const pricing = p.product_pricing?.[0];
+              const isEditing = editingId === p.id;
+
               return (
-                <TableRow key={p.id}>
+                <TableRow key={p.id} className={isEditing ? "bg-accent/30" : ""}>
+                  <TableCell>
+                    {isEditing ? (
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => saveEdit(p)} disabled={updateProduct.isPending}>
+                          <Check className="w-3.5 h-3.5 text-green-600" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditingId(null)}>
+                          <X className="w-3.5 h-3.5 text-destructive" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => startEdit(p)}>
+                        <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+                      </Button>
+                    )}
+                  </TableCell>
                   <TableCell className="font-mono text-xs">{p.unb || "—"}</TableCell>
-                  <TableCell className="font-medium">{p.name}</TableCell>
-                  <TableCell className="text-sm">{p.category || "—"}</TableCell>
-                  <TableCell className="text-sm">{p.reference || "—"}</TableCell>
-                  <TableCell className="text-right">{p.price ? `${Number(p.price).toFixed(2)} €` : pricing ? `${Number(pricing.sell_price).toFixed(2)} €` : "—"}</TableCell>
-                  <TableCell className="text-right">{pricing ? `${Number(pricing.buy_price).toFixed(2)} €` : "—"}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="name" /> : <span className="font-medium">{p.name}</span>}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="category" /> : <span className="text-sm">{p.category || "—"}</span>}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="reference" /> : <span className="text-sm">{p.reference || "—"}</span>}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="composition" /> : <span className="text-sm">{p.composition || "—"}</span>}</TableCell>
+                  <TableCell>{isEditing ? <EditInput field="color" /> : <span className="text-sm">{p.color || "—"}</span>}</TableCell>
+                  <TableCell className="text-right">{isEditing ? <EditInput field="width" className="w-20 ml-auto" /> : (p.width_cm || "—")}</TableCell>
+                  <TableCell className="text-right">{isEditing ? <EditInput field="weight" className="w-20 ml-auto" /> : (p.weight_gsm || "—")}</TableCell>
+                  <TableCell className="text-right">{isEditing ? <EditInput field="sellPrice" className="w-20 ml-auto" /> : (p.price ? `${Number(p.price).toFixed(2)} €` : pricing ? `${Number(pricing.sell_price).toFixed(2)} €` : "—")}</TableCell>
+                  <TableCell className="text-right">{isEditing ? <EditInput field="buyPrice" className="w-20 ml-auto" /> : (pricing ? `${Number(pricing.buy_price).toFixed(2)} €` : "—")}</TableCell>
                   <TableCell className="text-right font-medium">{pricing ? <span className={Number(pricing.margin) > 0 ? "text-green-600" : "text-destructive"}>{Number(pricing.margin).toFixed(2)} €</span> : "—"}</TableCell>
                   <TableCell className="text-sm">{pricing?.suppliers?.company_name || "—"}</TableCell>
                 </TableRow>
