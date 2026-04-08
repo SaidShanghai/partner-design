@@ -20,6 +20,7 @@ interface ProductFormDialogProps {
 const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialogProps) => {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const [unb, setUnb] = useState("");
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -35,6 +36,11 @@ const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialo
 
   useEffect(() => {
     if (!open) return;
+
+    // Generate UNB
+    const ts = Date.now().toString(36).toUpperCase();
+    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+    setUnb(`UNB-${ts}-${rand}`);
 
     setForm({
       name: initialData?.name ?? "",
@@ -75,6 +81,7 @@ const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialo
       color: form.color || null,
       category: form.category || null,
       image_url: form.image_url || null,
+      unb,
     });
 
     if (error) {
@@ -99,6 +106,11 @@ const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialo
 
         <div className="space-y-4 pt-2">
           <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 space-y-1.5">
+              <Label>UNB (identifiant unique)</Label>
+              <Input value={unb} readOnly className="bg-muted font-mono text-sm" />
+            </div>
+
             <div className="col-span-2 space-y-1.5">
               <Label htmlFor="pf-name">Nom *</Label>
               <Input id="pf-name" value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="Nom du tissu" />

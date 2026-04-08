@@ -26,6 +26,7 @@ export type Database = {
           name: string
           price: number | null
           reference: string | null
+          unb: string | null
           updated_at: string
           weight_gsm: number | null
           width_cm: number | null
@@ -41,6 +42,7 @@ export type Database = {
           name?: string
           price?: number | null
           reference?: string | null
+          unb?: string | null
           updated_at?: string
           weight_gsm?: number | null
           width_cm?: number | null
@@ -56,6 +58,7 @@ export type Database = {
           name?: string
           price?: number | null
           reference?: string | null
+          unb?: string | null
           updated_at?: string
           weight_gsm?: number | null
           width_cm?: number | null
