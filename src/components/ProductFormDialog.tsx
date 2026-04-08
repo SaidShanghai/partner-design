@@ -20,6 +20,7 @@ interface ProductFormDialogProps {
 const ProductFormDialog = ({ open, onOpenChange, initialData }: ProductFormDialogProps) => {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const [unb, setUnb] = useState("");
   const [form, setForm] = useState({
     name: "",
     description: "",
