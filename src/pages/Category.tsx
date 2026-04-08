@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ChevronDown, Plus } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
@@ -8,7 +8,19 @@ import CategoryProductCard from "@/components/CategoryProductCard";
 import ProductFormDialog from "@/components/ProductFormDialog";
 import T from "@/components/T";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { categoriesData, type CategoryData } from "@/data/categories";
+
+/** Translates an HTML string while preserving tags */
+const TranslatedHtml = ({ html, className }: { html: string; className?: string }) => {
+  const { translate, registerText, language } = useLanguage();
+  useEffect(() => {
+    if (language !== "fr" && html) {
+      registerText(html);
+    }
+  }, [html, language, registerText]);
+  return <p className={className} dangerouslySetInnerHTML={{ __html: translate(html) }} />;
+};
 
 const imageModules = import.meta.glob("@/assets/cat-*.jpg", { eager: true, import: "default" }) as Record<string, string>;
 
@@ -164,14 +176,14 @@ const Category = () => {
             className="text-2xl md:text-3xl mb-6 text-foreground"
             style={{ fontFamily: "'Dancing Script', cursive", fontStyle: "italic" }}
           >
-            {category.seo.title}
+            <T>{category.seo.title}</T>
           </h2>
           <div className="space-y-4">
             {category.seo.paragraphs.map((paragraph, index) => (
-              <p
+              <TranslatedHtml
                 key={index}
+                html={paragraph}
                 className="text-sm text-muted-foreground leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: paragraph }}
               />
             ))}
           </div>
