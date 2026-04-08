@@ -139,7 +139,7 @@ const megaMenus: Record<string, MegaMenuData> = {
       },
       {
         title: "Imprimés",
-        items: ["Tissu Disney© Marvel", "Tissu Harry Potter au mètre", "Voir tous les imprimés"],
+        items: ["Tissu Harry Potter au mètre", "Voir tous les imprimés"],
       },
       {
         title: "Spectacles et déguisements",
