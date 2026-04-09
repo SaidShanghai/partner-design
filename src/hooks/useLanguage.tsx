@@ -131,6 +131,14 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, translate, registerText, isTranslating }}>
+      {isTranslating && (
+        <div className="fixed inset-0 z-[9999] bg-background/80 backdrop-blur-sm flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-muted-foreground">Traduction en cours…</p>
+          </div>
+        </div>
+      )}
       {children}
     </LanguageContext.Provider>
   );
