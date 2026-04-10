@@ -3,6 +3,7 @@ import { useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useCart } from "@/hooks/useCart";
 import T from "@/components/T";
 import MegaMenu, { type MegaMenuData } from "./MegaMenu";
 import sangleImg from "@/assets/mercerie-sangle.jpg";
@@ -276,6 +277,7 @@ const SiteHeader = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const { user, isAdmin, signOut } = useAuth();
   const { language } = useLanguage();
+  const { totalItems } = useCart();
   const location = useLocation();
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -337,7 +339,14 @@ const SiteHeader = () => {
             </Link>
           )}
           <button className="p-2 hover:text-primary transition-colors" aria-label="Favoris"><Heart className="w-5 h-5" /></button>
-          <button className="p-2 hover:text-primary transition-colors" aria-label="Panier"><ShoppingBag className="w-5 h-5" /></button>
+          <Link to="/panier" className="p-2 hover:text-primary transition-colors relative" aria-label="Panier">
+            <ShoppingBag className="w-5 h-5" />
+            {totalItems > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
 
