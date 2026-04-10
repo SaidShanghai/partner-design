@@ -1,20 +1,24 @@
 import { useState, useRef, useCallback } from "react";
 import { Heart, Plus, Camera, ShoppingBag, Minus, Check } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ProductFormDialog from "./ProductFormDialog";
 
 interface ProductCardProps {
+  id?: string;
   image: string;
   name: string;
   price: string;
+  numericPrice?: number;
   isNew?: boolean;
   variants?: number;
 }
 
-const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCardProps) => {
+const ProductCard = ({ id, image, name, price, numericPrice, isNew = true, variants }: ProductCardProps) => {
   const { isAdmin } = useAuth();
+  const { addToCart } = useCart();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formOpen, setFormOpen] = useState(false);
@@ -148,8 +152,12 @@ const ProductCard = ({ image, name, price, isNew = true, variants }: ProductCard
               <Plus className="w-4 h-4" />
             </button>
             <button
-              onClick={() => {
-                toast({ title: "Ajouté au panier", description: `${displayName} — ${(metrage * 0.5).toFixed(2)} m` });
+              onClick={async () => {
+                if (id && numericPrice) {
+                  await addToCart(id, metrage * 0.5, numericPrice);
+                } else {
+                  toast({ title: "Ajouté au panier", description: `${displayName} — ${(metrage * 0.5).toFixed(2)} m` });
+                }
                 setShowMetrage(false);
                 setMetrage(1);
               }}
