@@ -88,7 +88,10 @@ const Login = () => {
     });
 
     if (error) {
-      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+      const msg = error.message.includes("weak")
+        ? "Ce mot de passe est trop courant. Veuillez en choisir un autre."
+        : error.message;
+      toast({ title: "Erreur", description: msg, variant: "destructive" });
     } else {
       toast({
         title: "Compte créé",
