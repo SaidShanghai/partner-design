@@ -1,134 +1,45 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Heart, ShoppingBag, ChevronDown, Minus, Plus, Check } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import SiteHeader from "@/components/SiteHeader";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
+import ProductCard from "@/components/ProductCard";
 import T from "@/components/T";
 
-import nouveaute1 from "@/assets/nouveaute-1.jpg";
-import nouveaute2 from "@/assets/nouveaute-2.jpg";
-import nouveaute3 from "@/assets/nouveaute-3.jpg";
-import nouveaute4 from "@/assets/nouveaute-4.jpg";
-import nouveaute5 from "@/assets/nouveaute-5.jpg";
-import nouveaute6 from "@/assets/nouveaute-6.jpg";
+const imageModules = import.meta.glob("@/assets/*.jpg", { eager: true, import: "default" }) as Record<string, string>;
 
-const products = [
-  {
-    image: nouveaute1,
-    name: "Tissu Coton Léger Indien Jaune Fleuri Rose",
-    price: "9,95 €",
-    unit: "le mètre",
-  },
-  {
-    image: nouveaute2,
-    name: "Tissu Matelassé Coton Indien Jaune Motif Fleuri Rose",
-    price: "17,95 €",
-    unit: "le mètre",
-  },
-  {
-    image: nouveaute3,
-    name: "Tissu Coton Léger Indien à Rayures Bleues et Roses",
-    price: "9,95 €",
-    unit: "le mètre",
-  },
-  {
-    image: nouveaute4,
-    name: "Tissu Coton Léger Indien Rose Bonbon Motif Floral Jaune",
-    price: "9,95 €",
-    unit: "le mètre",
-  },
-  {
-    image: nouveaute5,
-    name: "Tissu Matelassé Coton Indien Rose Bonbon Motif Floral Jaune",
-    price: "17,95 €",
-    unit: "le mètre",
-  },
-  {
-    image: nouveaute6,
-    name: "Tissu Viscose Vert Émeraude Motif Libellules Dorées",
-    price: "12,50 €",
-    unit: "le mètre",
-  },
-];
+function resolveImage(imageUrl: string | null): string {
+  if (!imageUrl) return "/placeholder.svg";
+  if (imageUrl.startsWith("http")) return imageUrl;
+  const match = Object.entries(imageModules).find(([path]) => imageUrl.includes(path.split("/assets/")[1] || "___"));
+  return match ? match[1] : "/placeholder.svg";
+}
 
 const filters = ["COULEUR", "MOTIF", "FABRICANTS", "PLUS DE FILTRES"];
 
-const NouveauteCard = ({ product, idx }: { product: typeof products[0]; idx: number }) => {
-  const [liked, setLiked] = useState(false);
-  const [showMetrage, setShowMetrage] = useState(false);
-  const [metrage, setMetrage] = useState(1);
-
-  return (
-    <div className="group cursor-pointer">
-      <div className="relative aspect-square rounded-lg overflow-hidden mb-3 bg-accent/20">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          loading={idx < 5 ? undefined : "lazy"}
-          width={640}
-          height={640}
-        />
-        <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded">
-          NOUVEAUTÉ
-        </span>
-        <button
-          onClick={() => setLiked((v) => !v)}
-          className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-sm ${liked ? "bg-background text-red-500" : "bg-background/80 text-foreground hover:text-primary"}`}
-        >
-          <Heart className="w-4 h-4" fill={liked ? "currentColor" : "none"} />
-        </button>
-        <button
-          onClick={(e) => { e.stopPropagation(); setShowMetrage((v) => !v); }}
-          className="absolute bottom-2 right-2 z-10 w-10 h-10 bg-background rounded-full flex items-center justify-center shadow-md border border-border text-foreground hover:text-primary hover:border-primary transition-colors"
-        >
-          <ShoppingBag className="w-5 h-5" />
-        </button>
-      </div>
-
-      {showMetrage && (
-        <div className="mb-2 flex items-center justify-center gap-0 rounded-full border border-border bg-background shadow-sm overflow-hidden">
-          <button onClick={() => setMetrage((v) => Math.max(1, v - 1))} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
-            <Minus className="w-4 h-4" />
-          </button>
-          <span className="px-4 py-2 text-sm font-medium text-foreground min-w-[80px] text-center">
-            {(metrage * 0.5).toFixed(2)} m
-          </span>
-          <button onClick={() => setMetrage((v) => v + 1)} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
-            <Plus className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => { setShowMetrage(false); setMetrage(1); }}
-            className="px-3 py-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            aria-label="Valider"
-          >
-            <Check className="w-4 h-4" />
-          </button>
-        </div>
-      )}
-
-      <h3 className="text-xs font-medium text-foreground leading-tight mb-1 line-clamp-2">
-        {product.name}
-      </h3>
-      <div className="flex items-baseline gap-1">
-        <span className="text-sm font-bold text-foreground">{product.price}</span>
-        {product.unit && (
-          <span className="text-[10px] text-muted-foreground">{product.unit}</span>
-        )}
-      </div>
-    </div>
-  );
-};
-
 const Nouveautes = () => {
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["products-nouveautes"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("id, name, price, image_url, category")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <AnnouncementBar />
       <SiteHeader />
 
       <main className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-8">
           <Link to="/" className="hover:text-foreground transition-colors"><T>Accueil</T></Link>
         </nav>
@@ -138,7 +49,7 @@ const Nouveautes = () => {
             <T>Nouveautés Tissus et Mercerie</T>
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            <T>Découvrez les nouveautés Textile Partner : une sélection de tissus tendance, mercerie créative et accessoires couture pour vos projets du moment. De nouvelles matières, couleurs et idées arrivent chaque saison pour vous inspirer vos créations !</T>
+            <T>Découvrez les nouveautés Textile Partner : une sélection de tissus tendance, mercerie créative et accessoires couture pour vos projets du moment.</T>
           </p>
         </div>
 
@@ -157,20 +68,34 @@ const Nouveautes = () => {
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground">Trier par :</span>
             <select className="text-xs border border-border rounded px-3 py-1.5 bg-background text-foreground">
-              <option>Pertinence, ordre inverse</option>
+              <option>Nouveaux produits en premier</option>
               <option>Prix croissant</option>
               <option>Prix décroissant</option>
-              <option>Nouveaux produits en premier</option>
             </select>
           </div>
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-16">
-          {products.map((product, idx) => (
-            <NouveauteCard key={idx} product={product} idx={idx} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-16">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="aspect-square bg-accent/30 rounded-sm animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-16">
+            {(products || []).map((product) => (
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                image={resolveImage(product.image_url)}
+                name={product.name}
+                price={`${(product.price ?? 0).toFixed(2).replace(".", ",")} €`}
+                numericPrice={product.price ?? 0}
+              />
+            ))}
+          </div>
+        )}
 
         {/* SEO block */}
         <div className="max-w-4xl mx-auto mb-16">
@@ -180,10 +105,10 @@ const Nouveautes = () => {
             </h2>
             <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
               <p>
-                <T>Retrouvez chaque semaine de nouveaux tissus et accessoires de mercerie soigneusement sélectionnés pour vous. Cotons imprimés, viscoses fluides, matelassés originaux… notre catalogue s'enrichit au fil des saisons.</T>
+                <T>Retrouvez chaque semaine de nouveaux tissus et accessoires de mercerie soigneusement sélectionnés pour vous.</T>
               </p>
               <p>
-                <T>Que vous cherchiez un tissu pour une robe d'été, un projet de couture pour enfant ou des fournitures de mercerie créative, nos nouveautés vous offrent un large choix de matières, couleurs et motifs tendance.</T>
+                <T>Que vous cherchiez un tissu pour une robe d'été, un projet de couture pour enfant ou des fournitures de mercerie créative, nos nouveautés vous offrent un large choix.</T>
               </p>
             </div>
           </div>

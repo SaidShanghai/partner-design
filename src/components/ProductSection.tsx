@@ -1,25 +1,34 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "./ProductCard";
 import T from "@/components/T";
-import product1 from "@/assets/product-1.jpg";
-import product2 from "@/assets/product-2.jpg";
-import product3 from "@/assets/product-3.jpg";
-import product4 from "@/assets/product-4.jpg";
-import product5 from "@/assets/product-5.jpg";
-import product6 from "@/assets/product-6.jpg";
-import product7 from "@/assets/product-7.jpg";
 
-const products = [
-  { image: product1, name: "Coton Fleuri Multicolore Fond Crème", price: "7,90 €" },
-  { image: product2, name: "Tissu Matelassé Talullah Noir et Or", price: "18,90 €" },
-  { image: product3, name: "Tissu Coton Motif Fleuri Bleu & Orange", price: "7,90 €" },
-  { image: product4, name: "Popeline Imprimée Ethnique Fond Lin", price: "8,90 €" },
-  { image: product5, name: "Viscose Imprimée Savane Fond Camel", price: "8,90 €" },
-  { image: product6, name: "Popeline Vintage Roses Fond Crème", price: "9,30 €", variants: 4 },
-  { image: product7, name: "Double Gaze Unie Rose Poudré", price: "6,50 €", variants: 12 },
-  { image: product1, name: "Coton Imprimé Bohème Terracotta", price: "8,50 €" },
-];
+// Static fallback images for when DB image_url is a local asset path
+const imageModules = import.meta.glob("@/assets/*.jpg", { eager: true, import: "default" }) as Record<string, string>;
+
+function resolveImage(imageUrl: string | null): string {
+  if (!imageUrl) return "/placeholder.svg";
+  // If it's a full URL (Supabase storage), use directly
+  if (imageUrl.startsWith("http")) return imageUrl;
+  // If it's a local asset path like /src/assets/xxx.jpg, resolve via glob
+  const match = Object.entries(imageModules).find(([path]) => imageUrl.includes(path.split("/assets/")[1] || "___"));
+  return match ? match[1] : "/placeholder.svg";
+}
 
 const ProductSection = () => {
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["products-home"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("id, name, price, image_url, category")
+        .order("created_at", { ascending: false })
+        .limit(8);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <section className="container mx-auto px-4 py-12">
       <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-2">
@@ -31,18 +40,33 @@ const ProductSection = () => {
           <T>Nos dernières pépites tissus</T>
         </h3>
         <a
-          href="#"
+          href="/nouveautes"
           className="text-sm text-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
         >
           <T>Explorez nos nouveaux tissus</T> ✨ 😍 <span className="text-xs">↗</span>
         </a>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        {products.map((product, i) => (
-          <ProductCard key={i} {...product} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="aspect-square bg-accent/30 rounded-sm animate-pulse" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          {(products || []).map((product) => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              image={resolveImage(product.image_url)}
+              name={product.name}
+              price={`${(product.price ?? 0).toFixed(2).replace(".", ",")} €`}
+              numericPrice={product.price ?? 0}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };
