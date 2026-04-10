@@ -512,6 +512,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      find_or_create_product: {
+        Args: {
+          _category?: string
+          _image_url?: string
+          _name: string
+          _price: number
+        }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
