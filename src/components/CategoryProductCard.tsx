@@ -61,38 +61,21 @@ const CategoryProductCard = ({
 
     setAddingToCart(true);
     try {
-      // Find or create product in DB by name
-      let { data: existing } = await supabase
-        .from("products")
-        .select("id, price")
-        .eq("name", displayName)
-        .maybeSingle();
+      // Use RPC to find or create product (works for non-admin users)
+      const { data: productId, error: rpcErr } = await supabase.rpc("find_or_create_product", {
+        _name: displayName,
+        _price: numPrice,
+        _image_url: displayImage || null,
+        _category: categoryName || null,
+      });
 
-      let productId = existing?.id;
-      let productPrice = existing?.price ?? numPrice;
-
-      if (!productId) {
-        const { data: created, error: createErr } = await supabase
-          .from("products")
-          .insert({
-            name: displayName,
-            price: numPrice,
-            image_url: displayImage,
-            category: categoryName || null,
-          })
-          .select("id")
-          .single();
-
-        if (createErr || !created) {
-          toast({ title: "Erreur", description: "Impossible d'ajouter ce produit.", variant: "destructive" });
-          setAddingToCart(false);
-          return;
-        }
-        productId = created.id;
-        productPrice = numPrice;
+      if (rpcErr || !productId) {
+        toast({ title: "Erreur", description: "Impossible d'ajouter ce produit.", variant: "destructive" });
+        setAddingToCart(false);
+        return;
       }
 
-      await addToCart(productId, metrage * 0.5, productPrice);
+      await addToCart(productId as string, metrage * 0.5, numPrice);
     } catch {
       toast({ title: "Erreur", description: "Une erreur est survenue.", variant: "destructive" });
     } finally {
