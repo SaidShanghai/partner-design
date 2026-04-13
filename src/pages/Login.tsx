@@ -13,7 +13,7 @@ import SiteFooter from "@/components/SiteFooter";
 type AuthMode = "login" | "signup" | "forgot";
 
 const Login = () => {
-  const auth = useAuth();
+  const { user, loading, role } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -22,8 +22,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
-  const { user, loading, role } = useAuth();
 
   // Remove duplicate destructuring below
   useEffect(() => {
