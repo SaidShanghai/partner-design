@@ -1,32 +1,25 @@
 
-## Module CRM — Back-office Admin
 
-### 1. Base de données (migrations)
-Créer les tables suivantes :
-- **customers** — Clients (nom, email, téléphone, adresse, notes)
-- **suppliers** — Fournisseurs (raison sociale, contact, email, téléphone, adresse, notes)
-- **orders** — Commandes reçues (client, date, statut [en attente, confirmée, expédiée, livrée, annulée], total, notes)
-- **order_items** — Lignes de commande (produit, quantité en mètres, prix unitaire, sous-total)
-- **invoices** — Factures émises (n° facture, commande liée, date émission, date échéance, statut [brouillon, envoyée, payée], montant HT/TTC/TVA)
-- **product_pricing** — Prix d'achat et de vente par produit (prix_achat, prix_vente, fournisseur, marge calculée)
+## Plan : Créer le compte opérateur et activer la capture mobile
 
-### 2. Interface Admin — Onglet CRM (sidebar ou tabs)
-Sections accessibles depuis un onglet **CRM** visible uniquement pour les admins :
+### 1. Créer le compte team@asialinkltd.com
+- Créer l'utilisateur via l'API d'administration backend avec l'email `team@asialinkltd.com` et le mot de passe `Keqiao1974$`
+- Insérer le rôle `team` dans `user_roles` pour ce nouvel utilisateur
+- Activer l'auto-confirmation pour que le compte soit utilisable immédiatement (puis désactiver après)
 
-- **📋 Commandes** — Liste des commandes, filtres par statut, détail avec lignes
-- **👥 Clients** — Liste, fiche client, historique commandes
-- **🏭 Fournisseurs** — Liste, coordonnées, produits associés
-- **📦 Fiches produits** — Vue admin enrichie avec prix d'achat/vente et marge
-- **🧾 Factures** — Génération, liste, statut de paiement
-- **📊 Statistiques** — CA, top produits, graphiques (recharts)
+### 2. Ajouter les permissions RLS pour le rôle team
+Migration SQL :
+- Policy INSERT sur `products` pour le rôle `team`
+- Policy INSERT sur `storage.objects` (bucket `product-images`) pour le rôle `team`
 
-### 3. Fonctionnalités clés
-- Création/édition de commandes avec sélection client + produits
-- Émission de factures PDF (numérotation auto)
-- Calcul automatique des marges (prix vente - prix achat)
-- Tableau de bord avec KPIs (CA du mois, commandes en cours, top clients)
-- RLS sur toutes les tables (admin only)
+### 3. Ajouter le formulaire de capture mobile dans /team
+- Nouveau composant `TeamProductForm.tsx` : formulaire plein écran mobile-first
+  - Photo (input avec `capture="environment"` → ouvre directement la caméra)
+  - Nom du tissu
+  - Prix (optionnel)
+  - Catégorie pré-remplie (celle où l'opérateur se trouve)
+- Modifier `Team.tsx` : ajouter un bouton flottant "📷 Ajouter" en bas de l'écran qui ouvre le formulaire
 
-### 4. Navigation
-- Bouton **CRM** visible à gauche de "Ajouter un produit" (admin only)
-- Ouvre une page `/admin/crm` avec navigation par onglets internes
+### Résultat
+L'opérateur se connecte sur **partner-design.lovable.app/connexion** avec `team@asialinkltd.com` / `Keqiao1974$`, navigue dans les catégories, et peut photographier et enregistrer des tissus directement depuis son téléphone.
+
