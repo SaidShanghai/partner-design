@@ -13,7 +13,7 @@ import SiteFooter from "@/components/SiteFooter";
 type AuthMode = "login" | "signup" | "forgot";
 
 const Login = () => {
-  const { user, loading } = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -23,11 +23,16 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const { user, loading, role } = useAuth();
+
+  // Remove duplicate destructuring below
   useEffect(() => {
-    if (!loading && user) {
-      navigate("/");
+    if (!loading && user && role) {
+      if (role === "superadmin") navigate("/superadmin");
+      else if (role === "team") navigate("/team");
+      else navigate("/");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, role, navigate]);
 
   const handleGoogleLogin = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {
