@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, LogOut } from "lucide-react";
+import { ArrowLeft, LogOut, Plus } from "lucide-react";
+import TeamProductForm from "@/components/TeamProductForm";
 
 interface Category {
   id: string;
@@ -17,6 +18,7 @@ const Team = () => {
   const [parentName, setParentName] = useState<string | null>(null);
   const [history, setHistory] = useState<{ id: string | null; name: string | null }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -48,7 +50,6 @@ const Team = () => {
     }
   };
 
-  // Color palette for category tiles
   const colors = [
     "bg-rose-500", "bg-amber-500", "bg-emerald-500", "bg-sky-500",
     "bg-violet-500", "bg-pink-500", "bg-teal-500", "bg-orange-500",
@@ -75,7 +76,7 @@ const Team = () => {
       </header>
 
       {/* Grid */}
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4 pb-24">
         {loading ? (
           <div className="flex items-center justify-center h-64 text-muted-foreground">
             Chargement...
@@ -98,6 +99,23 @@ const Team = () => {
           </div>
         )}
       </div>
+
+      {/* FAB */}
+      <button
+        onClick={() => setShowForm(true)}
+        className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center active:scale-95 transition-transform z-40"
+      >
+        <Plus className="w-8 h-8" />
+      </button>
+
+      {/* Form */}
+      {showForm && (
+        <TeamProductForm
+          categoryName={parentName}
+          onClose={() => setShowForm(false)}
+          onSaved={() => {}}
+        />
+      )}
     </div>
   );
 };
