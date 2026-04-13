@@ -21,7 +21,8 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return <Navigate to="/connexion" replace />;
   }
 
-  if (role !== requiredRole) {
+  // Superadmin can access all protected routes
+  if (role !== requiredRole && role !== "superadmin") {
     return <Navigate to="/connexion" replace />;
   }
 
