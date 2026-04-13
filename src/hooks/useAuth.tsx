@@ -2,10 +2,13 @@ import { useState, useEffect, createContext, useContext, ReactNode, useCallback 
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
+export type AppRole = "superadmin" | "admin" | "team" | null;
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   isAdmin: boolean;
+  role: AppRole;
   loading: boolean;
   signOut: () => Promise<void>;
 }
@@ -14,6 +17,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
   isAdmin: false,
+  role: null,
   loading: true,
   signOut: async () => {},
 });
@@ -21,21 +25,19 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [role, setRole] = useState<AppRole>(null);
   const [loading, setLoading] = useState(true);
 
-  const checkAdmin = useCallback(async (userId: string) => {
-    const { data, error } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-
-    if (error) {
-      console.error("Erreur lors de la vérification du rôle admin", error);
-      return false;
+  const fetchRole = useCallback(async (userId: string): Promise<AppRole> => {
+    // Check roles in priority order
+    for (const r of ["superadmin", "admin", "team"] as const) {
+      const { data, error } = await supabase.rpc("has_role", {
+        _user_id: userId,
+        _role: r,
+      });
+      if (!error && data) return r;
     }
-
-    return !!data;
+    return null;
   }, []);
 
   useEffect(() => {
@@ -49,16 +51,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(nextUser);
 
       if (!nextUser) {
-        setIsAdmin(false);
+        setRole(null);
         setLoading(false);
         return;
       }
 
-      const admin = await checkAdmin(nextUser.id);
+      const userRole = await fetchRole(nextUser.id);
 
       if (!isMounted) return;
 
-      setIsAdmin(admin);
+      setRole(userRole);
       setLoading(false);
     };
 
@@ -76,13 +78,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [checkAdmin]);
+  }, [fetchRole]);
 
   const signOut = async () => {
     setLoading(true);
     setUser(null);
     setSession(null);
-    setIsAdmin(false);
+    setRole(null);
 
     try {
       await supabase.auth.signOut();
@@ -96,8 +98,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const isAdmin = role === "admin" || role === "superadmin";
+
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, loading, signOut }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, role, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   );

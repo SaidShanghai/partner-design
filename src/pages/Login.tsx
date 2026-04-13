@@ -13,7 +13,7 @@ import SiteFooter from "@/components/SiteFooter";
 type AuthMode = "login" | "signup" | "forgot";
 
 const Login = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, role } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -25,9 +25,11 @@ const Login = () => {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate("/");
+      if (role === "superadmin") navigate("/superadmin");
+      else if (role === "team") navigate("/team");
+      else navigate("/");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, role, navigate]);
 
   const handleGoogleLogin = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {

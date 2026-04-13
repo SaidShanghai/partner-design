@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import { LanguageProvider } from "@/hooks/useLanguage";
 import { CartProvider } from "@/hooks/useCart";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Coupons from "./pages/Coupons.tsx";
@@ -15,6 +16,8 @@ import Login from "./pages/Login.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminCRM from "./pages/AdminCRM.tsx";
 import Cart from "./pages/Cart.tsx";
+import Superadmin from "./pages/Superadmin.tsx";
+import Team from "./pages/Team.tsx";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +39,22 @@ const App = () => (
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/admin/crm" element={<AdminCRM />} />
                 <Route path="/panier" element={<Cart />} />
+                <Route
+                  path="/superadmin"
+                  element={
+                    <ProtectedRoute requiredRole="superadmin">
+                      <Superadmin />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/team"
+                  element={
+                    <ProtectedRoute requiredRole="team">
+                      <Team />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
