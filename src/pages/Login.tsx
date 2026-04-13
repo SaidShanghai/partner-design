@@ -23,9 +23,8 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Remove duplicate destructuring below
   useEffect(() => {
-    if (!loading && user && role) {
+    if (!loading && user) {
       if (role === "superadmin") navigate("/superadmin");
       else if (role === "team") navigate("/team");
       else navigate("/");
