@@ -329,7 +329,7 @@ const Team = () => {
           qrcodeId={activeQrcodeId}
           supplierCode={activeSupplierCode!}
           onClose={() => setShowForm(false)}
-          onSaved={() => {}}
+          onSaved={() => fetchMyProducts()}
         />
       )}
 
