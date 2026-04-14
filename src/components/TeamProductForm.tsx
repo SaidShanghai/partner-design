@@ -107,7 +107,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
 
       const { data: { user } } = await supabase.auth.getUser();
       const { error: insertErr } = await supabase.from("products").insert({
-        name: `${prefix}${nameSuffix.trim()}`,
+        name: nameSuffix.trim(),
         price: price ? parseFloat(price) : null,
         category: category.trim() || null,
         image_url: imageUrl || "",
