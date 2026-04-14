@@ -47,12 +47,14 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
         const token = sessionData?.session?.access_token;
 
         const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+        const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
         const resp = await fetch(
           `https://${projectId}.supabase.co/functions/v1/burn-overlay`,
           {
             method: "POST",
             headers: {
               Authorization: `Bearer ${token}`,
+              apikey: anonKey,
             },
             body: formData,
           }
