@@ -395,36 +395,36 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
                 </div>
               </div>
 
-              {/* Couleur + Composition */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-foreground mb-1">Couleur</label>
-                  {canEditFields ? (
-                    <input
-                      type="text"
-                      value={form.color}
-                      onChange={(e) => setForm({ ...form, color: e.target.value })}
-                      placeholder="Bleu marine"
-                      className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm"
-                    />
-                  ) : (
-                    <input type="text" value={form.color || "—"} disabled className="w-full h-10 rounded-lg border border-input bg-muted/50 px-3 text-sm" />
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-foreground mb-1">Composition</label>
-                  {canEditFields ? (
-                    <input
-                      type="text"
-                      value={form.composition}
-                      onChange={(e) => setForm({ ...form, composition: e.target.value })}
-                      placeholder="100% coton"
-                      className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm"
-                    />
-                  ) : (
-                    <input type="text" value={form.composition || "—"} disabled className="w-full h-10 rounded-lg border border-input bg-muted/50 px-3 text-sm" />
-                  )}
-                </div>
+              {/* Couleur */}
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-1">Couleur</label>
+                {canEditFields ? (
+                  <input
+                    type="text"
+                    value={form.color}
+                    onChange={(e) => setForm({ ...form, color: e.target.value })}
+                    placeholder="Bleu marine"
+                    className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm"
+                  />
+                ) : (
+                  <input type="text" value={form.color || "—"} disabled className="w-full h-10 rounded-lg border border-input bg-muted/50 px-3 text-sm" />
+                )}
+              </div>
+
+              {/* Composition */}
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-1">Composition</label>
+                {canEditFields ? (
+                  <input
+                    type="text"
+                    value={form.composition}
+                    onChange={(e) => setForm({ ...form, composition: e.target.value })}
+                    placeholder="100% coton"
+                    className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm"
+                  />
+                ) : (
+                  <input type="text" value={form.composition || "—"} disabled className="w-full h-10 rounded-lg border border-input bg-muted/50 px-3 text-sm" />
+                )}
               </div>
 
               {/* Largeur + Grammage */}
