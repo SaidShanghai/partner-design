@@ -1,15 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Camera, Plus, ChevronRight, Image, Package, Clock, QrCode, ArrowLeft } from "lucide-react";
+import { LogOut, Camera, QrCode, Image, Package, Clock, Store, Plus } from "lucide-react";
 import TeamProductForm from "@/components/TeamProductForm";
 import WeChatQRUpload from "@/components/WeChatQRUpload";
-interface Category {
-  id: string;
-  name: string;
-  parent_id: string | null;
-  position: number;
-}
 
 interface RecentProduct {
   id: string;
@@ -21,62 +15,38 @@ interface RecentProduct {
 
 const Team = () => {
   const { user, signOut } = useAuth();
-  const [categories, setCategories] = useState<Category[]>([]);
   const [recentProducts, setRecentProducts] = useState<RecentProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showQRUpload, setShowQRUpload] = useState(false);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<Category | null>(null);
-  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
-  const [subcategories, setSubcategories] = useState<Category[]>([]);
 
-  const fetchData = async () => {
+  // Active session
+  const [activeQrcodeId, setActiveQrcodeId] = useState<string | null>(null);
+  const [activeSupplierCode, setActiveSupplierCode] = useState<string | null>(null);
+
+  const fetchProducts = async () => {
     setLoading(true);
-    const [catRes, prodRes] = await Promise.all([
-      supabase.from("categories").select("*").is("parent_id", null).order("position"),
-      supabase
-        .from("products")
-        .select("id, name, image_url, category, created_at")
-        .order("created_at", { ascending: false })
-        .limit(20),
-    ]);
-    setCategories(catRes.data || []);
-    setRecentProducts(prodRes.data || []);
+    const { data } = await supabase
+      .from("products")
+      .select("id, name, image_url, category, created_at")
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setRecentProducts(data || []);
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchData();
+    fetchProducts();
   }, []);
 
-  const openFormWithCategory = (catName: string | null) => {
-    setSelectedCategory(catName);
-    setShowForm(true);
+  const handleSessionCreated = (qrcodeId: string, supplierCode: string) => {
+    setActiveQrcodeId(qrcodeId);
+    setActiveSupplierCode(supplierCode);
   };
 
-  const handleSaved = () => {
-    fetchData();
-  };
-
-  const loadSubcategories = async (parentId: string) => {
-    if (expandedCategory === parentId) {
-      setExpandedCategory(null);
-      setSubcategories([]);
-      return;
-    }
-    const { data } = await supabase
-      .from("categories")
-      .select("*")
-      .eq("parent_id", parentId)
-      .order("position");
-    setSubcategories(data || []);
-    setExpandedCategory(parentId);
-  };
-
-  const openQRUpload = (sub: Category) => {
-    setSelectedSubcategory(sub);
-    setShowQRUpload(true);
+  const endSession = () => {
+    setActiveQrcodeId(null);
+    setActiveSupplierCode(null);
   };
 
   const todayCount = recentProducts.filter((p) => {
@@ -84,7 +54,7 @@ const Team = () => {
     return new Date(p.created_at).toDateString() === today;
   }).length;
 
-  const totalCount = recentProducts.length;
+  const hasSession = !!activeQrcodeId;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -100,6 +70,25 @@ const Team = () => {
           </button>
         </div>
       </header>
+
+      {/* Active session bar */}
+      {hasSession && (
+        <div className="bg-primary/10 border-b border-primary/20 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Store className="w-5 h-5 text-primary" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">Magasin actif</p>
+              <p className="text-xs text-muted-foreground font-mono">{activeSupplierCode}</p>
+            </div>
+          </div>
+          <button
+            onClick={endSession}
+            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground"
+          >
+            Changer de magasin
+          </button>
+        </div>
+      )}
 
       {/* Stats bar */}
       <div className="bg-card border-b border-border px-4 py-3 flex gap-4">
@@ -117,7 +106,7 @@ const Team = () => {
             <Package className="w-4 h-4 text-emerald-500" />
           </div>
           <div>
-            <p className="font-semibold text-foreground">{totalCount}</p>
+            <p className="font-semibold text-foreground">{recentProducts.length}</p>
             <p className="text-xs text-muted-foreground">Total produits</p>
           </div>
         </div>
@@ -130,72 +119,37 @@ const Team = () => {
           </div>
         ) : (
           <>
-            {/* Quick action - main CTA */}
+            {/* Main CTA */}
             <div className="p-4">
-              <button
-                onClick={() => openFormWithCategory(null)}
-                className="w-full bg-primary text-primary-foreground rounded-2xl p-5 flex items-center gap-4 active:scale-[0.98] transition-transform shadow-md"
-              >
-                <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
-                  <Camera className="w-7 h-7" />
-                </div>
-                <div className="text-left flex-1">
-                  <p className="font-bold text-lg">Ajouter un produit</p>
-                  <p className="text-sm opacity-80">Photo + infos rapides</p>
-                </div>
-                <ChevronRight className="w-6 h-6 opacity-60" />
-              </button>
+              {!hasSession ? (
+                <button
+                  onClick={() => setShowQRUpload(true)}
+                  className="w-full bg-primary text-primary-foreground rounded-2xl p-5 flex items-center gap-4 active:scale-[0.98] transition-transform shadow-md"
+                >
+                  <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
+                    <QrCode className="w-7 h-7" />
+                  </div>
+                  <div className="text-left flex-1">
+                    <p className="font-bold text-lg">Scanner le QR Code magasin</p>
+                    <p className="text-sm opacity-80">Photographiez le QR WeChat du fournisseur</p>
+                  </div>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="w-full bg-primary text-primary-foreground rounded-2xl p-5 flex items-center gap-4 active:scale-[0.98] transition-transform shadow-md"
+                >
+                  <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
+                    <Camera className="w-7 h-7" />
+                  </div>
+                  <div className="text-left flex-1">
+                    <p className="font-bold text-lg">Ajouter un produit</p>
+                    <p className="text-sm opacity-80">Photo + infos rapides</p>
+                  </div>
+                  <Plus className="w-6 h-6 opacity-60" />
+                </button>
+              )}
             </div>
-
-            {/* Quick category shortcuts */}
-            {categories.length > 0 && (
-              <div className="px-4 mb-4">
-                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                  Catégories & sous-catégories
-                </h2>
-                <div className="space-y-2">
-                  {categories.slice(0, 8).map((cat) => (
-                    <div key={cat.id}>
-                      <button
-                        onClick={() => loadSubcategories(cat.id)}
-                        className="w-full bg-card border border-border rounded-xl p-3 text-left flex items-center gap-3 active:bg-muted transition-colors"
-                      >
-                        <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                          <Plus className="w-4 h-4 text-muted-foreground" />
-                        </div>
-                        <span className="text-sm font-medium text-foreground truncate flex-1">{cat.name}</span>
-                        <ChevronRight className={`w-4 h-4 text-muted-foreground transition-transform ${expandedCategory === cat.id ? "rotate-90" : ""}`} />
-                      </button>
-
-                      {expandedCategory === cat.id && subcategories.length > 0 && (
-                        <div className="ml-6 mt-1 space-y-1">
-                          {subcategories.map((sub) => (
-                            <div
-                              key={sub.id}
-                              className="flex items-center gap-2 bg-muted/50 rounded-lg p-2"
-                            >
-                              <button
-                                onClick={() => openFormWithCategory(sub.name)}
-                                className="flex-1 text-left text-sm text-foreground truncate"
-                              >
-                                {sub.name}
-                              </button>
-                              <button
-                                onClick={() => openQRUpload(sub)}
-                                className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center"
-                                title="WeChat QR Code"
-                              >
-                                <QrCode className="w-4 h-4 text-primary" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Recent entries */}
             <div className="px-4">
@@ -207,7 +161,7 @@ const Team = () => {
                 <div className="text-center py-10 text-muted-foreground">
                   <Image className="w-12 h-12 mx-auto mb-3 opacity-40" />
                   <p className="text-sm">Aucun produit ajouté</p>
-                  <p className="text-xs">Commencez par prendre une photo !</p>
+                  <p className="text-xs">Commencez par scanner un QR Code magasin !</p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -242,29 +196,30 @@ const Team = () => {
         )}
       </div>
 
-      {/* Floating camera button */}
-      <button
-        onClick={() => openFormWithCategory(null)}
-        className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center active:scale-95 transition-transform z-40"
-      >
-        <Camera className="w-7 h-7" />
-      </button>
+      {/* Floating button */}
+      {hasSession && (
+        <button
+          onClick={() => setShowForm(true)}
+          className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center active:scale-95 transition-transform z-40"
+        >
+          <Camera className="w-7 h-7" />
+        </button>
+      )}
 
-      {/* Form */}
-      {showForm && (
-        <TeamProductForm
-          categoryName={selectedCategory}
-          onClose={() => setShowForm(false)}
-          onSaved={handleSaved}
+      {/* QR Upload */}
+      {showQRUpload && (
+        <WeChatQRUpload
+          onSessionCreated={handleSessionCreated}
+          onClose={() => setShowQRUpload(false)}
         />
       )}
 
-      {/* WeChat QR Upload */}
-      {showQRUpload && selectedSubcategory && (
-        <WeChatQRUpload
-          subcategoryId={selectedSubcategory.id}
-          subcategoryName={selectedSubcategory.name}
-          onClose={() => setShowQRUpload(false)}
+      {/* Product Form */}
+      {showForm && activeQrcodeId && (
+        <TeamProductForm
+          qrcodeId={activeQrcodeId}
+          onClose={() => setShowForm(false)}
+          onSaved={fetchProducts}
         />
       )}
     </div>
