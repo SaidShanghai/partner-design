@@ -190,7 +190,6 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
       .from("products")
       .update({
         status: nextStatus,
-        price: form.sell_price ?? null,
         sell_price: form.sell_price ?? null,
       } as any)
       .eq("id", product.id);
