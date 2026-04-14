@@ -258,6 +258,15 @@ const Team = () => {
           onSaved={handleSaved}
         />
       )}
+
+      {/* WeChat QR Upload */}
+      {showQRUpload && selectedSubcategory && (
+        <WeChatQRUpload
+          subcategoryId={selectedSubcategory.id}
+          subcategoryName={selectedSubcategory.name}
+          onClose={() => setShowQRUpload(false)}
+        />
+      )}
     </div>
   );
 };
