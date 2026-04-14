@@ -261,6 +261,14 @@ const Team = () => {
                 <span className="font-bold text-base leading-tight">{cat.name}</span>
               </button>
             ))}
+            {/* Travaux tile - always last */}
+            {isTopLevel && (
+              <div
+                className="bg-yellow-500 text-white rounded-2xl p-6 text-left shadow-md min-h-[100px] flex items-end opacity-70"
+              >
+                <span className="font-bold text-base leading-tight">🚧 Travaux</span>
+              </div>
+            )}
           </div>
         )}
 
