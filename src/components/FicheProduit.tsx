@@ -268,12 +268,35 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
                 {supplierCode}
               </span>
             )}
+            {qrcodeImageUrl && (
+              <button
+                onClick={() => setShowQrcode(true)}
+                className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground hover:bg-accent transition-colors"
+                title="Voir le QR code fournisseur"
+              >
+                <QrCode className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-6 h-6" />
           </button>
         </div>
 
+        {/* QR Code Modal */}
+        {showQrcode && qrcodeImageUrl && (
+          <div className="fixed inset-0 z-[60] bg-black/70 flex items-center justify-center" onClick={() => setShowQrcode(false)}>
+            <div className="relative max-w-sm w-full mx-4" onClick={(e) => e.stopPropagation()}>
+              <button
+                onClick={() => setShowQrcode(false)}
+                className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-background text-foreground flex items-center justify-center shadow-lg z-10"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <img src={qrcodeImageUrl} alt="QR Code fournisseur" className="w-full rounded-xl shadow-2xl" />
+            </div>
+          </div>
+        )}
         <div className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
             {/* Left: Image + Badges */}
