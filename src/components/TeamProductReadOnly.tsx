@@ -33,8 +33,22 @@ const STATUS_COLORS: Record<string, string> = {
   publie: "bg-green-500/10 text-green-600",
 };
 
-const TeamProductReadOnly = ({ product, supplierCode, onClose }: Props) => {
+const TeamProductReadOnly = ({ product, onClose }: Props) => {
   const currentStatus = product.status || "brouillon";
+  const [supplierCode, setSupplierCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (product.qrcode_id) {
+      supabase
+        .from("wechat_qrcodes")
+        .select("supplier_code")
+        .eq("id", product.qrcode_id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data) setSupplierCode(data.supplier_code);
+        });
+    }
+  }, [product.qrcode_id]);
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">

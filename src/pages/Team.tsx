@@ -149,7 +149,6 @@ const Team = () => {
         {selectedProduct && (
           <TeamProductReadOnly
             product={selectedProduct}
-            supplierCode={null}
             onClose={() => setSelectedProduct(null)}
           />
         )}
