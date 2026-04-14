@@ -123,7 +123,7 @@ const Team = () => {
                       <p className="font-medium text-foreground text-sm truncate">{prod.name}</p>
                       {prod.reference && <p className="text-xs font-mono text-primary">{prod.reference}</p>}
                       <p className="text-xs text-muted-foreground">
-                        {prod.price != null && <span className="font-medium text-foreground">{(prod.price * 3).toFixed(2).replace(".", ",")} €</span>}
+                        {prod.price != null && <span className="font-medium text-foreground">{prod.price.toFixed(2).replace(".", ",")} ¥</span>}
                         {prod.price != null && " • "}
                         {prod.category || "Sans catégorie"} • {new Date(prod.created_at).toLocaleDateString("fr")}
                       </p>
