@@ -29,7 +29,11 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
 
   const handleSave = async () => {
     if (!nameSuffix.trim()) {
-      toast.error("Le nom du tissu est requis");
+      toast.error("La référence du tissu est requise");
+      return;
+    }
+    if (!price.trim()) {
+      toast.error("Le prix au mètre en RMB est requis");
       return;
     }
 
@@ -103,7 +107,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
         <h2 className="text-lg font-bold text-foreground">Nouveau produit</h2>
         <button
           onClick={handleSave}
-          disabled={saving || !nameSuffix.trim()}
+          disabled={saving || !nameSuffix.trim() || !price.trim()}
           className="text-primary disabled:opacity-40"
         >
           {saving ? <Loader2 className="w-6 h-6 animate-spin" /> : <Check className="w-6 h-6" />}
@@ -156,7 +160,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
 
         {/* Prix */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Prix au mètre en RMB</label>
+          <label className="block text-sm font-medium text-foreground mb-1">Prix au mètre en RMB <span className="text-destructive">*</span></label>
           <div className="relative">
             <input
               type="number"
