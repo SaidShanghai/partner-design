@@ -57,6 +57,14 @@ const App = () => (
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="/backoffice"
+                  element={
+                    <ProtectedRoute requiredRole="backoffice">
+                      <Backoffice />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="/wechat/:supplierCode" element={<WeChatView />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
