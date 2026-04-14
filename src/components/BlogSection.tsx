@@ -50,7 +50,7 @@ const BlogSection = () => {
                 <p className="text-xs text-muted-foreground line-clamp-3 mb-3">
                   <T>{post.excerpt}</T>
                 </p>
-                <a href="#" className="text-xs font-semibold text-primary hover:underline">
+                <a href="/blog" className="text-xs font-semibold text-primary hover:underline">
                   <T>Lire l'article</T> →
                 </a>
               </div>
