@@ -85,7 +85,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
     if (exchangeRate && exchangeRate > 0) {
       return Number(((parsedPrice / exchangeRate) * 3).toFixed(2));
     }
-    return Number((parsedPrice * 3).toFixed(2)); // fallback
+    return null; // no rate available, don't guess
   };
 
   const uploadImage = async (file: File): Promise<{ imageUrl: string; overlayCode: string } | null> => {
