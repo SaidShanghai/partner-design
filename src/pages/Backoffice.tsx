@@ -117,7 +117,7 @@ const Backoffice = () => {
           <div className="text-center text-muted-foreground py-12">Chargement...</div>
         ) : filtered.length === 0 ? (
           <div className="text-center text-muted-foreground py-12">
-            {filter === "pending" ? "Aucun produit à traiter 🎉" : "Aucun produit trouvé"}
+            {filter === "brouillon" ? "Aucun brouillon à traiter 🎉" : "Aucun produit trouvé"}
           </div>
         ) : (
           filtered.map((p) => (
