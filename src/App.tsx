@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Coupons from "./pages/Coupons.tsx";
 import Category from "./pages/Category.tsx";
 import Nouveautes from "./pages/Nouveautes.tsx";
+import Blog from "./pages/Blog.tsx";
 import Login from "./pages/Login.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminCRM from "./pages/AdminCRM.tsx";
@@ -36,6 +37,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/coupons" element={<Coupons />} />
                 <Route path="/nouveautes" element={<Nouveautes />} />
+                <Route path="/blog" element={<Blog />} />
                 <Route path="/categorie/:slug" element={<Category />} />
                 <Route path="/connexion" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
