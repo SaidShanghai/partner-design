@@ -3,10 +3,10 @@ import { useAuth, AppRole } from "@/hooks/useAuth";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole: AppRole;
+  allowedRoles: AppRole[];
 }
 
-const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const { user, role, loading } = useAuth();
 
   if (loading) {
@@ -21,8 +21,7 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return <Navigate to="/connexion" replace />;
   }
 
-  // Superadmin can access all protected routes
-  if (role !== requiredRole && role !== "superadmin" && role !== null) {
+  if (!role || !allowedRoles.includes(role)) {
     return <Navigate to="/connexion" replace />;
   }
 
