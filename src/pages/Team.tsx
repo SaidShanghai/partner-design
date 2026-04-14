@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { LogOut, Camera, QrCode, Package, FolderOpen, ArrowLeft, Trash2 } from "lucide-react";
 import TeamProductForm from "@/components/TeamProductForm";
 import WeChatQRUpload from "@/components/WeChatQRUpload";
-import FicheProduit from "@/components/FicheProduit";
+import TeamProductReadOnly from "@/components/TeamProductReadOnly";
 
 interface ProductRow {
   id: string;
@@ -147,10 +147,10 @@ const Team = () => {
         </div>
 
         {selectedProduct && (
-          <FicheProduit
+          <TeamProductReadOnly
             product={selectedProduct}
+            supplierCode={null}
             onClose={() => setSelectedProduct(null)}
-            onUpdated={fetchMyProducts}
           />
         )}
       </div>
