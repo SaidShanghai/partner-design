@@ -26,6 +26,10 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
   const [savingSource, setSavingSource] = useState<SavingSource>(null);
   const [savedProductName, setSavedProductName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
+
+  // Fetch exchange rate on mount
+  import { useEffect } from "react"; // already imported at top
 
   // Variants state
   const [variantPhotos, setVariantPhotos] = useState<(string | null)[]>([null, null, null, null, null, null]);
