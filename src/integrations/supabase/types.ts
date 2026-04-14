@@ -343,6 +343,13 @@ export type Database = {
       }
       products: {
         Row: {
+          badge_bio: boolean
+          badge_exclusivite: boolean
+          badge_gots: boolean
+          badge_nouveaute: boolean
+          badge_oekotex: boolean
+          badge_promo: boolean
+          badge_stock_limite: boolean
           category: string | null
           color: string | null
           composition: string | null
@@ -363,6 +370,13 @@ export type Database = {
           width_cm: number | null
         }
         Insert: {
+          badge_bio?: boolean
+          badge_exclusivite?: boolean
+          badge_gots?: boolean
+          badge_nouveaute?: boolean
+          badge_oekotex?: boolean
+          badge_promo?: boolean
+          badge_stock_limite?: boolean
           category?: string | null
           color?: string | null
           composition?: string | null
@@ -383,6 +397,13 @@ export type Database = {
           width_cm?: number | null
         }
         Update: {
+          badge_bio?: boolean
+          badge_exclusivite?: boolean
+          badge_gots?: boolean
+          badge_nouveaute?: boolean
+          badge_oekotex?: boolean
+          badge_promo?: boolean
+          badge_stock_limite?: boolean
           category?: string | null
           color?: string | null
           composition?: string | null
@@ -579,6 +600,7 @@ export type Database = {
           image_path: string
           subcategory_id: string | null
           supplier_code: string
+          viewed: boolean
         }
         Insert: {
           created_at?: string
@@ -587,6 +609,7 @@ export type Database = {
           image_path: string
           subcategory_id?: string | null
           supplier_code: string
+          viewed?: boolean
         }
         Update: {
           created_at?: string
@@ -595,6 +618,7 @@ export type Database = {
           image_path?: string
           subcategory_id?: string | null
           supplier_code?: string
+          viewed?: boolean
         }
         Relationships: [
           {
