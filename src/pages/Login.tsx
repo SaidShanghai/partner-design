@@ -28,6 +28,7 @@ const Login = () => {
     if (role === null) return; // Role not yet loaded
     if (role === "superadmin") navigate("/superadmin");
     else if (role === "team") navigate("/team");
+    else if (role === "backoffice") navigate("/backoffice");
     else navigate("/");
   }, [user, loading, role, navigate]);
 
