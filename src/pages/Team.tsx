@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Camera, QrCode, Package, FolderOpen, ArrowLeft } from "lucide-react";
+import { LogOut, Camera, QrCode, Package, FolderOpen, ArrowLeft, Trash2 } from "lucide-react";
 import TeamProductForm from "@/components/TeamProductForm";
 import WeChatQRUpload from "@/components/WeChatQRUpload";
 import FicheProduit from "@/components/FicheProduit";
@@ -59,6 +59,12 @@ const Team = () => {
     setLoadingProducts(false);
   };
 
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm("Supprimer ce produit ?")) return;
+    await supabase.from("products").delete().eq("id", productId);
+    setMyProducts((prev) => prev.filter((p) => p.id !== productId));
+  };
+
   useEffect(() => {
     fetchMyProducts();
   }, [user]);
@@ -101,31 +107,38 @@ const Team = () => {
           ) : (
             <div className="space-y-3">
               {myProducts.map((prod) => (
-                <button
+                <div
                   key={prod.id}
-                  onClick={() => setSelectedProduct(prod)}
-                  className="w-full flex items-center gap-3 p-3 text-left hover:bg-accent/30 transition-colors border border-border rounded-xl bg-card"
+                  className="w-full flex items-center gap-3 p-3 border border-border rounded-xl bg-card"
                 >
-                  {prod.image_url ? (
-                    <img src={prod.image_url} alt={prod.name} className="w-16 h-16 rounded-lg object-cover shrink-0" />
-                  ) : (
-                    <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                      <Package className="w-6 h-6 text-muted-foreground" />
+                  <div className="flex-1 flex items-center gap-3 cursor-pointer" onClick={() => setSelectedProduct(prod)}>
+                    {prod.image_url ? (
+                      <img src={prod.image_url} alt={prod.name} className="w-16 h-16 rounded-lg object-cover shrink-0" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                        <Package className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-foreground text-sm truncate">{prod.name}</p>
+                      {prod.reference && <p className="text-xs font-mono text-primary">{prod.reference}</p>}
+                      <p className="text-xs text-muted-foreground">
+                        {prod.category || "Sans catégorie"} • {new Date(prod.created_at).toLocaleDateString("fr")}
+                      </p>
                     </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-foreground text-sm truncate">{prod.name}</p>
-                    {prod.reference && <p className="text-xs font-mono text-primary">{prod.reference}</p>}
-                    <p className="text-xs text-muted-foreground">
-                      {prod.category || "Sans catégorie"} • {new Date(prod.created_at).toLocaleDateString("fr")}
-                    </p>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${
+                      prod.status === "brouillon" ? "bg-orange-500/10 text-orange-600" : "bg-blue-500/10 text-blue-600"
+                    }`}>
+                      {prod.status === "brouillon" ? "Brouillon" : "En traitement"}
+                    </span>
                   </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${
-                    prod.status === "brouillon" ? "bg-orange-500/10 text-orange-600" : "bg-blue-500/10 text-blue-600"
-                  }`}>
-                    {prod.status === "brouillon" ? "Brouillon" : "En traitement"}
-                  </span>
-                </button>
+                  <button
+                    onClick={() => handleDeleteProduct(prod.id)}
+                    className="p-2 text-red-400 hover:text-red-600 active:scale-90 transition shrink-0"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
               ))}
             </div>
           )}
