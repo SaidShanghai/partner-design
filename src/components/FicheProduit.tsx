@@ -80,11 +80,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
   const canEditFields = role === "superadmin" || role === "admin" || role === "backoffice";
   const canEditBadges = role === "superadmin" || role === "admin" || role === "backoffice";
 
-  const derivedSellPrice =
-    product.sell_price ??
-    (product.price != null
-      ? Number(((product.status === "publie" ? product.price : product.price * 3)).toFixed(2))
-      : null);
+  const derivedSellPrice = product.sell_price ?? product.price ?? null;
 
   const [form, setForm] = useState({
     name: product.name || "",
