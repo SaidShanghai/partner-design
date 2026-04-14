@@ -25,7 +25,6 @@ import tricotAmigurumiImg from "@/assets/tricot-amigurumi.jpg";
 const navLinks = [
   "Nos magasins",
   "Blog",
-  "Carte Cadeau",
   "Nous contacter",
 ];
 
