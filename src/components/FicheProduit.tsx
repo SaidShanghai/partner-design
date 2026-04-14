@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { X, Trash2, Camera, Loader2 } from "lucide-react";
+import { X, Trash2, Camera, Loader2, Store } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth, AppRole } from "@/hooks/useAuth";
 
@@ -27,6 +27,7 @@ interface Product {
   badge_exclusivite: boolean;
   badge_stock_limite: boolean;
   status?: string;
+  qrcode_id?: string | null;
 }
 
 interface Props {
@@ -110,7 +111,21 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
   });
 
   const [saving, setSaving] = useState(false);
+  const [supplierCode, setSupplierCode] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (product.qrcode_id) {
+      supabase
+        .from("wechat_qrcodes")
+        .select("supplier_code")
+        .eq("id", product.qrcode_id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data) setSupplierCode(data.supplier_code);
+        });
+    }
+  }, [product.qrcode_id]);
 
   const toggleBadge = async (key: keyof typeof badges) => {
     if (!canEditBadges) return;
@@ -231,11 +246,17 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
       <div className="bg-background rounded-2xl w-full max-w-3xl mx-4 shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <h2 className="text-xl font-bold text-foreground">Fiche produit</h2>
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[currentStatus] || ""}`}>
               {STATUS_LABELS[currentStatus] || currentStatus}
             </span>
+            {supplierCode && (
+              <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-mono">
+                <Store className="w-3 h-3" />
+                {supplierCode}
+              </span>
+            )}
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-6 h-6" />
