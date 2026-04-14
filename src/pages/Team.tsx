@@ -59,6 +59,12 @@ const Team = () => {
     setLoadingProducts(false);
   };
 
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm("Supprimer ce produit ?")) return;
+    await supabase.from("products").delete().eq("id", productId);
+    setMyProducts((prev) => prev.filter((p) => p.id !== productId));
+  };
+
   useEffect(() => {
     fetchMyProducts();
   }, [user]);
