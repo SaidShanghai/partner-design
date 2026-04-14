@@ -111,7 +111,21 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
   });
 
   const [saving, setSaving] = useState(false);
+  const [supplierCode, setSupplierCode] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (product.qrcode_id) {
+      supabase
+        .from("wechat_qrcodes")
+        .select("supplier_code")
+        .eq("id", product.qrcode_id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data) setSupplierCode(data.supplier_code);
+        });
+    }
+  }, [product.qrcode_id]);
 
   const toggleBadge = async (key: keyof typeof badges) => {
     if (!canEditBadges) return;
