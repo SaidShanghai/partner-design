@@ -1,9 +1,10 @@
 import { Search, User, Heart, ShoppingBag, LogOut, Shield, LayoutDashboard } from "lucide-react";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCart } from "@/hooks/useCart";
+import { supabase } from "@/integrations/supabase/client";
 import T from "@/components/T";
 import MegaMenu, { type MegaMenuData } from "./MegaMenu";
 import sangleImg from "@/assets/mercerie-sangle.jpg";
