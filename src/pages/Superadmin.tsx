@@ -229,6 +229,31 @@ const CategoriesTab = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [catProducts, setCatProducts] = useState<RawProduct[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<RawProduct | null>(null);
+
+  // Build the full category path from breadcrumb (e.g. "Tissu habillement / Jersey")
+  const categoryPath = breadcrumb.length > 1
+    ? breadcrumb.slice(1).map((b) => b.name).join(" / ")
+    : null;
+
+  // Fetch products matching the current category path
+  useEffect(() => {
+    if (!categoryPath) {
+      setCatProducts([]);
+      return;
+    }
+    const fetchCatProducts = async () => {
+      const { data } = await supabase
+        .from("products")
+        .select("*")
+        .ilike("category", `%${categoryPath}%`)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      setCatProducts((data as unknown as RawProduct[]) || []);
+    };
+    fetchCatProducts();
+  }, [categoryPath]);
 
   const fetchCategories = async () => {
     const query = parentId
