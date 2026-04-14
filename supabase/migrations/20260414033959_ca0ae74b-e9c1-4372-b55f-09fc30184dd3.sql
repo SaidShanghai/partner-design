@@ -1,0 +1,1 @@
+ALTER TABLE public.products ADD COLUMN created_by uuid REFERENCES auth.users(id) DEFAULT NULL;

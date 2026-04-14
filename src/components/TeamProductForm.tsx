@@ -70,6 +70,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
         overlayCode = result.overlay_code;
       }
 
+      const { data: { user } } = await supabase.auth.getUser();
       const { error: insertErr } = await supabase.from("products").insert({
         name: name.trim(),
         price: price ? parseFloat(price) : null,
@@ -77,6 +78,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
         image_url: imageUrl || "",
         qrcode_id: qrcodeId,
         reference: overlayCode || null,
+        created_by: user?.id || null,
       } as any);
 
       if (insertErr) throw insertErr;
