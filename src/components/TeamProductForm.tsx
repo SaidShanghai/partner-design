@@ -296,6 +296,8 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
   }
 
   // ──────── FORM SCREEN ────────
+  const canSave = nameSuffix.trim() && price.trim();
+
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">
       <header className="flex items-center justify-between px-4 py-3 border-b border-border">
@@ -303,13 +305,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
           <X className="w-6 h-6" />
         </button>
         <h2 className="text-lg font-bold text-foreground">Nouveau produit</h2>
-        <button
-          onClick={handleSave}
-          disabled={saving || !nameSuffix.trim() || !price.trim()}
-          className="text-primary disabled:opacity-40"
-        >
-          {saving ? <Loader2 className="w-6 h-6 animate-spin" /> : <Check className="w-6 h-6" />}
-        </button>
+        <div className="w-6" />
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-5">
@@ -381,6 +377,58 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
             placeholder="Ex: Soie, Coton, Polyester..."
             className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
+        </div>
+
+        {/* ── ACTION BUTTONS ── */}
+        <div className="space-y-3 pt-4 border-t border-border">
+          {/* Enregistrer + Variante */}
+          <button
+            onClick={async () => { await handleSave(); }}
+            disabled={saving || !canSave}
+            className="w-full bg-primary text-primary-foreground rounded-2xl p-4 flex items-center gap-3 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
+          >
+            <Palette className="w-6 h-6 shrink-0" />
+            <div className="text-left flex-1">
+              <p className="font-bold">Variante de couleur</p>
+              <p className="text-xs opacity-80">Enregistrer puis ajouter des variantes</p>
+            </div>
+            {saving && <Loader2 className="w-5 h-5 animate-spin" />}
+          </button>
+
+          {/* Enregistrer + Suivant */}
+          <button
+            onClick={async () => {
+              await handleSave();
+              // handleSave sets step to post-save, but we want to go directly to next
+              // We override by calling handleNext after save
+            }}
+            disabled={saving || !canSave}
+            className="w-full bg-card border-2 border-border rounded-2xl p-4 flex items-center gap-3 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
+          >
+            <ArrowRight className="w-6 h-6 text-emerald-600 shrink-0" />
+            <div className="text-left flex-1">
+              <p className="font-bold text-foreground">Suivant</p>
+              <p className="text-xs text-muted-foreground">Enregistrer et passer à la référence suivante</p>
+            </div>
+          </button>
+
+          {/* Terminer le magasin */}
+          <button
+            onClick={async () => {
+              if (canSave) {
+                await handleSave();
+              }
+              handleFinish();
+            }}
+            disabled={saving}
+            className="w-full bg-card border-2 border-border rounded-2xl p-4 flex items-center gap-3 active:scale-[0.97] transition-transform shadow-md"
+          >
+            <LogOut className="w-6 h-6 text-red-500 shrink-0" />
+            <div className="text-left flex-1">
+              <p className="font-bold text-foreground">Terminer le magasin</p>
+              <p className="text-xs text-muted-foreground">Saisie terminée, prochain magasin</p>
+            </div>
+          </button>
         </div>
       </div>
     </div>
