@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Camera, QrCode, Package, FolderOpen, ArrowLeft } from "lucide-react";
+import { LogOut, Camera, QrCode, Package, FolderOpen, ArrowLeft, Trash2 } from "lucide-react";
 import TeamProductForm from "@/components/TeamProductForm";
 import WeChatQRUpload from "@/components/WeChatQRUpload";
 import FicheProduit from "@/components/FicheProduit";
