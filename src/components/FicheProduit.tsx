@@ -123,8 +123,8 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
           if (data) {
             setSupplierCode(data.supplier_code);
             if (data.image_path) {
-              const { data: urlData } = supabase.storage.from("wechat-qrcodes").getPublicUrl(data.image_path);
-              setQrcodeImageUrl(urlData.publicUrl);
+              const { data: signedData } = await supabase.storage.from("wechat-qrcodes").createSignedUrl(data.image_path, 3600);
+              if (signedData?.signedUrl) setQrcodeImageUrl(signedData.signedUrl);
             }
           }
         });
