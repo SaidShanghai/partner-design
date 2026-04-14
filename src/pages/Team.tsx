@@ -218,6 +218,7 @@ const Team = () => {
       {showForm && activeQrcodeId && (
         <TeamProductForm
           qrcodeId={activeQrcodeId}
+          supplierCode={activeSupplierCode!}
           onClose={() => setShowForm(false)}
           onSaved={fetchProducts}
         />
