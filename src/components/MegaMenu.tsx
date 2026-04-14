@@ -31,11 +31,11 @@ interface MegaMenuProps {
 
 const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
   return (
-    <div className="absolute left-0 right-0 top-full w-full bg-background border-t border-border shadow-xl z-50">
-      <div className="container mx-auto px-6 py-8 flex gap-6">
+    <div className="absolute left-0 right-0 top-full w-full bg-background border-t border-border shadow-xl z-50 max-h-[80vh] overflow-y-auto">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 flex flex-col lg:flex-row gap-6">
         {/* Left column: Voir tout + buttons */}
-        <div className="flex flex-col gap-3 shrink-0 w-[180px]">
-          <a href="#" className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-primary transition-colors mb-2">
+        <div className="flex flex-row lg:flex-col gap-3 shrink-0 lg:w-[180px] flex-wrap">
+          <a href="#" className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-primary transition-colors">
             <T>Voir tout</T> <ArrowUpRight className="w-4 h-4" />
           </a>
           {data.buttons?.map((btn) => (
@@ -50,7 +50,7 @@ const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
         </div>
 
         {/* Middle columns */}
-        <div className={`grid gap-6 flex-1 min-w-0`} style={{ gridTemplateColumns: `repeat(${Math.min(data.columns.length, 6)}, minmax(0, 1fr))` }}>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6 flex-1 min-w-0">
           {data.columns.map((col) => (
             <div key={col.title}>
               <span className="block text-sm font-bold text-foreground mb-3">
@@ -73,8 +73,8 @@ const MegaMenu = ({ data, onClose }: MegaMenuProps) => {
           ))}
         </div>
 
-        {/* Right images */}
-        <div className="flex gap-3 shrink-0 w-[280px] h-[280px]">
+        {/* Right images — hidden on mobile */}
+        <div className="hidden lg:flex gap-3 shrink-0 w-[280px] h-[280px]">
           {data.images.map((img) => (
             <div key={img.label} className="relative rounded-lg overflow-hidden flex-1">
               <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" />
