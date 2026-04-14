@@ -626,6 +626,31 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
                       {STATUS_LABELS[nextStatus]} →
                     </button>
                   )}
+                  {/* Superadmin: reset to brouillon (send back to BO) */}
+                  {(role === "superadmin") && currentStatus !== "brouillon" && (
+                    <button
+                      onClick={async () => {
+                        setSaving(true);
+                        const { error } = await supabase
+                          .from("products")
+                          .update({ status: "brouillon" as any })
+                          .eq("id", product.id);
+                        setSaving(false);
+                        if (error) {
+                          toast.error("Erreur");
+                        } else {
+                          toast.success("Produit renvoyé en brouillon (BO)");
+                          onUpdated();
+                          onClose();
+                        }
+                      }}
+                      disabled={saving}
+                      className="h-12 px-4 rounded-xl bg-destructive text-destructive-foreground font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-destructive/90 transition-colors"
+                      title="Renvoyer en brouillon pour retravailler"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  )}
                 </div>
               )}
             </div>
