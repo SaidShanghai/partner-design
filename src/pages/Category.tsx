@@ -9,6 +9,7 @@ import ProductFormDialog from "@/components/ProductFormDialog";
 import T from "@/components/T";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { supabase } from "@/integrations/supabase/client";
 import { categoriesData, type CategoryData } from "@/data/categories";
 
 /** Translates an HTML string while preserving tags */
@@ -60,7 +61,30 @@ const Category = () => {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [formOpen, setFormOpen] = useState(false);
+  const [dbProducts, setDbProducts] = useState<Array<{id: string; name: string; image_url: string | null; sell_price: number | null; category: string | null}>>([]);
   const category = slug ? categoriesData[slug] || buildFallbackCategory(slug) : null;
+
+  // Fetch published products from DB matching this category
+  useEffect(() => {
+    if (!category) return;
+    const fetchPublished = async () => {
+      const { data } = await supabase
+        .from("products")
+        .select("id, name, image_url, sell_price, category")
+        .eq("status", "publie" as any)
+        .order("created_at", { ascending: false });
+      if (data) {
+        // Match products whose category text contains the category name (case-insensitive)
+        const catName = category.name.toLowerCase();
+        const matched = (data as any[]).filter((p: any) =>
+          p.category?.toLowerCase().includes(catName) ||
+          catName.includes(p.category?.toLowerCase() || "___")
+        );
+        setDbProducts(matched);
+      }
+    };
+    fetchPublished();
+  }, [category?.name]);
 
   if (!category) {
     return (
