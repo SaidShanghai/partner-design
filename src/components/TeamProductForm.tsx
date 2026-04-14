@@ -82,7 +82,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
     return { imageUrl: result.image_url, overlayCode: result.overlay_code };
   };
 
-  const handleSave = async () => {
+  const handleSave = async (nextStep: Step = "post-save") => {
     if (!nameSuffix.trim()) {
       toast.error("La référence du tissu est requise");
       return;
