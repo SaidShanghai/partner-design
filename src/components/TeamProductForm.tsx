@@ -121,7 +121,8 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
       toast.success("Produit enregistré !");
       setSavedProductName(`${prefix}${nameSuffix.trim()}`);
       onSaved();
-      setStep("post-save");
+      setStep(nextStep);
+      if (nextStep === "form") handleNext();
     } catch (err: any) {
       toast.error(err.message || "Erreur lors de l'enregistrement");
     } finally {
