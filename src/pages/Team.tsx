@@ -1,17 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Camera, QrCode, Image, Package, Clock, Store, Plus, ArrowLeft } from "lucide-react";
+import { LogOut, Camera, QrCode, Package, FolderOpen, ArrowLeft } from "lucide-react";
 import TeamProductForm from "@/components/TeamProductForm";
 import WeChatQRUpload from "@/components/WeChatQRUpload";
 import FicheProduit from "@/components/FicheProduit";
-
-interface Category {
-  id: string;
-  name: string;
-  parent_id: string | null;
-  position: number;
-}
 
 interface ProductRow {
   id: string;
@@ -37,22 +30,14 @@ interface ProductRow {
   badge_promo: boolean;
   badge_exclusivite: boolean;
   badge_stock_limite: boolean;
+  status: string;
 }
-
-const CATEGORY_COLORS = [
-  "bg-rose-500", "bg-blue-500", "bg-emerald-500", "bg-amber-500",
-  "bg-purple-500", "bg-cyan-500", "bg-pink-500", "bg-indigo-500", "bg-teal-500",
-];
 
 const Team = () => {
   const { user, signOut } = useAuth();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [currentParent, setCurrentParent] = useState<string | null>(null);
-  const [parentName, setParentName] = useState<string | null>(null);
-  const [products, setProducts] = useState<ProductRow[]>([]);
-  const [loadingCats, setLoadingCats] = useState(true);
+  const [view, setView] = useState<"home" | "travaux">("home");
+  const [myProducts, setMyProducts] = useState<ProductRow[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
-  const [viewMode, setViewMode] = useState<"categories" | "products">("categories");
   const [selectedProduct, setSelectedProduct] = useState<ProductRow | null>(null);
 
   // Session state
@@ -60,116 +45,23 @@ const Team = () => {
   const [showQRUpload, setShowQRUpload] = useState(false);
   const [activeQrcodeId, setActiveQrcodeId] = useState<string | null>(null);
   const [activeSupplierCode, setActiveSupplierCode] = useState<string | null>(null);
-  const [myProducts, setMyProducts] = useState<ProductRow[]>([]);
-  const [loadingMyProducts, setLoadingMyProducts] = useState(false);
-
-  const fetchCategories = async (parentId: string | null) => {
-    setLoadingCats(true);
-    const query = parentId
-      ? supabase.from("categories").select("*").eq("parent_id", parentId).order("position")
-      : supabase.from("categories").select("*").is("parent_id", null).order("position");
-    const { data } = await query;
-    setCategories(data || []);
-    setLoadingCats(false);
-
-    // If no subcategories, load products for this category
-    if (data && data.length === 0 && parentId) {
-      loadProducts(parentId);
-    }
-  };
-
-  const loadProducts = async (categoryId: string) => {
-    setLoadingProducts(true);
-    setViewMode("products");
-    // Get category name to filter products
-    const { data: cat } = await supabase.from("categories").select("name").eq("id", categoryId).single();
-    if (cat) {
-      const { data: prods } = await supabase
-        .from("products")
-        .select("*")
-        .ilike("category", `%${cat.name}%`)
-        .order("created_at", { ascending: false })
-        .limit(100);
-      setProducts((prods as unknown as ProductRow[]) || []);
-    }
-    setLoadingProducts(false);
-  };
 
   const fetchMyProducts = async () => {
     if (!user) return;
-    setLoadingMyProducts(true);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    setLoadingProducts(true);
     const { data } = await supabase
       .from("products")
       .select("*")
       .eq("created_by", user.id)
-      .gte("created_at", today.toISOString())
+      .in("status", ["brouillon", "en_traitement"])
       .order("created_at", { ascending: false });
     setMyProducts((data as unknown as ProductRow[]) || []);
-    setLoadingMyProducts(false);
+    setLoadingProducts(false);
   };
 
   useEffect(() => {
-    fetchCategories(null);
     fetchMyProducts();
-  }, []);
-
-  const drillDown = async (cat: Category) => {
-    setCurrentParent(cat.id);
-    setParentName(cat.name);
-    // Check for subcategories
-    const { data: subs } = await supabase
-      .from("categories")
-      .select("id")
-      .eq("parent_id", cat.id)
-      .limit(1);
-
-    if (subs && subs.length > 0) {
-      setViewMode("categories");
-      fetchCategories(cat.id);
-    } else {
-      // Leaf category → show products
-      loadProducts(cat.id);
-    }
-  };
-
-  const goBack = async () => {
-    if (!currentParent) return;
-
-    // Always go up one level from currentParent
-    const { data } = await supabase
-      .from("categories")
-      .select("parent_id, name")
-      .eq("id", currentParent)
-      .single();
-
-    if (data) {
-      setCurrentParent(data.parent_id);
-      setParentName(data.parent_id ? null : null);
-      setViewMode("categories");
-      setProducts([]);
-
-      // Fetch siblings (categories at parent level)
-      const query = data.parent_id
-        ? supabase.from("categories").select("*").eq("parent_id", data.parent_id).order("position")
-        : supabase.from("categories").select("*").is("parent_id", null).order("position");
-      const { data: cats } = await query;
-      setCategories(cats || []);
-
-      // Get parent name if going to a non-root level
-      if (data.parent_id) {
-        const { data: grandParent } = await supabase
-          .from("categories")
-          .select("name")
-          .eq("id", data.parent_id)
-          .single();
-        setParentName(grandParent?.name || null);
-      } else {
-        setParentName(null);
-      }
-    }
-  };
+  }, [user]);
 
   const handleSessionCreated = (qrcodeId: string, supplierCode: string) => {
     setActiveQrcodeId(qrcodeId);
@@ -177,25 +69,85 @@ const Team = () => {
   };
 
   const hasSession = !!activeQrcodeId;
-  const isTopLevel = !currentParent && viewMode === "categories";
+
+  if (view === "travaux") {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="bg-card border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <button onClick={() => setView("home")} className="text-muted-foreground hover:text-foreground p-1">
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              <h1 className="text-lg font-bold text-foreground">🚧 Travaux</h1>
+            </div>
+            <button onClick={signOut} className="text-muted-foreground hover:text-foreground p-2">
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-4">
+          {loadingProducts ? (
+            <div className="text-center text-muted-foreground py-12">Chargement...</div>
+          ) : myProducts.length === 0 ? (
+            <div className="text-center text-muted-foreground py-16">
+              <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
+              <p className="text-sm font-medium">Aucun dossier en attente</p>
+              <p className="text-xs mt-1">Tous vos produits ont été validés 🎉</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {myProducts.map((prod) => (
+                <button
+                  key={prod.id}
+                  onClick={() => setSelectedProduct(prod)}
+                  className="w-full flex items-center gap-3 p-3 text-left hover:bg-accent/30 transition-colors border border-border rounded-xl bg-card"
+                >
+                  {prod.image_url ? (
+                    <img src={prod.image_url} alt={prod.name} className="w-16 h-16 rounded-lg object-cover shrink-0" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                      <Package className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground text-sm truncate">{prod.name}</p>
+                    {prod.reference && <p className="text-xs font-mono text-primary">{prod.reference}</p>}
+                    <p className="text-xs text-muted-foreground">
+                      {prod.category || "Sans catégorie"} • {new Date(prod.created_at).toLocaleDateString("fr")}
+                    </p>
+                  </div>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${
+                    prod.status === "brouillon" ? "bg-orange-500/10 text-orange-600" : "bg-blue-500/10 text-blue-600"
+                  }`}>
+                    {prod.status === "brouillon" ? "Brouillon" : "En traitement"}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {selectedProduct && (
+          <FicheProduit
+            product={selectedProduct}
+            onClose={() => setSelectedProduct(null)}
+            onUpdated={fetchMyProducts}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Top bar */}
       <header className="bg-card border-b border-border px-4 py-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {!isTopLevel && (
-              <button onClick={goBack} className="text-muted-foreground hover:text-foreground p-1">
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-            )}
-            <div>
-              <h1 className="text-lg font-bold text-foreground">
-                {parentName || "📋 Saisie Terrain"}
-              </h1>
-              <p className="text-xs text-muted-foreground">{user?.email}</p>
-            </div>
+          <div>
+            <h1 className="text-lg font-bold text-foreground">📋 Saisie Terrain</h1>
+            <p className="text-xs text-muted-foreground">{user?.email}</p>
           </div>
           <div className="flex items-center gap-2">
             {hasSession && (
@@ -210,122 +162,42 @@ const Team = () => {
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto pb-28">
-        {/* QR session CTA */}
-        {isTopLevel && !hasSession && (
-          <div className="p-4">
-            <button
-              onClick={() => setShowQRUpload(true)}
-              className="w-full bg-primary text-primary-foreground rounded-2xl p-5 flex items-center gap-4 active:scale-[0.98] transition-transform shadow-md"
-            >
-              <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
-                <QrCode className="w-7 h-7" />
-              </div>
-              <div className="text-left flex-1">
-                <p className="font-bold text-lg">Scanner le QR Code magasin</p>
-                <p className="text-sm opacity-80">Photographiez le QR WeChat du fournisseur</p>
-              </div>
-            </button>
+      <div className="flex-1 flex flex-col items-center justify-center p-6 gap-5">
+        {/* Scanner QR */}
+        <button
+          onClick={() => setShowQRUpload(true)}
+          className="w-full bg-primary text-primary-foreground rounded-2xl p-6 flex items-center gap-4 active:scale-[0.97] transition-transform shadow-lg"
+        >
+          <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+            <QrCode className="w-8 h-8" />
           </div>
-        )}
-
-        {/* My Products Today */}
-        {isTopLevel && myProducts.length > 0 && (
-          <div className="px-4 pb-4">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              Mes produits du jour ({myProducts.length})
-            </h2>
-            <div className="grid grid-cols-2 gap-3">
-              {myProducts.map((prod) => (
-                <button
-                  key={prod.id}
-                  onClick={() => setSelectedProduct(prod)}
-                  className="bg-card border border-border rounded-xl overflow-hidden text-left active:scale-[0.97] transition-transform"
-                >
-                  {prod.image_url ? (
-                    <img src={prod.image_url} alt={prod.name} className="w-full aspect-square object-cover" />
-                  ) : (
-                    <div className="w-full aspect-square bg-muted flex items-center justify-center">
-                      <Package className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                  )}
-                  <div className="p-2">
-                    <p className="text-xs font-medium text-foreground truncate">{prod.name}</p>
-                    {prod.price && (
-                      <p className="text-xs text-primary font-semibold">{Number(prod.price).toFixed(2)} €</p>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
+          <div className="text-left flex-1">
+            <p className="font-bold text-lg">Scanner le QR Code</p>
+            <p className="text-sm opacity-80">Photographiez le QR WeChat du fournisseur</p>
           </div>
-        )}
+        </button>
 
-        {viewMode === "categories" && !loadingCats && (
-          <div className="p-4 grid grid-cols-2 gap-3">
-            {categories.map((cat, i) => (
-              <button
-                key={cat.id}
-                onClick={() => drillDown(cat)}
-                className={`${CATEGORY_COLORS[i % CATEGORY_COLORS.length]} text-white rounded-2xl p-6 text-left active:scale-[0.97] transition-transform shadow-md min-h-[100px] flex items-end`}
-              >
-                <span className="font-bold text-base leading-tight">{cat.name}</span>
-              </button>
-            ))}
-            {/* Travaux tile - always last */}
-            {isTopLevel && (
-              <div
-                className="bg-yellow-500 text-white rounded-2xl p-6 text-left shadow-md min-h-[100px] flex items-end opacity-70"
-              >
-                <span className="font-bold text-base leading-tight">🚧 Travaux</span>
-              </div>
-            )}
+        {/* Travaux */}
+        <button
+          onClick={() => { setView("travaux"); fetchMyProducts(); }}
+          className="w-full bg-card border-2 border-border rounded-2xl p-6 flex items-center gap-4 active:scale-[0.97] transition-transform shadow-md"
+        >
+          <div className="w-16 h-16 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
+            <FolderOpen className="w-8 h-8 text-amber-600" />
           </div>
-        )}
-
-        {/* Products Grid */}
-        {viewMode === "products" && !loadingProducts && (
-          <div className="p-4">
-            {products.length === 0 ? (
-              <div className="text-center text-muted-foreground py-12">
-                <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
-                <p className="text-sm">Aucun produit dans cette catégorie</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-3">
-                {products.map((prod) => (
-                  <button
-                    key={prod.id}
-                    onClick={() => setSelectedProduct(prod)}
-                    className="bg-card border border-border rounded-xl overflow-hidden text-left active:scale-[0.97] transition-transform"
-                  >
-                    {prod.image_url ? (
-                      <img src={prod.image_url} alt={prod.name} className="w-full aspect-square object-cover" />
-                    ) : (
-                      <div className="w-full aspect-square bg-muted flex items-center justify-center">
-                        <Package className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                    )}
-                    <div className="p-2">
-                      <p className="text-xs font-medium text-foreground truncate">{prod.name}</p>
-                      {prod.sell_price && (
-                        <p className="text-xs text-primary font-semibold">{prod.sell_price.toFixed(2)} €</p>
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
+          <div className="text-left flex-1">
+            <p className="font-bold text-lg text-foreground">🚧 Travaux</p>
+            <p className="text-sm text-muted-foreground">Vos dossiers en attente de validation</p>
           </div>
-        )}
-
-        {(loadingCats || loadingProducts) && (
-          <div className="text-center text-muted-foreground py-12">Chargement...</div>
-        )}
+          {myProducts.length > 0 && (
+            <span className="bg-amber-500 text-white text-sm font-bold w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+              {myProducts.length}
+            </span>
+          )}
+        </button>
       </div>
 
-      {/* Floating add button */}
+      {/* Floating add button when session active */}
       {hasSession && (
         <button
           onClick={() => setShowForm(true)}
@@ -335,7 +207,6 @@ const Team = () => {
         </button>
       )}
 
-      {/* QR Upload */}
       {showQRUpload && (
         <WeChatQRUpload
           onSessionCreated={handleSessionCreated}
@@ -343,22 +214,12 @@ const Team = () => {
         />
       )}
 
-      {/* Product Form */}
       {showForm && activeQrcodeId && (
         <TeamProductForm
           qrcodeId={activeQrcodeId}
           supplierCode={activeSupplierCode!}
           onClose={() => setShowForm(false)}
           onSaved={() => fetchMyProducts()}
-        />
-      )}
-
-      {/* Fiche Produit Modal (read-only for team) */}
-      {selectedProduct && (
-        <FicheProduit
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onUpdated={() => {}}
         />
       )}
     </div>
