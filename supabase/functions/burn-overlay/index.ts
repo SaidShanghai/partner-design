@@ -6,34 +6,6 @@ const corsHeaders = {
 };
 
 const FONT_SIZE = 28;
-const PADDING = 16;
-
-// Simple bitmap font renderer - draws white text with black outline
-function drawTextOnImageData(
-  data: Uint8ClampedArray,
-  width: number,
-  text: string,
-  x: number,
-  y: number,
-  fontSize: number
-) {
-  // We'll use a canvas-free approach: encode text into pixel patterns
-  // Since we can't use canvas in Deno Deploy, we'll use a different strategy
-  // We draw a semi-transparent dark background strip, then overlay white text pixels
-  const stripHeight = fontSize + 8;
-  const stripWidth = Math.min(text.length * (fontSize * 0.6) + PADDING * 2, width);
-
-  // Draw dark background strip
-  for (let row = y; row < y + stripHeight && row < Math.floor(data.length / (width * 4)); row++) {
-    for (let col = x; col < x + stripWidth && col < width; col++) {
-      const idx = (row * width + col) * 4;
-      data[idx] = Math.floor(data[idx] * 0.3);     // R
-      data[idx + 1] = Math.floor(data[idx + 1] * 0.3); // G
-      data[idx + 2] = Math.floor(data[idx + 2] * 0.3); // B
-      // Alpha stays
-    }
-  }
-}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -53,7 +25,6 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabaseAdmin = createClient(supabaseUrl, serviceKey);
 
-    // Verify user auth
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseUser = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
@@ -89,16 +60,16 @@ Deno.serve(async (req) => {
     const overlayText = `${supplierCode}_${yy}${mm}${dd}_${nnn}`;
     const filename = `${overlayText}.jpg`;
 
-    // Read image bytes
     const imageBytes = new Uint8Array(await file.arrayBuffer());
 
-    // Use ImageScript for image processing (pure TS, works in Deno Deploy)
     const { Image, decode: decodeImage } = await import("https://deno.land/x/imagescript@1.3.0/mod.ts");
 
-    const img = await decodeImage(imageBytes);
+    // Load a font for text rendering
+    const fontUrl = "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/roboto/Roboto%5Bwdth%2Cwght%5D.ttf";
+    const fontResp = await fetch(fontUrl);
+    const fontData = new Uint8Array(await fontResp.arrayBuffer());
 
-    // Create text overlay using ImageScript
-    // We'll render the text by creating a small overlay and compositing
+    const img = await decodeImage(imageBytes);
     const imgWidth = (img as any).width as number;
     const imgHeight = (img as any).height as number;
 
@@ -109,7 +80,6 @@ Deno.serve(async (req) => {
     for (let y = 4; y < 4 + barHeight && y <= imgHeight; y++) {
       for (let x = 4; x < 4 + barWidth && x <= imgWidth; x++) {
         const existing = (img as any).getPixelAt(x, y) as number;
-        // Darken: blend with black at 60% opacity
         const r = ((existing >> 24) & 0xFF);
         const g = ((existing >> 16) & 0xFF);
         const b = ((existing >> 8) & 0xFF);
@@ -121,14 +91,12 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Render text using ImageScript's built-in text rendering
-    const textImg = Image.renderText(FONT_SIZE, 0xFFFFFFFF, overlayText);
+    // Render text with loaded font
+    const textImg = Image.renderText(fontData, FONT_SIZE, overlayText, 0xFFFFFFFF);
     (img as any).composite(textImg, 10, 8);
 
-    // Encode back to JPEG
     const encoded = await (img as any).encodeJPEG(90);
 
-    // Upload to storage
     const { error: uploadErr } = await supabaseAdmin.storage
       .from("product-images")
       .upload(`team/${filename}`, encoded, {
