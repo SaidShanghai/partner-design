@@ -1,25 +1,37 @@
 
 
-## Plan : Créer le compte opérateur et activer la capture mobile
+# Formule de prix dynamique avec taux de change réel
 
-### 1. Créer le compte team@asialinkltd.com
-- Créer l'utilisateur via l'API d'administration backend avec l'email `team@asialinkltd.com` et le mot de passe `Keqiao1974$`
-- Insérer le rôle `team` dans `user_roles` pour ce nouvel utilisateur
-- Activer l'auto-confirmation pour que le compte soit utilisable immédiatement (puis désactiver après)
+## Formule actuelle vs nouvelle
 
-### 2. Ajouter les permissions RLS pour le rôle team
-Migration SQL :
-- Policy INSERT sur `products` pour le rôle `team`
-- Policy INSERT sur `storage.objects` (bucket `product-images`) pour le rôle `team`
+- **Avant** : `Prix € = RMB × 3`
+- **Après** : `Prix € = (RMB / taux_de_change_RMB_EUR) × 3`
 
-### 3. Ajouter le formulaire de capture mobile dans /team
-- Nouveau composant `TeamProductForm.tsx` : formulaire plein écran mobile-first
-  - Photo (input avec `capture="environment"` → ouvre directement la caméra)
-  - Nom du tissu
-  - Prix (optionnel)
-  - Catégorie pré-remplie (celle où l'opérateur se trouve)
-- Modifier `Team.tsx` : ajouter un bouton flottant "📷 Ajouter" en bas de l'écran qui ouvre le formulaire
+Exemple : 10 RMB, taux 7.5 → (10 / 7.5) × 3 = 4.00 €
 
-### Résultat
-L'opérateur se connecte sur **partner-design.lovable.app/connexion** avec `team@asialinkltd.com` / `Keqiao1974$`, navigue dans les catégories, et peut photographier et enregistrer des tissus directement depuis son téléphone.
+## Plan technique
+
+### 1. Créer une edge function `exchange-rate`
+- Appelle une API gratuite (ex: `https://open.er-api.com/v6/latest/EUR`) pour récupérer le taux EUR→CNY
+- Cache le résultat en base (table `exchange_rates`) pour éviter les appels excessifs et garder une trace
+- Retourne le taux CNY/EUR du jour
+
+### 2. Créer une table `exchange_rates`
+- Colonnes : `id`, `date` (unique), `rate_cny_eur` (numeric), `created_at`
+- RLS : lecture pour team/backoffice/admin/superadmin, insertion via la fonction edge uniquement
+
+### 3. Modifier `TeamProductForm.tsx`
+- Au montage du composant, appeler la edge function pour récupérer le taux du jour
+- Remplacer `parsedPrice * 3` par `(parsedPrice / taux) * 3`
+- Afficher le taux utilisé sous le champ prix (ex: "Taux du jour : 1 EUR = 7.50 CNY")
+
+### 4. Modifier `FicheProduit.tsx`
+- Remplacer le fallback `price * 3` par la même logique utilisant le taux stocké (ou le `sell_price` déjà calculé en base)
+- En pratique le `sell_price` est déjà calculé à l'enregistrement, donc ce fallback sera rarement utilisé
+
+### Fichiers impactés
+- `supabase/functions/exchange-rate/index.ts` (nouveau)
+- Migration SQL pour la table `exchange_rates`
+- `src/components/TeamProductForm.tsx`
+- `src/components/FicheProduit.tsx`
 
