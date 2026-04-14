@@ -273,17 +273,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
               {/* Image */}
               <div className="relative aspect-square rounded-xl overflow-hidden bg-muted border border-border">
                 {form.image_url ? (
-                  <>
                     <img src={form.image_url} alt={form.name} className="w-full h-full object-cover" />
-                    {canEditFields && (
-                      <button
-                        onClick={handleDeleteImage}
-                        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    )}
-                  </>
                 ) : canEditFields ? (
                   <button
                     onClick={() => fileRef.current?.click()}
