@@ -73,27 +73,7 @@ Deno.serve(async (req) => {
     const imgWidth = (img as any).width as number;
     const imgHeight = (img as any).height as number;
 
-    // Draw semi-transparent black bar at top-left
-    const barHeight = 36;
-    const barWidth = Math.min(overlayText.length * 14 + 20, imgWidth);
-
-    for (let y = 4; y < 4 + barHeight && y <= imgHeight; y++) {
-      for (let x = 4; x < 4 + barWidth && x <= imgWidth; x++) {
-        const existing = (img as any).getPixelAt(x, y) as number;
-        const r = ((existing >> 24) & 0xFF);
-        const g = ((existing >> 16) & 0xFF);
-        const b = ((existing >> 8) & 0xFF);
-        const a = existing & 0xFF;
-        const newR = Math.floor(r * 0.3);
-        const newG = Math.floor(g * 0.3);
-        const newB = Math.floor(b * 0.3);
-        (img as any).setPixelAt(x, y, ((newR & 0xFF) << 24) | ((newG & 0xFF) << 16) | ((newB & 0xFF) << 8) | (a & 0xFF));
-      }
-    }
-
-    // Render text with loaded font
-    const textImg = Image.renderText(fontData, FONT_SIZE, overlayText, 0xFFFFFFFF);
-    (img as any).composite(textImg, 10, 8);
+    // No overlay text burned on photo — keep original image clean
 
     const encoded = await (img as any).encodeJPEG(90);
 
