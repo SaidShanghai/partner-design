@@ -28,7 +28,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
   };
 
   const handleSave = async () => {
-    if (!name.trim()) {
+    if (!nameSuffix.trim()) {
       toast.error("Le nom du tissu est requis");
       return;
     }
@@ -73,7 +73,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
 
       const { data: { user } } = await supabase.auth.getUser();
       const { error: insertErr } = await supabase.from("products").insert({
-        name: name.trim(),
+        name: `${prefix}${nameSuffix.trim()}`,
         price: price ? parseFloat(price) : null,
         category: category.trim() || null,
         image_url: imageUrl || "",
@@ -103,7 +103,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
         <h2 className="text-lg font-bold text-foreground">Nouveau produit</h2>
         <button
           onClick={handleSave}
-          disabled={saving || !name.trim()}
+          disabled={saving || !nameSuffix.trim()}
           className="text-primary disabled:opacity-40"
         >
           {saving ? <Loader2 className="w-6 h-6 animate-spin" /> : <Check className="w-6 h-6" />}
@@ -142,13 +142,16 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
         {/* Nom */}
         <div>
           <label className="block text-sm font-medium text-foreground mb-1">Référence du tissu <span className="text-destructive">*</span></label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Ex: Coton imprimé floral"
-            className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          />
+          <div className="flex items-center h-12 rounded-xl border border-input bg-background overflow-hidden focus-within:ring-2 focus-within:ring-primary">
+            <span className="pl-4 text-sm text-muted-foreground font-mono whitespace-nowrap">{prefix}</span>
+            <input
+              type="text"
+              value={nameSuffix}
+              onChange={(e) => setNameSuffix(e.target.value)}
+              placeholder="nom-du-tissu"
+              className="flex-1 h-full bg-transparent px-1 text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
+            />
+          </div>
         </div>
 
         {/* Prix */}
