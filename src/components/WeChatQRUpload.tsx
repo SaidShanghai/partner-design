@@ -4,12 +4,11 @@ import { QrCode, Upload, Copy, Check, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
-  subcategoryId: string;
-  subcategoryName: string;
+  onSessionCreated: (qrcodeId: string, supplierCode: string) => void;
   onClose: () => void;
 }
 
-const WeChatQRUpload = ({ subcategoryId, subcategoryName, onClose }: Props) => {
+const WeChatQRUpload = ({ onSessionCreated, onClose }: Props) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -38,26 +37,27 @@ const WeChatQRUpload = ({ subcategoryId, subcategoryName, onClose }: Props) => {
       const ext = file.name.split(".").pop() || "png";
       const path = `${code}.${ext}`;
 
-      // Upload to private bucket
       const { error: uploadErr } = await supabase.storage
         .from("wechat-qrcodes")
         .upload(path, file);
       if (uploadErr) throw uploadErr;
 
-      // Insert record
-      const { error: insertErr } = await supabase.from("wechat_qrcodes").insert({
-        subcategory_id: subcategoryId,
-        supplier_code: code,
-        image_path: path,
-      });
+      const { data: inserted, error: insertErr } = await supabase
+        .from("wechat_qrcodes")
+        .insert({
+          supplier_code: code,
+          image_path: path,
+        } as any)
+        .select("id")
+        .single();
       if (insertErr) {
-        // Clean up uploaded file on error
         await supabase.storage.from("wechat-qrcodes").remove([path]);
         throw insertErr;
       }
 
       setSupplierCode(code);
-      toast.success("QR Code uploadé avec succès !");
+      toast.success("QR Code magasin enregistré !");
+      onSessionCreated(inserted.id, code);
     } catch (err: any) {
       toast.error(err.message || "Erreur lors de l'upload");
     } finally {
@@ -80,14 +80,13 @@ const WeChatQRUpload = ({ subcategoryId, subcategoryName, onClose }: Props) => {
         <button onClick={onClose} className="text-muted-foreground">
           <X className="w-6 h-6" />
         </button>
-        <h2 className="text-lg font-bold text-foreground">WeChat QR Code</h2>
+        <h2 className="text-lg font-bold text-foreground">QR Code Magasin</h2>
         <div className="w-6" />
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-5">
         <div className="bg-muted/50 rounded-xl p-3 text-sm text-muted-foreground">
-          <p className="font-medium text-foreground mb-1">📦 {subcategoryName}</p>
-          <p>Uploadez le QR Code WeChat du fournisseur. Un lien unique sera généré, valable 72h.</p>
+          <p>Photographiez le QR Code WeChat du magasin. Tous les produits que vous ajouterez ensuite seront rattachés à ce fournisseur.</p>
         </div>
 
         {!supplierCode ? (
@@ -126,7 +125,7 @@ const WeChatQRUpload = ({ subcategoryId, subcategoryName, onClose }: Props) => {
                 ) : (
                   <>
                     <Upload className="w-5 h-5" />
-                    Uploader le QR Code
+                    Valider le QR Code
                   </>
                 )}
               </button>
@@ -136,14 +135,14 @@ const WeChatQRUpload = ({ subcategoryId, subcategoryName, onClose }: Props) => {
           <div className="space-y-4">
             <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center">
               <Check className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
-              <p className="font-bold text-foreground text-lg mb-1">QR Code enregistré !</p>
-              <p className="text-sm text-muted-foreground">Partagez le lien ci-dessous avec le fournisseur</p>
+              <p className="font-bold text-foreground text-lg mb-1">Magasin enregistré !</p>
+              <p className="text-sm text-muted-foreground">Vous pouvez maintenant ajouter des produits</p>
             </div>
 
             <div className="bg-card border border-border rounded-xl p-4">
-              <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider font-semibold">Lien de partage</p>
+              <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider font-semibold">Lien de partage fournisseur</p>
               <div className="flex items-center gap-2">
-                <code className="flex-1 bg-muted rounded-lg px-3 py-2 text-sm font-mono text-foreground break-all">
+                <code className="flex-1 bg-muted rounded-lg px-3 py-2 text-xs font-mono text-foreground break-all">
                   {window.location.origin}/wechat/{supplierCode}
                 </code>
                 <button
@@ -153,14 +152,14 @@ const WeChatQRUpload = ({ subcategoryId, subcategoryName, onClose }: Props) => {
                   {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">⏳ Expire dans 72 heures</p>
+              <p className="text-xs text-muted-foreground mt-2">⏳ Lien valable 72 heures</p>
             </div>
 
             <button
               onClick={onClose}
-              className="w-full h-12 rounded-xl border border-border text-foreground font-medium"
+              className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-bold"
             >
-              Fermer
+              Commencer à ajouter des produits
             </button>
           </div>
         )}

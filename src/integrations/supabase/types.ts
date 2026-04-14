@@ -337,6 +337,7 @@ export type Database = {
           image_url: string | null
           name: string
           price: number | null
+          qrcode_id: string | null
           reference: string | null
           unb: string | null
           updated_at: string
@@ -354,6 +355,7 @@ export type Database = {
           image_url?: string | null
           name?: string
           price?: number | null
+          qrcode_id?: string | null
           reference?: string | null
           unb?: string | null
           updated_at?: string
@@ -371,6 +373,7 @@ export type Database = {
           image_url?: string | null
           name?: string
           price?: number | null
+          qrcode_id?: string | null
           reference?: string | null
           unb?: string | null
           updated_at?: string
@@ -378,7 +381,15 @@ export type Database = {
           weight_per_meter?: number | null
           width_cm?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_qrcode_id_fkey"
+            columns: ["qrcode_id"]
+            isOneToOne: false
+            referencedRelation: "wechat_qrcodes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -545,7 +556,7 @@ export type Database = {
           expires_at: string
           id: string
           image_path: string
-          subcategory_id: string
+          subcategory_id: string | null
           supplier_code: string
         }
         Insert: {
@@ -553,7 +564,7 @@ export type Database = {
           expires_at?: string
           id?: string
           image_path: string
-          subcategory_id: string
+          subcategory_id?: string | null
           supplier_code: string
         }
         Update: {
@@ -561,7 +572,7 @@ export type Database = {
           expires_at?: string
           id?: string
           image_path?: string
-          subcategory_id?: string
+          subcategory_id?: string | null
           supplier_code?: string
         }
         Relationships: [

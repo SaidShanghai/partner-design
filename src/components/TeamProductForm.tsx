@@ -4,14 +4,15 @@ import { X, Camera, Loader2, Check } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
-  categoryName: string | null;
+  qrcodeId: string;
   onClose: () => void;
   onSaved: () => void;
 }
 
-const TeamProductForm = ({ categoryName, onClose, onSaved }: Props) => {
+const TeamProductForm = ({ qrcodeId, onClose, onSaved }: Props) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -51,9 +52,10 @@ const TeamProductForm = ({ categoryName, onClose, onSaved }: Props) => {
       const { error: insertErr } = await supabase.from("products").insert({
         name: name.trim(),
         price: price ? parseFloat(price) : null,
-        category: categoryName || "",
+        category: category.trim() || null,
         image_url: imageUrl || "",
-      });
+        qrcode_id: qrcodeId,
+      } as any);
 
       if (insertErr) throw insertErr;
 
@@ -69,7 +71,6 @@ const TeamProductForm = ({ categoryName, onClose, onSaved }: Props) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">
-      {/* Header */}
       <header className="flex items-center justify-between px-4 py-3 border-b border-border">
         <button onClick={onClose} className="text-muted-foreground">
           <X className="w-6 h-6" />
@@ -103,7 +104,7 @@ const TeamProductForm = ({ categoryName, onClose, onSaved }: Props) => {
           ) : (
             <>
               <Camera className="w-12 h-12 text-muted-foreground mb-2" />
-              <span className="text-muted-foreground text-sm">Prendre une photo</span>
+              <span className="text-muted-foreground text-sm">Prendre une photo du produit</span>
             </>
           )}
         </button>
@@ -120,6 +121,18 @@ const TeamProductForm = ({ categoryName, onClose, onSaved }: Props) => {
           />
         </div>
 
+        {/* Catégorie */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-1">Catégorie (optionnel)</label>
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="Ex: Soie, Coton, Polyester..."
+            className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
         {/* Prix */}
         <div>
           <label className="block text-sm font-medium text-foreground mb-1">Prix (optionnel)</label>
@@ -132,16 +145,6 @@ const TeamProductForm = ({ categoryName, onClose, onSaved }: Props) => {
             className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
-
-        {/* Catégorie */}
-        {categoryName && (
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Catégorie</label>
-            <div className="h-12 rounded-xl border border-input bg-muted/50 px-4 flex items-center text-base text-muted-foreground">
-              {categoryName}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
