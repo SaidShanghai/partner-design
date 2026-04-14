@@ -269,7 +269,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
                 {supplierCode}
               </span>
             )}
-            {qrcodeImageUrl && (
+            {product.qrcode_id && (
               <button
                 onClick={() => setShowQrcode(true)}
                 className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground hover:bg-accent transition-colors"
