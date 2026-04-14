@@ -354,8 +354,10 @@ export type Database = {
           price: number | null
           qrcode_id: string | null
           reference: string | null
+          sell_price: number | null
           unb: string | null
           updated_at: string
+          utilisation: string | null
           weight_gsm: number | null
           weight_per_meter: number | null
           width_cm: number | null
@@ -372,8 +374,10 @@ export type Database = {
           price?: number | null
           qrcode_id?: string | null
           reference?: string | null
+          sell_price?: number | null
           unb?: string | null
           updated_at?: string
+          utilisation?: string | null
           weight_gsm?: number | null
           weight_per_meter?: number | null
           width_cm?: number | null
@@ -390,8 +394,10 @@ export type Database = {
           price?: number | null
           qrcode_id?: string | null
           reference?: string | null
+          sell_price?: number | null
           unb?: string | null
           updated_at?: string
+          utilisation?: string | null
           weight_gsm?: number | null
           weight_per_meter?: number | null
           width_cm?: number | null
@@ -624,7 +630,13 @@ export type Database = {
       next_photo_number: { Args: never; Returns: number }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user" | "superadmin" | "team"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "superadmin"
+        | "team"
+        | "backoffice"
       invoice_status: "brouillon" | "envoyee" | "payee"
       order_status:
         | "en_attente"
@@ -759,7 +771,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user", "superadmin", "team"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "superadmin",
+        "team",
+        "backoffice",
+      ],
       invoice_status: ["brouillon", "envoyee", "payee"],
       order_status: [
         "en_attente",
