@@ -340,16 +340,13 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
         {/* Référence */}
         <div>
           <label className="block text-sm font-medium text-foreground mb-1">Référence du tissu <span className="text-destructive">*</span></label>
-          <div className="flex items-center h-12 rounded-xl border border-input bg-background overflow-hidden focus-within:ring-2 focus-within:ring-primary">
-            <span className="pl-4 text-sm text-muted-foreground font-mono whitespace-nowrap">{prefix}</span>
-            <input
-              type="text"
-              value={nameSuffix}
-              onChange={(e) => setNameSuffix(e.target.value)}
-              placeholder="nom-du-tissu"
-              className="flex-1 h-full bg-transparent px-1 text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
-            />
-          </div>
+          <input
+            type="text"
+            value={nameSuffix}
+            onChange={(e) => setNameSuffix(e.target.value.replace(/\s/g, ""))}
+            placeholder="nom-du-tissu"
+            className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          />
         </div>
 
         {/* Prix */}
