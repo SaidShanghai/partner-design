@@ -140,7 +140,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
 
         {/* Nom */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Nom du tissu *</label>
+          <label className="block text-sm font-medium text-foreground mb-1">Nom du tissu <span className="text-destructive">*</span></label>
           <input
             type="text"
             value={name}
@@ -148,6 +148,22 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
             placeholder="Ex: Coton imprimé floral"
             className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
+        </div>
+
+        {/* Prix */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-1">Prix au mètre en RMB</label>
+          <div className="relative">
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="0.00"
+              step="0.01"
+              className="w-full h-12 rounded-xl border border-input bg-background px-4 pr-16 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">¥/m</span>
+          </div>
         </div>
 
         {/* Catégorie */}
@@ -158,19 +174,6 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             placeholder="Ex: Soie, Coton, Polyester..."
-            className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-
-        {/* Prix */}
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Prix (optionnel)</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="0.00"
-            step="0.01"
             className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
