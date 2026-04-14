@@ -26,6 +26,10 @@ const Team = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showQRUpload, setShowQRUpload] = useState(false);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Category | null>(null);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [subcategories, setSubcategories] = useState<Category[]>([]);
 
   const fetchData = async () => {
     setLoading(true);
