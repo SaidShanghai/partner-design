@@ -66,6 +66,8 @@ const Team = () => {
   const handleSessionCreated = (qrcodeId: string, supplierCode: string) => {
     setActiveQrcodeId(qrcodeId);
     setActiveSupplierCode(supplierCode);
+    setShowQRUpload(false);
+    setShowForm(true);
   };
 
   const hasSession = !!activeQrcodeId;
