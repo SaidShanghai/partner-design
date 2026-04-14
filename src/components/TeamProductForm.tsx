@@ -112,9 +112,10 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
       }
 
       const { data: { user } } = await supabase.auth.getUser();
+      const rmbPrice = price ? parseFloat(price) : null;
       const { error: insertErr } = await supabase.from("products").insert({
         name: nameSuffix.trim(),
-        price: convertedEuroPrice,
+        price: rmbPrice,
         sell_price: convertedEuroPrice,
         category: category.trim() || null,
         image_url: imageUrl || "",
@@ -151,9 +152,10 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
 
       for (let i = 0; i < filesToUpload.length; i++) {
         const result = await uploadImage(filesToUpload[i]);
+        const rmbPrice = price ? parseFloat(price) : null;
         await supabase.from("products").insert({
           name: `${savedProductName}_var${i + 1}`,
-          price: convertedEuroPrice,
+          price: rmbPrice,
           sell_price: convertedEuroPrice,
           category: category.trim() || null,
           image_url: result?.imageUrl || "",
