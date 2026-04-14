@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { X, Camera, Store } from "lucide-react";
 
 interface Product {
@@ -14,7 +16,6 @@ interface Product {
 
 interface Props {
   product: Product;
-  supplierCode: string | null;
   onClose: () => void;
 }
 
