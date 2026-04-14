@@ -106,7 +106,6 @@ const Backoffice = () => {
             ))}
           </div>
         </div>
-        </div>
       </header>
 
       {/* Product List */}
