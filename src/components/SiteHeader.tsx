@@ -410,9 +410,9 @@ const SiteHeader = () => {
             <T>COUPONS À -20%</T>
           </a>
         </div>
-        {activeMenu && megaMenus[activeMenu] && (
+        {activeMenu && dynamicMegaMenus[activeMenu] && (
           <div onMouseEnter={handleMegaMenuEnter} onMouseLeave={handleMenuLeave}>
-            <MegaMenu data={megaMenus[activeMenu]} onClose={() => setActiveMenu(null)} />
+            <MegaMenu data={dynamicMegaMenus[activeMenu]} onClose={() => setActiveMenu(null)} />
           </div>
         )}
       </nav>
