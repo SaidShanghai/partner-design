@@ -114,20 +114,21 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
 
   useEffect(() => {
     if (product.qrcode_id) {
-      supabase
-        .from("wechat_qrcodes")
-        .select("supplier_code, image_path")
-        .eq("id", product.qrcode_id)
-        .maybeSingle()
-        .then(({ data }) => {
-          if (data) {
-            setSupplierCode(data.supplier_code);
-            if (data.image_path) {
-              const { data: signedData } = await supabase.storage.from("wechat-qrcodes").createSignedUrl(data.image_path, 3600);
-              if (signedData?.signedUrl) setQrcodeImageUrl(signedData.signedUrl);
-            }
+      const fetchQrcode = async () => {
+        const { data } = await supabase
+          .from("wechat_qrcodes")
+          .select("supplier_code, image_path")
+          .eq("id", product.qrcode_id!)
+          .maybeSingle();
+        if (data) {
+          setSupplierCode(data.supplier_code);
+          if (data.image_path) {
+            const { data: signedData } = await supabase.storage.from("wechat-qrcodes").createSignedUrl(data.image_path, 3600);
+            if (signedData?.signedUrl) setQrcodeImageUrl(signedData.signedUrl);
           }
-        });
+        }
+      };
+      fetchQrcode();
     }
   }, [product.qrcode_id]);
 
