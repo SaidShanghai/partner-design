@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Camera, Plus, ChevronRight, Image, Package, Clock } from "lucide-react";
+import { LogOut, Camera, Plus, ChevronRight, Image, Package, Clock, QrCode, ArrowLeft } from "lucide-react";
 import TeamProductForm from "@/components/TeamProductForm";
-
+import WeChatQRUpload from "@/components/WeChatQRUpload";
 interface Category {
   id: string;
   name: string;
@@ -26,6 +26,10 @@ const Team = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showQRUpload, setShowQRUpload] = useState(false);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Category | null>(null);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [subcategories, setSubcategories] = useState<Category[]>([]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -53,6 +57,26 @@ const Team = () => {
 
   const handleSaved = () => {
     fetchData();
+  };
+
+  const loadSubcategories = async (parentId: string) => {
+    if (expandedCategory === parentId) {
+      setExpandedCategory(null);
+      setSubcategories([]);
+      return;
+    }
+    const { data } = await supabase
+      .from("categories")
+      .select("*")
+      .eq("parent_id", parentId)
+      .order("position");
+    setSubcategories(data || []);
+    setExpandedCategory(parentId);
+  };
+
+  const openQRUpload = (sub: Category) => {
+    setSelectedSubcategory(sub);
+    setShowQRUpload(true);
   };
 
   const todayCount = recentProducts.filter((p) => {
@@ -127,20 +151,47 @@ const Team = () => {
             {categories.length > 0 && (
               <div className="px-4 mb-4">
                 <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                  Ajouter par catégorie
+                  Catégories & sous-catégories
                 </h2>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-2">
                   {categories.slice(0, 8).map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => openFormWithCategory(cat.name)}
-                      className="bg-card border border-border rounded-xl p-3 text-left flex items-center gap-3 active:bg-muted transition-colors"
-                    >
-                      <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                        <Plus className="w-4 h-4 text-muted-foreground" />
-                      </div>
-                      <span className="text-sm font-medium text-foreground truncate">{cat.name}</span>
-                    </button>
+                    <div key={cat.id}>
+                      <button
+                        onClick={() => loadSubcategories(cat.id)}
+                        className="w-full bg-card border border-border rounded-xl p-3 text-left flex items-center gap-3 active:bg-muted transition-colors"
+                      >
+                        <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                          <Plus className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                        <span className="text-sm font-medium text-foreground truncate flex-1">{cat.name}</span>
+                        <ChevronRight className={`w-4 h-4 text-muted-foreground transition-transform ${expandedCategory === cat.id ? "rotate-90" : ""}`} />
+                      </button>
+
+                      {expandedCategory === cat.id && subcategories.length > 0 && (
+                        <div className="ml-6 mt-1 space-y-1">
+                          {subcategories.map((sub) => (
+                            <div
+                              key={sub.id}
+                              className="flex items-center gap-2 bg-muted/50 rounded-lg p-2"
+                            >
+                              <button
+                                onClick={() => openFormWithCategory(sub.name)}
+                                className="flex-1 text-left text-sm text-foreground truncate"
+                              >
+                                {sub.name}
+                              </button>
+                              <button
+                                onClick={() => openQRUpload(sub)}
+                                className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center"
+                                title="WeChat QR Code"
+                              >
+                                <QrCode className="w-4 h-4 text-primary" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
@@ -205,6 +256,15 @@ const Team = () => {
           categoryName={selectedCategory}
           onClose={() => setShowForm(false)}
           onSaved={handleSaved}
+        />
+      )}
+
+      {/* WeChat QR Upload */}
+      {showQRUpload && selectedSubcategory && (
+        <WeChatQRUpload
+          subcategoryId={selectedSubcategory.id}
+          subcategoryName={selectedSubcategory.name}
+          onClose={() => setShowQRUpload(false)}
         />
       )}
     </div>

@@ -18,6 +18,7 @@ import AdminCRM from "./pages/AdminCRM.tsx";
 import Cart from "./pages/Cart.tsx";
 import Superadmin from "./pages/Superadmin.tsx";
 import Team from "./pages/Team.tsx";
+import WeChatView from "./pages/WeChatView.tsx";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
                     </ProtectedRoute>
                   }
                 />
+                <Route path="/wechat/:supplierCode" element={<WeChatView />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
