@@ -25,7 +25,7 @@ const WeChatQRUpload = ({ onSessionCreated, onClose }: Props) => {
 
   const generateSupplierCode = () => {
     const uuid = crypto.randomUUID().split("-")[0];
-    return `SUP-${uuid}`;
+    return uuid;
   };
 
   const handleUpload = async () => {
