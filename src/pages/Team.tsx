@@ -10,6 +10,7 @@ interface RecentProduct {
   name: string;
   image_url: string | null;
   category: string | null;
+  reference: string | null;
   created_at: string;
 }
 
