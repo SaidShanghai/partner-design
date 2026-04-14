@@ -294,7 +294,7 @@ const SiteHeader = () => {
   const handleMenuEnter = useCallback((cat: string) => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     hoverTimeout.current = setTimeout(() => {
-      if (megaMenus[cat]) {
+      if (dynamicMegaMenus[cat]) {
         setActiveMenu(cat);
       }
     }, 200);
