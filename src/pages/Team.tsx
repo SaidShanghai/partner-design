@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Camera, Plus, ChevronRight, Image, Package, Clock } from "lucide-react";
+import { LogOut, Camera, Plus, ChevronRight, Image, Package, Clock, QrCode, ArrowLeft } from "lucide-react";
 import TeamProductForm from "@/components/TeamProductForm";
-
+import WeChatQRUpload from "@/components/WeChatQRUpload";
 interface Category {
   id: string;
   name: string;
