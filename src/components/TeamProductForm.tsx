@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { X, Camera, Loader2, Check, Plus, Palette, ArrowRight, LogOut } from "lucide-react";
 import { toast } from "sonner";
@@ -26,6 +26,29 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
   const [savingSource, setSavingSource] = useState<SavingSource>(null);
   const [savedProductName, setSavedProductName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchRate = async () => {
+      try {
+        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+        const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+        const resp = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/exchange-rate`,
+          { headers: { Authorization: `Bearer ${token}`, apikey: anonKey } }
+        );
+        if (resp.ok) {
+          const { rate } = await resp.json();
+          setExchangeRate(rate);
+        }
+      } catch (e) {
+        console.error("Failed to fetch exchange rate", e);
+      }
+    };
+    fetchRate();
+  }, []);
 
   // Variants state
   const [variantPhotos, setVariantPhotos] = useState<(string | null)[]>([null, null, null, null, null, null]);
@@ -58,7 +81,11 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
 
   const getConvertedEuroPrice = () => {
     const parsedPrice = price ? parseFloat(price) : NaN;
-    return Number.isFinite(parsedPrice) ? Number((parsedPrice * 3).toFixed(2)) : null;
+    if (!Number.isFinite(parsedPrice)) return null;
+    if (exchangeRate && exchangeRate > 0) {
+      return Number(((parsedPrice / exchangeRate) * 3).toFixed(2));
+    }
+    return Number((parsedPrice * 3).toFixed(2)); // fallback
   };
 
   const uploadImage = async (file: File): Promise<{ imageUrl: string; overlayCode: string } | null> => {
@@ -376,6 +403,11 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">¥/m</span>
           </div>
+          {exchangeRate && price && parseFloat(price) > 0 && (
+            <p className="text-xs text-muted-foreground mt-1">
+              ≈ {getConvertedEuroPrice()?.toFixed(2)} € (taux : 1 EUR = {exchangeRate.toFixed(2)} CNY)
+            </p>
+          )}
         </div>
 
         {/* Catégorie */}

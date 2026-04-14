@@ -126,6 +126,27 @@ export type Database = {
         }
         Relationships: []
       }
+      exchange_rates: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          rate_cny_eur: number
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          rate_cny_eur: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          rate_cny_eur?: number
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           amount_ht: number
