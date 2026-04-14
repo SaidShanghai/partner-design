@@ -18,6 +18,7 @@ import AdminCRM from "./pages/AdminCRM.tsx";
 import Cart from "./pages/Cart.tsx";
 import Superadmin from "./pages/Superadmin.tsx";
 import Team from "./pages/Team.tsx";
+import Backoffice from "./pages/Backoffice.tsx";
 import WeChatView from "./pages/WeChatView.tsx";
 
 const queryClient = new QueryClient();

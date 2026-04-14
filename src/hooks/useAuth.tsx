@@ -2,7 +2,7 @@ import { useState, useEffect, createContext, useContext, ReactNode, useCallback 
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
-export type AppRole = "superadmin" | "admin" | "team" | "none" | null;
+export type AppRole = "superadmin" | "admin" | "backoffice" | "team" | "none" | null;
 
 interface AuthContextType {
   user: User | null;
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchRole = useCallback(async (userId: string): Promise<AppRole> => {
     // Check roles in priority order
-    for (const r of ["superadmin", "admin", "team"] as const) {
+    for (const r of ["superadmin", "admin", "backoffice", "team"] as const) {
       const { data, error } = await supabase.rpc("has_role", {
         _user_id: userId,
         _role: r,
