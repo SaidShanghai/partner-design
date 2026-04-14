@@ -134,28 +134,40 @@ const Team = () => {
     }
   };
 
-  const goBack = () => {
-    if (viewMode === "products") {
+  const goBack = async () => {
+    if (!currentParent) return;
+
+    // Always go up one level from currentParent
+    const { data } = await supabase
+      .from("categories")
+      .select("parent_id, name")
+      .eq("id", currentParent)
+      .single();
+
+    if (data) {
+      setCurrentParent(data.parent_id);
+      setParentName(data.parent_id ? null : null);
       setViewMode("categories");
       setProducts([]);
-      fetchCategories(currentParent);
-      return;
-    }
-    // Go up one level
-    if (currentParent) {
-      // Find parent of currentParent
-      supabase
-        .from("categories")
-        .select("parent_id, name")
-        .eq("id", currentParent)
-        .single()
-        .then(({ data }) => {
-          if (data) {
-            setCurrentParent(data.parent_id);
-            setParentName(null);
-            fetchCategories(data.parent_id);
-          }
-        });
+
+      // Fetch siblings (categories at parent level)
+      const query = data.parent_id
+        ? supabase.from("categories").select("*").eq("parent_id", data.parent_id).order("position")
+        : supabase.from("categories").select("*").is("parent_id", null).order("position");
+      const { data: cats } = await query;
+      setCategories(cats || []);
+
+      // Get parent name if going to a non-root level
+      if (data.parent_id) {
+        const { data: grandParent } = await supabase
+          .from("categories")
+          .select("name")
+          .eq("id", data.parent_id)
+          .single();
+        setParentName(grandParent?.name || null);
+      } else {
+        setParentName(null);
+      }
     }
   };
 
