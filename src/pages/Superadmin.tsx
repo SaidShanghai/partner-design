@@ -229,6 +229,31 @@ const CategoriesTab = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [catProducts, setCatProducts] = useState<RawProduct[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<RawProduct | null>(null);
+
+  // Build the full category path from breadcrumb (e.g. "Tissu habillement / Jersey")
+  const categoryPath = breadcrumb.length > 1
+    ? breadcrumb.slice(1).map((b) => b.name).join(" / ")
+    : null;
+
+  // Fetch products matching the current category path
+  useEffect(() => {
+    if (!categoryPath) {
+      setCatProducts([]);
+      return;
+    }
+    const fetchCatProducts = async () => {
+      const { data } = await supabase
+        .from("products")
+        .select("*")
+        .ilike("category", `%${categoryPath}%`)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      setCatProducts((data as unknown as RawProduct[]) || []);
+    };
+    fetchCatProducts();
+  }, [categoryPath]);
 
   const fetchCategories = async () => {
     const query = parentId
@@ -381,6 +406,59 @@ const CategoriesTab = () => {
             </li>
           ))}
         </ul>
+      )}
+
+      {/* Products in this category */}
+      {catProducts.length > 0 && (
+        <div className="border-t border-border pt-4">
+          <h3 className="text-sm font-semibold text-foreground mb-3">
+            Produits dans « {categoryPath} » ({catProducts.length})
+          </h3>
+          <ul className="space-y-2">
+            {catProducts.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setSelectedProduct(p)}
+                className="w-full flex items-center gap-3 p-2 text-left hover:bg-accent/30 transition-colors border border-border rounded-lg bg-card"
+              >
+                {p.image_url ? (
+                  <img src={p.image_url} alt={p.name} className="w-12 h-12 rounded object-cover shrink-0" />
+                ) : (
+                  <div className="w-12 h-12 rounded bg-muted flex items-center justify-center shrink-0">
+                    <Package className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{p.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {p.sell_price != null && `${Number(p.sell_price).toFixed(2).replace(".", ",")} € • `}
+                    {p.status === "brouillon" ? "Brouillon" : p.status === "en_traitement" ? "En traitement" : p.status === "valide" ? "Validé" : "Publié"}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {selectedProduct && (
+        <FicheProduit
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onUpdated={() => {
+            // Refresh both categories and products
+            fetchCategories();
+            if (categoryPath) {
+              supabase
+                .from("products")
+                .select("*")
+                .ilike("category", `%${categoryPath}%`)
+                .order("created_at", { ascending: false })
+                .limit(50)
+                .then(({ data }) => setCatProducts((data as unknown as RawProduct[]) || []));
+            }
+          }}
+        />
       )}
     </div>
   );

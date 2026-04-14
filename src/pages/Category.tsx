@@ -9,6 +9,7 @@ import ProductFormDialog from "@/components/ProductFormDialog";
 import T from "@/components/T";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { supabase } from "@/integrations/supabase/client";
 import { categoriesData, type CategoryData } from "@/data/categories";
 
 /** Translates an HTML string while preserving tags */
@@ -60,7 +61,30 @@ const Category = () => {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [formOpen, setFormOpen] = useState(false);
+  const [dbProducts, setDbProducts] = useState<Array<{id: string; name: string; image_url: string | null; sell_price: number | null; category: string | null}>>([]);
   const category = slug ? categoriesData[slug] || buildFallbackCategory(slug) : null;
+
+  // Fetch published products from DB matching this category
+  useEffect(() => {
+    if (!category) return;
+    const fetchPublished = async () => {
+      const { data } = await supabase
+        .from("products")
+        .select("id, name, image_url, sell_price, category")
+        .eq("status", "publie" as any)
+        .order("created_at", { ascending: false });
+      if (data) {
+        // Match products whose category text contains the category name (case-insensitive)
+        const catName = category.name.toLowerCase();
+        const matched = (data as any[]).filter((p: any) =>
+          p.category?.toLowerCase().includes(catName) ||
+          catName.includes(p.category?.toLowerCase() || "___")
+        );
+        setDbProducts(matched);
+      }
+    };
+    fetchPublished();
+  }, [category?.name]);
 
   if (!category) {
     return (
@@ -122,7 +146,8 @@ const Category = () => {
           </div>
         )}
 
-        {category.products.length > 0 ? (
+        {/* Static products */}
+        {category.products.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {category.products.map((product, index) => (
               <CategoryProductCard
@@ -137,7 +162,28 @@ const Category = () => {
               />
             ))}
           </div>
-        ) : (
+        )}
+
+        {/* DB published products */}
+        {dbProducts.length > 0 && (
+          <>
+            {category.products.length > 0 && <div className="my-6 border-t border-border" />}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+              {dbProducts.map((p) => (
+                <CategoryProductCard
+                  key={p.id}
+                  image={p.image_url || "/placeholder.svg"}
+                  name={p.name}
+                  price={p.sell_price != null ? `${p.sell_price.toFixed(2).replace(".", ",")} €` : "—"}
+                  unit="/m"
+                  categoryName={category.name}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {category.products.length === 0 && dbProducts.length === 0 && (
           <div className="text-center py-16">
             <p className="text-muted-foreground mb-6"><T>Les produits arrivent bientôt !</T></p>
             {isAdmin && (
