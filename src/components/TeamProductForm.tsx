@@ -12,6 +12,7 @@ interface Props {
 }
 
 type Step = "form" | "post-save" | "variants";
+type SavingSource = null | "variante" | "suivant" | "terminer";
 
 const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSession }: Props) => {
   const prefix = supplierCode ? `${supplierCode}_` : "";
@@ -22,6 +23,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [savingSource, setSavingSource] = useState<SavingSource>(null);
   const [savedProductName, setSavedProductName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -393,17 +395,17 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
           {/* Variante + Suivant on same row */}
           <div className="flex gap-3">
             <button
-              onClick={() => handleSave("variants")}
+              onClick={() => { setSavingSource("variante"); handleSave("variants"); }}
               disabled={saving || !canSave}
               className="flex-1 bg-primary text-primary-foreground rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
             >
               <Palette className="w-6 h-6" />
               <p className="font-bold text-sm">Variante</p>
-              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+              {saving && savingSource === "variante" && <Loader2 className="w-4 h-4 animate-spin" />}
             </button>
 
             <button
-              onClick={() => handleSave("form")}
+              onClick={() => { setSavingSource("suivant"); handleSave("form"); }}
               disabled={saving || !canSave}
               className="flex-1 bg-card border-2 border-border rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
             >
@@ -415,7 +417,9 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
           {/* Terminer le magasin */}
           <button
             onClick={async () => {
+              setSavingSource("terminer");
               if (canSave) {
+                setSaving(true);
                 await handleSave();
               }
               handleFinish();
@@ -423,7 +427,11 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
             disabled={saving}
             className="w-full bg-card border-2 border-border rounded-2xl p-4 flex items-center gap-3 active:scale-[0.97] transition-transform shadow-md"
           >
-            <LogOut className="w-6 h-6 text-red-500 shrink-0" />
+            {saving && savingSource === "terminer" ? (
+              <Loader2 className="w-6 h-6 animate-spin text-red-500 shrink-0" />
+            ) : (
+              <LogOut className="w-6 h-6 text-red-500 shrink-0" />
+            )}
             <div className="text-left flex-1">
               <p className="font-bold text-foreground">Terminer le magasin</p>
               <p className="text-xs text-muted-foreground">Prochain magasin</p>
