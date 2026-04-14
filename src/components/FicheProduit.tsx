@@ -108,35 +108,99 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
 
   const [saving, setSaving] = useState(false);
   const [supplierCode, setSupplierCode] = useState<string | null>(null);
+  const [qrcodePath, setQrcodePath] = useState<string | null>(null);
   const [qrcodeImageUrl, setQrcodeImageUrl] = useState<string | null>(null);
   const [showQrcode, setShowQrcode] = useState(false);
+  const [qrcodeLoading, setQrcodeLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (product.qrcode_id) {
-      const fetchQrcode = async () => {
-        const { data } = await supabase
-          .from("wechat_qrcodes")
-          .select("supplier_code, image_path")
-          .eq("id", product.qrcode_id!)
-          .maybeSingle();
-        if (data) {
-          setSupplierCode(data.supplier_code);
-          if (data.image_path) {
-            const { data: signedData } = await supabase.storage.from("wechat-qrcodes").createSignedUrl(data.image_path, 3600);
-            if (signedData?.signedUrl) setQrcodeImageUrl(signedData.signedUrl);
-          }
-        }
-      };
-      fetchQrcode();
-    }
+    let isActive = true;
+
+    const fetchQrcodeMeta = async () => {
+      setSupplierCode(null);
+      setQrcodePath(null);
+      setQrcodeImageUrl(null);
+      setShowQrcode(false);
+      setQrcodeLoading(false);
+
+      if (!product.qrcode_id) return;
+
+      const { data } = await supabase
+        .from("wechat_qrcodes")
+        .select("supplier_code, image_path")
+        .eq("id", product.qrcode_id)
+        .maybeSingle();
+
+      if (!isActive || !data) return;
+
+      setSupplierCode(data.supplier_code);
+      setQrcodePath(data.image_path || null);
+    };
+
+    fetchQrcodeMeta();
+
+    return () => {
+      isActive = false;
+    };
   }, [product.qrcode_id]);
+
+  const openQrcodeModal = async () => {
+    if (!product.qrcode_id) return;
+
+    setShowQrcode(true);
+    setQrcodeLoading(true);
+    setQrcodeImageUrl(null);
+
+    let imagePath = qrcodePath;
+
+    if (!imagePath) {
+      const { data } = await supabase
+        .from("wechat_qrcodes")
+        .select("supplier_code, image_path")
+        .eq("id", product.qrcode_id)
+        .maybeSingle();
+
+      if (data?.supplier_code) setSupplierCode(data.supplier_code);
+      imagePath = data?.image_path || null;
+      setQrcodePath(imagePath);
+    }
+
+    if (!imagePath) {
+      setQrcodeLoading(false);
+      toast.error("QR code introuvable");
+      return;
+    }
+
+    const { data: signedData, error } = await supabase.storage
+      .from("wechat-qrcodes")
+      .createSignedUrl(imagePath, 3600);
+
+    const rawSignedUrl =
+      signedData?.signedUrl ??
+      (signedData as { signedURL?: string } | null)?.signedURL ??
+      null;
+
+    const resolvedSignedUrl = rawSignedUrl
+      ? rawSignedUrl.startsWith("http")
+        ? rawSignedUrl
+        : `${import.meta.env.VITE_SUPABASE_URL}/storage/v1${rawSignedUrl}`
+      : null;
+
+    if (error || !resolvedSignedUrl) {
+      setQrcodeLoading(false);
+      toast.error("Impossible de charger le QR code");
+      return;
+    }
+
+    setQrcodeImageUrl(resolvedSignedUrl);
+    setQrcodeLoading(false);
+  };
 
   const toggleBadge = async (key: keyof typeof badges) => {
     if (!canEditBadges) return;
     const newVal = !badges[key];
     setBadges((prev) => ({ ...prev, [key]: newVal }));
-    // Auto-save
     await supabase.from("products").update({ [key]: newVal } as any).eq("id", product.id);
   };
 
@@ -183,7 +247,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
     }
     if (role === "superadmin" || role === "admin") {
       if (currentStatus === "valide") return "publie";
-      if (currentStatus !== "publie") return "publie"; // admin can publish directly
+      if (currentStatus !== "publie") return "publie";
       return null;
     }
     return null;
@@ -291,7 +355,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
             )}
             {product.qrcode_id && (
               <button
-                onClick={() => setShowQrcode(true)}
+                onClick={openQrcodeModal}
                 className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground hover:bg-accent transition-colors"
                 title="Voir le QR code fournisseur"
               >
@@ -305,7 +369,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
         </div>
 
         {/* QR Code Modal */}
-        {showQrcode && qrcodeImageUrl && (
+        {showQrcode && (
           <div className="fixed inset-0 z-[60] bg-black/70 flex items-center justify-center" onClick={() => setShowQrcode(false)}>
             <div className="relative max-w-sm w-full mx-4" onClick={(e) => e.stopPropagation()}>
               <button
@@ -314,7 +378,29 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
               >
                 <X className="w-4 h-4" />
               </button>
-              <img src={qrcodeImageUrl} alt="QR Code fournisseur" className="w-full rounded-xl shadow-2xl" />
+
+              <div className="overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
+                {qrcodeLoading ? (
+                  <div className="flex min-h-48 flex-col items-center justify-center gap-3 text-muted-foreground">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <span className="text-sm">Chargement du QR code...</span>
+                  </div>
+                ) : qrcodeImageUrl ? (
+                  <img
+                    src={qrcodeImageUrl}
+                    alt={`QR code fournisseur ${supplierCode ?? ""}`.trim()}
+                    className="w-full"
+                    onError={() => {
+                      setQrcodeImageUrl(null);
+                      toast.error("Impossible d'afficher le QR code");
+                    }}
+                  />
+                ) : (
+                  <div className="flex min-h-48 items-center justify-center px-6 text-sm text-muted-foreground">
+                    QR code indisponible
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
