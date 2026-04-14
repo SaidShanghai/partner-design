@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 interface Props {
   qrcodeId: string;
+  supplierCode: string;
   onClose: () => void;
   onSaved: () => void;
 }
