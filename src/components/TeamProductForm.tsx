@@ -79,13 +79,21 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
     }
   };
 
+  const roundToNearestPricingPoint = (val: number): number => {
+    const whole = Math.floor(val);
+    const cents = val - whole;
+    if (cents <= 0.49) return whole + 0.49;
+    return whole + 0.99;
+  };
+
   const getConvertedEuroPrice = () => {
     const parsedPrice = price ? parseFloat(price) : NaN;
     if (!Number.isFinite(parsedPrice)) return null;
     if (exchangeRate && exchangeRate > 0) {
-      return Number(((parsedPrice / exchangeRate) * 3).toFixed(2));
+      const raw = (parsedPrice / exchangeRate) * 3;
+      return roundToNearestPricingPoint(raw);
     }
-    return null; // no rate available, don't guess
+    return null;
   };
 
   const uploadImage = async (file: File): Promise<{ imageUrl: string; overlayCode: string } | null> => {
