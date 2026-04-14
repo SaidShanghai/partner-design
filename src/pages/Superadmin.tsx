@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft, Plus, Pencil, Trash2, ChevronRight, GripVertical, LogOut,
-  Search, Package, FolderTree
+  Search, Package, FolderTree, ExternalLink
 } from "lucide-react";
 import FicheProduit from "@/components/FicheProduit";
 
@@ -60,9 +60,17 @@ const Superadmin = () => {
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
         <div className="flex items-center justify-between px-4 py-3">
           <h1 className="text-lg font-bold text-foreground">Superadmin</h1>
-          <button onClick={signOut} className="text-muted-foreground hover:text-foreground">
-            <LogOut className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <a
+              href="/"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              <ExternalLink className="w-3.5 h-3.5" /> Voir le site
+            </a>
+            <button onClick={signOut} className="text-muted-foreground hover:text-foreground">
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}
