@@ -320,11 +320,24 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
 
             {/* Right: Fields */}
             <div className="flex-1 space-y-4">
-              {/* UNB + Category row */}
+              {/* Référence (UNS) - full width */}
+              {canSeeCodes && (
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1">Référence (UNS)</label>
+                  <input
+                    type="text"
+                    value={product.reference || "—"}
+                    disabled
+                    className="w-full h-10 rounded-lg border border-input bg-muted/50 px-3 text-sm text-foreground"
+                  />
+                </div>
+              )}
+
+              {/* UNB + Catégorie row */}
               {canSeeCodes && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-foreground mb-1">UNB (identifiant unique)</label>
+                    <label className="block text-sm font-semibold text-foreground mb-1">UNB</label>
                     <input
                       type="text"
                       value={product.unb || "—"}
@@ -363,34 +376,8 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
                 </div>
               )}
 
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1">Nom *</label>
-                {canEditFields ? (
-                  <input
-                    type="text"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground"
-                  />
-                ) : (
-                  <input type="text" value={form.name} disabled className="w-full h-10 rounded-lg border border-input bg-muted/50 px-3 text-sm" />
-                )}
-              </div>
-
-              {/* Référence + Prix */}
+              {/* Prix */}
               <div className="grid grid-cols-2 gap-4">
-                {canSeeCodes && (
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-1">Référence (UNS)</label>
-                    <input
-                      type="text"
-                      value={product.reference || "—"}
-                      disabled
-                      className="w-full h-10 rounded-lg border border-input bg-muted/50 px-3 text-sm text-foreground"
-                    />
-                  </div>
-                )}
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-1">Prix (€)</label>
                   {canEditFields ? (
