@@ -134,7 +134,7 @@ const Backoffice = () => {
                 <p className="font-medium text-foreground text-sm truncate">{p.name}</p>
                 {p.reference && <p className="text-xs font-mono text-primary">{p.reference}</p>}
                 <p className="text-xs text-muted-foreground">
-                  {p.price != null && <span className="font-medium text-foreground">{(p.price * 3).toFixed(2).replace(".", ",")} €</span>}
+                  {p.price != null && <span className="font-medium text-foreground">{p.price.toFixed(2).replace(".", ",")} €</span>}
                   {p.price != null && " • "}
                   {p.category || "Sans catégorie"} • {new Date(p.created_at).toLocaleDateString("fr")}
                 </p>
