@@ -140,7 +140,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) =>
 
         {/* Nom */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Nom du tissu <span className="text-destructive">*</span></label>
+          <label className="block text-sm font-medium text-foreground mb-1">Référence du tissu <span className="text-destructive">*</span></label>
           <input
             type="text"
             value={name}
