@@ -37,8 +37,6 @@ const categories = [
   "TISSUS ENFANTS",
   "IMPRIMÉS",
   "SACS",
-  "PATRONS DE COUTURE",
-  "TRICOT & CROCHET",
 ];
 
 const megaMenus: Record<string, MegaMenuData> = {
