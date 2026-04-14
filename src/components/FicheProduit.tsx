@@ -220,7 +220,12 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
       <div className="bg-background rounded-2xl w-full max-w-3xl mx-4 shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="text-xl font-bold text-foreground">Fiche produit</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-foreground">Fiche produit</h2>
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[currentStatus] || ""}`}>
+              {STATUS_LABELS[currentStatus] || currentStatus}
+            </span>
+          </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-6 h-6" />
           </button>
