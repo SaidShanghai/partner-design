@@ -179,7 +179,6 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
   const getNextStatus = (): string | null => {
     if (role === "backoffice") {
       if (currentStatus === "brouillon") return "en_traitement";
-      if (currentStatus === "en_traitement") return "valide";
       return null;
     }
     if (role === "superadmin" || role === "admin") {
