@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       if (!error && data) return r;
     }
-    return null;
+    return "none";
   }, []);
 
   useEffect(() => {
