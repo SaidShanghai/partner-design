@@ -429,18 +429,12 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-1">Prix (€)</label>
-                  {canEditFields ? (
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={form.sell_price ?? ""}
-                      onChange={(e) => setForm({ ...form, sell_price: e.target.value ? parseFloat(e.target.value) : null })}
-                      placeholder="0.00"
-                      className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm"
-                    />
-                  ) : (
-                    <input type="text" value={form.sell_price ? `${form.sell_price.toFixed(2)}` : "—"} disabled className="w-full h-10 rounded-lg border border-input bg-muted/50 px-3 text-sm" />
-                  )}
+                  <input
+                    type="text"
+                    value={form.sell_price ? `${form.sell_price.toFixed(2)}` : "—"}
+                    disabled
+                    className="w-full h-10 rounded-lg border border-input bg-muted/50 px-3 text-sm text-foreground"
+                  />
                 </div>
               </div>
 
