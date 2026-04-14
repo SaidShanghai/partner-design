@@ -184,6 +184,9 @@ const Team = () => {
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{prod.name}</p>
+                        {prod.reference && (
+                          <p className="text-xs text-primary font-mono">{prod.reference}</p>
+                        )}
                         <p className="text-xs text-muted-foreground">
                           {prod.category || "Sans catégorie"} · {new Date(prod.created_at).toLocaleDateString("fr-FR")}
                         </p>
