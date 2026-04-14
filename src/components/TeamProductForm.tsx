@@ -5,11 +5,12 @@ import { toast } from "sonner";
 
 interface Props {
   qrcodeId: string;
+  supplierCode: string;
   onClose: () => void;
   onSaved: () => void;
 }
 
-const TeamProductForm = ({ qrcodeId, onClose, onSaved }: Props) => {
+const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
@@ -34,19 +35,37 @@ const TeamProductForm = ({ qrcodeId, onClose, onSaved }: Props) => {
     setSaving(true);
     try {
       let imageUrl: string | null = null;
+      let overlayCode: string | null = null;
 
       if (imageFile) {
-        const ext = imageFile.name.split(".").pop() || "jpg";
-        const path = `team/${Date.now()}.${ext}`;
-        const { error: uploadErr } = await supabase.storage
-          .from("product-images")
-          .upload(path, imageFile);
-        if (uploadErr) throw uploadErr;
+        // Call burn-overlay edge function
+        const formData = new FormData();
+        formData.append("file", imageFile);
+        formData.append("supplier_code", supplierCode);
 
-        const { data: urlData } = supabase.storage
-          .from("product-images")
-          .getPublicUrl(path);
-        imageUrl = urlData.publicUrl;
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+
+        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+        const resp = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/burn-overlay`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          }
+        );
+
+        if (!resp.ok) {
+          const errBody = await resp.json().catch(() => ({}));
+          throw new Error(errBody.error || "Erreur lors du traitement de l'image");
+        }
+
+        const result = await resp.json();
+        imageUrl = result.image_url;
+        overlayCode = result.overlay_code;
       }
 
       const { error: insertErr } = await supabase.from("products").insert({
@@ -55,6 +74,7 @@ const TeamProductForm = ({ qrcodeId, onClose, onSaved }: Props) => {
         category: category.trim() || null,
         image_url: imageUrl || "",
         qrcode_id: qrcodeId,
+        reference: overlayCode || null,
       } as any);
 
       if (insertErr) throw insertErr;
@@ -86,6 +106,11 @@ const TeamProductForm = ({ qrcodeId, onClose, onSaved }: Props) => {
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-5">
+        {/* Supplier info */}
+        <div className="bg-muted/50 rounded-xl px-4 py-2 text-xs text-muted-foreground font-mono">
+          🏪 {supplierCode}
+        </div>
+
         {/* Photo */}
         <input
           ref={fileRef}
