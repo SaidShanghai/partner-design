@@ -190,7 +190,16 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
       .from("products")
       .update({
         status: nextStatus,
+        name: form.name.trim(),
+        category: form.category || null,
+        reference: form.reference || null,
         sell_price: form.sell_price ?? null,
+        composition: form.composition || null,
+        width_cm: form.width_cm || null,
+        weight_gsm: form.weight_gsm || null,
+        color: form.color || null,
+        description: form.description || null,
+        image_url: form.image_url || null,
       } as any)
       .eq("id", product.id);
     if (error) {
