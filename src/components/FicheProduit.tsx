@@ -293,27 +293,29 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
               </div>
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 
-              {/* Badges */}
-              <div>
-                <h3 className="text-sm font-semibold text-foreground mb-2">Badges</h3>
-                <div className="space-y-1.5">
-                  {BADGES.map(({ key, label }) => (
-                    <label
-                      key={key}
-                      className={`flex items-center gap-2 text-sm ${canEditBadges ? "cursor-pointer" : "cursor-default"}`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={badges[key]}
-                        onChange={() => toggleBadge(key)}
-                        disabled={!canEditBadges}
-                        className="w-4 h-4 rounded border-border text-primary focus:ring-primary disabled:opacity-60"
-                      />
-                      <span className="text-foreground">{label}</span>
-                    </label>
-                  ))}
+              {/* Badges - hidden for team role */}
+              {role !== "team" && (
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground mb-2">Badges</h3>
+                  <div className="space-y-1.5">
+                    {BADGES.map(({ key, label }) => (
+                      <label
+                        key={key}
+                        className={`flex items-center gap-2 text-sm ${canEditBadges ? "cursor-pointer" : "cursor-default"}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={badges[key]}
+                          onChange={() => toggleBadge(key)}
+                          disabled={!canEditBadges}
+                          className="w-4 h-4 rounded border-border text-primary focus:ring-primary disabled:opacity-60"
+                        />
+                        <span className="text-foreground">{label}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Right: Fields */}
