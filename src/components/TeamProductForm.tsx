@@ -384,7 +384,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
         <div className="space-y-3 pt-4 border-t border-border">
           {/* Enregistrer + Variante */}
           <button
-            onClick={async () => { await handleSave(); }}
+            onClick={() => handleSave("variants")}
             disabled={saving || !canSave}
             className="w-full bg-primary text-primary-foreground rounded-2xl p-4 flex items-center gap-3 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
           >
@@ -398,11 +398,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
 
           {/* Enregistrer + Suivant */}
           <button
-            onClick={async () => {
-              await handleSave();
-              // handleSave sets step to post-save, but we want to go directly to next
-              // We override by calling handleNext after save
-            }}
+            onClick={() => handleSave("form")}
             disabled={saving || !canSave}
             className="w-full bg-card border-2 border-border rounded-2xl p-4 flex items-center gap-3 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
           >
