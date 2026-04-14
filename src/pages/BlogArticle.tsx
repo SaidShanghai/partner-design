@@ -54,6 +54,22 @@ const BlogArticle = () => {
               </p>
             ))}
           </div>
+
+          {/* CTA B2B */}
+          <div className="mt-12 rounded-xl bg-primary/5 border border-primary/20 p-8 md:p-10 text-center">
+            <h3 className="text-2xl md:text-3xl font-semibold text-foreground mb-3">
+              <T>Prêt à sourcer directement depuis la Chine ?</T>
+            </h3>
+            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+              <T>Contactez notre équipe pour un devis personnalisé selon vos volumes et vos besoins textile.</T>
+            </p>
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+            >
+              <T>Demander un devis</T> →
+            </Link>
+          </div>
         </article>
       </main>
 
