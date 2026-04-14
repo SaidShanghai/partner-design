@@ -217,7 +217,39 @@ const Team = () => {
           </div>
         )}
 
-        {/* Category Grid */}
+        {/* My Products Today */}
+        {isTopLevel && myProducts.length > 0 && (
+          <div className="px-4 pb-4">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Mes produits du jour ({myProducts.length})
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {myProducts.map((prod) => (
+                <button
+                  key={prod.id}
+                  onClick={() => setSelectedProduct(prod)}
+                  className="bg-card border border-border rounded-xl overflow-hidden text-left active:scale-[0.97] transition-transform"
+                >
+                  {prod.image_url ? (
+                    <img src={prod.image_url} alt={prod.name} className="w-full aspect-square object-cover" />
+                  ) : (
+                    <div className="w-full aspect-square bg-muted flex items-center justify-center">
+                      <Package className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="p-2">
+                    <p className="text-xs font-medium text-foreground truncate">{prod.name}</p>
+                    {prod.price && (
+                      <p className="text-xs text-primary font-semibold">{Number(prod.price).toFixed(2)} €</p>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {viewMode === "categories" && !loadingCats && (
           <div className="p-4 grid grid-cols-2 gap-3">
             {categories.map((cat, i) => (
