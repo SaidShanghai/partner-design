@@ -354,6 +354,7 @@ export type Database = {
           color: string | null
           composition: string | null
           created_at: string
+          created_by: string | null
           description: string | null
           id: string
           image_url: string | null
@@ -381,6 +382,7 @@ export type Database = {
           color?: string | null
           composition?: string | null
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           image_url?: string | null
@@ -408,6 +410,7 @@ export type Database = {
           color?: string | null
           composition?: string | null
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           image_url?: string | null
