@@ -298,7 +298,7 @@ const SiteHeader = () => {
         setActiveMenu(cat);
       }
     }, 200);
-  }, []);
+  }, [dynamicMegaMenus]);
 
   const handleMenuLeave = useCallback(() => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
