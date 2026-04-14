@@ -297,7 +297,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
               {role !== "team" && (
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-2">Badges</h3>
-                  <div className="space-y-1.5">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
                     {BADGES.map(({ key, label }) => (
                       <label
                         key={key}
