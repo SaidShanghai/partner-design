@@ -76,7 +76,7 @@ const BADGES = [
 const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
   const { role } = useAuth();
   const isReadOnly = role === "team";
-  const canSeeCodes = role === "superadmin" || role === "admin" || role === "backoffice";
+  const canSeeCodes = role === "superadmin" || role === "admin" || role === "backoffice" || role === "team";
   const canEditFields = role === "superadmin" || role === "admin" || role === "backoffice";
   const canEditBadges = role === "superadmin" || role === "admin" || role === "backoffice";
 
