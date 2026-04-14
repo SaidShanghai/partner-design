@@ -1,9 +1,10 @@
 import { Search, User, Heart, ShoppingBag, LogOut, Shield, LayoutDashboard } from "lucide-react";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCart } from "@/hooks/useCart";
+import { supabase } from "@/integrations/supabase/client";
 import T from "@/components/T";
 import MegaMenu, { type MegaMenuData } from "./MegaMenu";
 import sangleImg from "@/assets/mercerie-sangle.jpg";
@@ -99,35 +100,8 @@ const megaMenus: Record<string, MegaMenuData> = {
       { label: "Nouvelle collection 2026" },
       { label: "Tissus Unis Essentiels" },
       { label: "Tissus fêtes & cérémonies" },
-      { label: "Matelassé" },
-      { label: "Viscose" },
     ],
-    columns: [
-      {
-        title: "Par tissu A-I",
-        items: ["Broderie anglaise", "Bord-côte", "Bouclette", "Draps de laine", "Chambray", "Coton", "Crepe", "Tissu crochet", "Double gaze", "Dentelles", "Écossais, Tartan Prince de galles", "Fausse fourrure", "Gabardine", "Imperméables et parka"],
-      },
-      {
-        title: "J-S",
-        items: ["Jacquards habillement", "Jean et denim", "Jersey", "Maille polo", "Lainage et maille", "Lin", "Lycra et Maillot de bain", "Lyocell", "Tissu manteau", "Microfibre et Polyester", "Polaire", "Popeline de coton", "Plumetis", "Satin", "Sequins, paillettes et fête", "Sergé et twill"],
-      },
-      {
-        title: "S-W",
-        items: ["Scuba et Milano", "Seersucker", "Sherpa mouton", "Soie", "Simili cuir Habillement", "Softshell", "Suédine habillement", "Sweat Molleton", "Taffetas", "Tweed", "Tulle et résille", "Viscose", "Velours vesti", "Voile, mousseline", "Wax"],
-      },
-      {
-        title: "Par projet",
-        items: ["Tissu pour robe", "Tissus fêtes & cérémonies"],
-      },
-      {
-        title: "Tissus créateurs",
-        items: ["Katia Fabrics", "Liberty Fabrics", "Petit Pan"],
-      },
-      {
-        title: "Tissus techniques",
-        items: ["Doublure", "PUL", "Toile tailleur", "Toile a patron", "Vlieseline / thermocollant"],
-      },
-    ],
+    columns: [], // Will be filled dynamically from DB
     images: [
       { src: tissuNouvelleImg, alt: "Nouvelle collection", label: "Nouvelle collection" },
     ],
@@ -279,16 +253,52 @@ const SiteHeader = () => {
   const { language } = useLanguage();
   const { totalItems } = useCart();
   const location = useLocation();
+  const [dbSubcategories, setDbSubcategories] = useState<string[]>([]);
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Fetch habillement subcategories from DB
+  useEffect(() => {
+    const fetchSubs = async () => {
+      const { data } = await supabase
+        .from("categories")
+        .select("name")
+        .eq("parent_id", "692d5461-3876-47fb-891b-535fae034482")
+        .order("position");
+      if (data) setDbSubcategories(data.map((c) => c.name));
+    };
+    fetchSubs();
+  }, []);
+
+  // Build dynamic mega menu for TISSU HABILLEMENT
+  const dynamicMegaMenus = useMemo(() => {
+    if (dbSubcategories.length === 0) return megaMenus;
+
+    // Split subcategories into columns of ~11 items
+    const colSize = Math.ceil(dbSubcategories.length / 4);
+    const cols = [];
+    for (let i = 0; i < dbSubcategories.length; i += colSize) {
+      const chunk = dbSubcategories.slice(i, i + colSize);
+      const first = chunk[0]?.[0] || "";
+      const last = chunk[chunk.length - 1]?.[0] || "";
+      cols.push({ title: `${first}–${last}`, items: chunk });
+    }
+
+    return {
+      ...megaMenus,
+      "TISSU HABILLEMENT": {
+        ...megaMenus["TISSU HABILLEMENT"],
+        columns: cols,
+      },
+    };
+  }, [dbSubcategories]);
   const handleMenuEnter = useCallback((cat: string) => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     hoverTimeout.current = setTimeout(() => {
-      if (megaMenus[cat]) {
+      if (dynamicMegaMenus[cat]) {
         setActiveMenu(cat);
       }
     }, 200);
-  }, []);
+  }, [dynamicMegaMenus]);
 
   const handleMenuLeave = useCallback(() => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
@@ -400,9 +410,9 @@ const SiteHeader = () => {
             <T>COUPONS À -20%</T>
           </a>
         </div>
-        {activeMenu && megaMenus[activeMenu] && (
+        {activeMenu && dynamicMegaMenus[activeMenu] && (
           <div onMouseEnter={handleMegaMenuEnter} onMouseLeave={handleMenuLeave}>
-            <MegaMenu data={megaMenus[activeMenu]} onClose={() => setActiveMenu(null)} />
+            <MegaMenu data={dynamicMegaMenus[activeMenu]} onClose={() => setActiveMenu(null)} />
           </div>
         )}
       </nav>
