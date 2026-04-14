@@ -27,6 +27,7 @@ interface Product {
   badge_exclusivite: boolean;
   badge_stock_limite: boolean;
   status?: string;
+  qrcode_id?: string | null;
 }
 
 interface Props {
