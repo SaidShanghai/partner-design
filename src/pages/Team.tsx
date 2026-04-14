@@ -162,7 +162,7 @@ const Team = () => {
         </div>
       </header>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-6 gap-5">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {/* Scanner QR */}
         <button
           onClick={() => setShowQRUpload(true)}
