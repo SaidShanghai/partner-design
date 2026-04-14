@@ -344,7 +344,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
             type="text"
             value={nameSuffix}
             onChange={(e) => setNameSuffix(e.target.value.replace(/\s/g, ""))}
-            placeholder="nom-du-tissu"
+            placeholder="Référence"
             className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
