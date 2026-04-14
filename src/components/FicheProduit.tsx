@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { X, Trash2, Camera, Loader2, Store } from "lucide-react";
+import { X, Trash2, Camera, Loader2, Store, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth, AppRole } from "@/hooks/useAuth";
 
