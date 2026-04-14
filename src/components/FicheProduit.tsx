@@ -26,6 +26,7 @@ interface Product {
   badge_promo: boolean;
   badge_exclusivite: boolean;
   badge_stock_limite: boolean;
+  status?: string;
 }
 
 interface Props {
@@ -131,6 +132,55 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
 
   const handleDeleteImage = () => {
     setForm((prev) => ({ ...prev, image_url: "" }));
+  };
+
+  const STATUS_LABELS: Record<string, string> = {
+    brouillon: "Brouillon",
+    en_traitement: "En traitement",
+    valide: "Validé",
+    publie: "Publié",
+  };
+
+  const STATUS_COLORS: Record<string, string> = {
+    brouillon: "bg-orange-500/10 text-orange-600",
+    en_traitement: "bg-blue-500/10 text-blue-600",
+    valide: "bg-emerald-500/10 text-emerald-600",
+    publie: "bg-green-500/10 text-green-600",
+  };
+
+  const currentStatus = product.status || "brouillon";
+
+  const getNextStatus = (): string | null => {
+    if (role === "backoffice") {
+      if (currentStatus === "brouillon") return "en_traitement";
+      if (currentStatus === "en_traitement") return "valide";
+      return null;
+    }
+    if (role === "superadmin" || role === "admin") {
+      if (currentStatus === "valide") return "publie";
+      if (currentStatus !== "publie") return "publie"; // admin can publish directly
+      return null;
+    }
+    return null;
+  };
+
+  const nextStatus = getNextStatus();
+
+  const handleStatusChange = async () => {
+    if (!nextStatus) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("products")
+      .update({ status: nextStatus } as any)
+      .eq("id", product.id);
+    if (error) {
+      toast.error("Erreur changement de statut");
+    } else {
+      toast.success(`Statut → ${STATUS_LABELS[nextStatus]}`);
+      onUpdated();
+      onClose();
+    }
+    setSaving(false);
   };
 
   const handleSave = async () => {
