@@ -460,16 +460,27 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
                 )}
               </div>
 
-              {/* Save button */}
+              {/* Action buttons */}
               {canEditFields && (
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-base flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-primary/90 transition-colors"
-                >
-                  {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-                  {saving ? "Enregistrement..." : "Enregistrer le produit"}
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="flex-1 h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-base flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-primary/90 transition-colors"
+                  >
+                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+                    {saving ? "..." : "Enregistrer"}
+                  </button>
+                  {nextStatus && (
+                    <button
+                      onClick={handleStatusChange}
+                      disabled={saving}
+                      className="flex-1 h-12 rounded-xl bg-emerald-600 text-white font-semibold text-base flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-emerald-700 transition-colors"
+                    >
+                      {STATUS_LABELS[nextStatus]} →
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>
