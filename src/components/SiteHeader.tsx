@@ -253,8 +253,44 @@ const SiteHeader = () => {
   const { language } = useLanguage();
   const { totalItems } = useCart();
   const location = useLocation();
+  const [dbSubcategories, setDbSubcategories] = useState<string[]>([]);
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Fetch habillement subcategories from DB
+  useEffect(() => {
+    const fetchSubs = async () => {
+      const { data } = await supabase
+        .from("categories")
+        .select("name")
+        .eq("parent_id", "692d5461-3876-47fb-891b-535fae034482")
+        .order("position");
+      if (data) setDbSubcategories(data.map((c) => c.name));
+    };
+    fetchSubs();
+  }, []);
+
+  // Build dynamic mega menu for TISSU HABILLEMENT
+  const dynamicMegaMenus = useMemo(() => {
+    if (dbSubcategories.length === 0) return megaMenus;
+
+    // Split subcategories into columns of ~11 items
+    const colSize = Math.ceil(dbSubcategories.length / 4);
+    const cols = [];
+    for (let i = 0; i < dbSubcategories.length; i += colSize) {
+      const chunk = dbSubcategories.slice(i, i + colSize);
+      const first = chunk[0]?.[0] || "";
+      const last = chunk[chunk.length - 1]?.[0] || "";
+      cols.push({ title: `${first}–${last}`, items: chunk });
+    }
+
+    return {
+      ...megaMenus,
+      "TISSU HABILLEMENT": {
+        ...megaMenus["TISSU HABILLEMENT"],
+        columns: cols,
+      },
+    };
+  }, [dbSubcategories]);
   const handleMenuEnter = useCallback((cat: string) => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     hoverTimeout.current = setTimeout(() => {
