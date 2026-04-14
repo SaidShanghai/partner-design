@@ -2,30 +2,30 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import T from "@/components/T";
-import blog1 from "@/assets/blog-1.jpg";
-import blog2 from "@/assets/blog-2.jpg";
-import blog3 from "@/assets/blog-3.jpg";
+import blogKeqiao from "@/assets/blog-sourcing-keqiao.jpg";
+import blogLogistics from "@/assets/blog-logistics-china.jpg";
+import blogShipping from "@/assets/blog-shipping-europe.jpg";
 
 const posts = [
   {
-    image: blog1,
-    title: "Tuto couture galette de chaise déhoussable",
+    image: blogKeqiao,
+    title: "Sourcer du tissu directement depuis Keqiao : ce qu'il faut savoir",
     excerpt:
-      "Tuto couture galette de chaise avec le pas-à-pas détaillé et le patron PDF gratuit à télécharger",
+      "Keqiao est le plus grand marché textile au monde. Voici comment s'y approvisionner efficacement sans intermédiaire, avec un partenaire de confiance sur place.",
     date: "12 avril 2026",
   },
   {
-    image: blog2,
-    title: "Tuto couture gratuit nœud papillon",
+    image: blogLogistics,
+    title: "Pourquoi les distributeurs européens s'approvisionnent directement en Chine",
     excerpt:
-      "Découvrez notre tuto couture de nœud papillon avec patron PDF gratuit, idéal pour vos cérémonies",
+      "Délais maîtrisés, qualité constante, interlocuteur unique : les avantages concrets d'un sourcing direct sans intermédiaire pour votre activité.",
     date: "5 avril 2026",
   },
   {
-    image: blog3,
-    title: "Défi couture du mois",
+    image: blogShipping,
+    title: "Expédition textile Chine → Europe : choisir le bon mode selon votre volume",
     excerpt:
-      "Challenge couture Textile Partner : Cousez un sac demi-lune et tentez de gagner de jolis cadeaux 🎁",
+      "Express, fret aérien ou maritime : guide pratique pour optimiser vos coûts logistiques selon la taille de vos commandes.",
     date: "28 mars 2026",
   },
 ];
@@ -39,7 +39,7 @@ const Blog = () => {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-10">
           <h1 className="font-logo text-4xl md:text-5xl text-foreground mb-8">
-            <T>Notre blog couture</T>
+            <T>Ressources & Marché</T>
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
