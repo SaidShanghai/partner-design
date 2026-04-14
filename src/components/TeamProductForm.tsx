@@ -11,7 +11,8 @@ interface Props {
 }
 
 const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved }: Props) => {
-  const [name, setName] = useState(supplierCode ? `${supplierCode}_` : "");
+  const prefix = supplierCode ? `${supplierCode}_` : "";
+  const [nameSuffix, setNameSuffix] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
