@@ -278,6 +278,21 @@ export type Database = {
           },
         ]
       }
+      photo_daily_counter: {
+        Row: {
+          count: number
+          date: string
+        }
+        Insert: {
+          count?: number
+          date?: string
+        }
+        Update: {
+          count?: number
+          date?: string
+        }
+        Relationships: []
+      }
       product_pricing: {
         Row: {
           buy_price: number
@@ -606,6 +621,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      next_photo_number: { Args: never; Returns: number }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user" | "superadmin" | "team"
