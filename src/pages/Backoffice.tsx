@@ -104,9 +104,7 @@ const Backoffice = () => {
                 {f === "brouillon" ? "Brouillons" : f === "en_traitement" ? "En traitement" : f === "valide" ? "Validés" : "Tous"}
               </button>
             ))}
-            <span className="ml-auto text-xs text-muted-foreground self-center">
-              {filtered.length} produit{filtered.length > 1 ? "s" : ""}
-            </span>
+          </div>
           </div>
         </div>
       </header>
