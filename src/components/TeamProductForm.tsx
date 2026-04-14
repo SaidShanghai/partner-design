@@ -54,6 +54,11 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
     }
   };
 
+  const getConvertedEuroPrice = () => {
+    const parsedPrice = price ? parseFloat(price) : NaN;
+    return Number.isFinite(parsedPrice) ? Number((parsedPrice * 3).toFixed(2)) : null;
+  };
+
   const uploadImage = async (file: File): Promise<{ imageUrl: string; overlayCode: string } | null> => {
     const formData = new FormData();
     formData.append("file", file);
@@ -96,6 +101,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
     try {
       let imageUrl: string | null = null;
       let overlayCode: string | null = null;
+      const convertedEuroPrice = getConvertedEuroPrice();
 
       if (imageFile) {
         const result = await uploadImage(imageFile);
@@ -108,7 +114,8 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
       const { data: { user } } = await supabase.auth.getUser();
       const { error: insertErr } = await supabase.from("products").insert({
         name: nameSuffix.trim(),
-        price: price ? parseFloat(price) : null,
+        price: convertedEuroPrice,
+        sell_price: convertedEuroPrice,
         category: category.trim() || null,
         image_url: imageUrl || "",
         qrcode_id: qrcodeId,
@@ -140,12 +147,14 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
     setSavingVariants(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      const convertedEuroPrice = getConvertedEuroPrice();
 
       for (let i = 0; i < filesToUpload.length; i++) {
         const result = await uploadImage(filesToUpload[i]);
         await supabase.from("products").insert({
           name: `${savedProductName}_var${i + 1}`,
-          price: price ? parseFloat(price) : null,
+          price: convertedEuroPrice,
+          sell_price: convertedEuroPrice,
           category: category.trim() || null,
           image_url: result?.imageUrl || "",
           qrcode_id: qrcodeId,

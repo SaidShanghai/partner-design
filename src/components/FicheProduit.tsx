@@ -79,12 +79,18 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
   const canEditFields = role === "superadmin" || role === "admin" || role === "backoffice";
   const canEditBadges = role === "superadmin" || role === "admin" || role === "backoffice";
 
+  const derivedSellPrice =
+    product.sell_price ??
+    (product.price != null
+      ? Number(((product.status === "publie" ? product.price : product.price * 3)).toFixed(2))
+      : null);
+
   const [form, setForm] = useState({
     name: product.name || "",
     category: product.category || "",
     reference: product.reference || "",
     price: product.price,
-    sell_price: product.sell_price,
+    sell_price: derivedSellPrice,
     composition: product.composition || "",
     width_cm: product.width_cm,
     weight_gsm: product.weight_gsm,
@@ -171,7 +177,11 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
     setSaving(true);
     const { error } = await supabase
       .from("products")
-      .update({ status: nextStatus } as any)
+      .update({
+        status: nextStatus,
+        price: form.sell_price ?? null,
+        sell_price: form.sell_price ?? null,
+      } as any)
       .eq("id", product.id);
     if (error) {
       toast.error("Erreur changement de statut");
@@ -195,7 +205,8 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
         name: form.name.trim(),
         category: form.category || null,
         reference: form.reference || null,
-        sell_price: form.sell_price || null,
+        price: form.sell_price ?? null,
+        sell_price: form.sell_price ?? null,
         composition: form.composition || null,
         width_cm: form.width_cm || null,
         weight_gsm: form.weight_gsm || null,
