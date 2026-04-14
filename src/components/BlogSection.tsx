@@ -30,7 +30,7 @@ const BlogSection = () => {
             <T>Notre blog couture</T>
           </h3>
           <div className="flex gap-3">
-            <a href="#" className="text-sm text-foreground hover:text-primary transition-colors">
+            <a href="/blog" className="text-sm text-foreground hover:text-primary transition-colors">
               <T>Découvrir toutes nos actualités</T>
             </a>
           </div>
