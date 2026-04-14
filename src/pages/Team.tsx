@@ -95,8 +95,24 @@ const Team = () => {
     setLoadingProducts(false);
   };
 
+  const fetchMyProducts = async () => {
+    if (!user) return;
+    setLoadingMyProducts(true);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const { data } = await supabase
+      .from("products")
+      .select("*")
+      .eq("created_by", user.id)
+      .gte("created_at", today.toISOString())
+      .order("created_at", { ascending: false });
+    setMyProducts((data as unknown as ProductRow[]) || []);
+    setLoadingMyProducts(false);
+  };
+
   useEffect(() => {
     fetchCategories(null);
+    fetchMyProducts();
   }, []);
 
   const drillDown = async (cat: Category) => {
