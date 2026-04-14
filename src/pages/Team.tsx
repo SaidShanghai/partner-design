@@ -222,6 +222,11 @@ const Team = () => {
           supplierCode={activeSupplierCode!}
           onClose={() => setShowForm(false)}
           onSaved={() => fetchMyProducts()}
+          onFinishSession={() => {
+            setShowForm(false);
+            setActiveQrcodeId(null);
+            setActiveSupplierCode(null);
+          }}
         />
       )}
     </div>
