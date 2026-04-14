@@ -25,8 +25,7 @@ const Login = () => {
 
   useEffect(() => {
     if (loading || !user) return;
-    // Wait for role to be resolved before redirecting
-    if (role === null) return;
+    if (role === null) return; // Role not yet loaded
     if (role === "superadmin") navigate("/superadmin");
     else if (role === "team") navigate("/team");
     else navigate("/");
