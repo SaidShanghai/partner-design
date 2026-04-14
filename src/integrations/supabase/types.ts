@@ -539,6 +539,41 @@ export type Database = {
         }
         Relationships: []
       }
+      wechat_qrcodes: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          image_path: string
+          subcategory_id: string
+          supplier_code: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          image_path: string
+          subcategory_id: string
+          supplier_code: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          image_path?: string
+          subcategory_id?: string
+          supplier_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wechat_qrcodes_subcategory_id_fkey"
+            columns: ["subcategory_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
