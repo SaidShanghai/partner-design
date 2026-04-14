@@ -28,6 +28,7 @@ interface RawProduct {
   badge_promo: boolean;
   badge_exclusivite: boolean;
   badge_stock_limite: boolean;
+  status: string;
 }
 
 const Backoffice = () => {
@@ -35,7 +36,7 @@ const Backoffice = () => {
   const [products, setProducts] = useState<RawProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "pending" | "done">("pending");
+  const [filter, setFilter] = useState<"brouillon" | "en_traitement" | "valide" | "all">("brouillon");
   const [selectedProduct, setSelectedProduct] = useState<RawProduct | null>(null);
 
   const fetchProducts = async () => {
@@ -52,8 +53,7 @@ const Backoffice = () => {
   useEffect(() => { fetchProducts(); }, []);
 
   const filtered = products.filter((p) => {
-    if (filter === "pending" && p.sell_price) return false;
-    if (filter === "done" && !p.sell_price) return false;
+    if (filter !== "all" && p.status !== filter) return false;
     if (search) {
       const s = search.toLowerCase();
       return (
@@ -91,7 +91,7 @@ const Backoffice = () => {
             />
           </div>
           <div className="flex gap-2">
-            {(["pending", "done", "all"] as const).map((f) => (
+            {(["brouillon", "en_traitement", "valide", "all"] as const).map((f) => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
@@ -101,7 +101,7 @@ const Backoffice = () => {
                     : "bg-muted text-muted-foreground hover:bg-accent"
                 }`}
               >
-                {f === "pending" ? "À traiter" : f === "done" ? "Traités" : "Tous"}
+                {f === "brouillon" ? "Brouillons" : f === "en_traitement" ? "En traitement" : f === "valide" ? "Validés" : "Tous"}
               </button>
             ))}
             <span className="ml-auto text-xs text-muted-foreground self-center">
@@ -117,7 +117,7 @@ const Backoffice = () => {
           <div className="text-center text-muted-foreground py-12">Chargement...</div>
         ) : filtered.length === 0 ? (
           <div className="text-center text-muted-foreground py-12">
-            {filter === "pending" ? "Aucun produit à traiter 🎉" : "Aucun produit trouvé"}
+            {filter === "brouillon" ? "Aucun brouillon à traiter 🎉" : "Aucun produit trouvé"}
           </div>
         ) : (
           filtered.map((p) => (
@@ -141,15 +141,14 @@ const Backoffice = () => {
                 </p>
               </div>
               <div className="shrink-0">
-                {p.sell_price ? (
-                  <span className="text-xs bg-green-500/10 text-green-600 px-2 py-0.5 rounded-full font-medium">
-                    {p.sell_price.toFixed(2)} €
-                  </span>
-                ) : (
-                  <span className="text-xs bg-orange-500/10 text-orange-600 px-2 py-0.5 rounded-full font-medium">
-                    À traiter
-                  </span>
-                )}
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                  p.status === "brouillon" ? "bg-orange-500/10 text-orange-600" :
+                  p.status === "en_traitement" ? "bg-blue-500/10 text-blue-600" :
+                  p.status === "valide" ? "bg-emerald-500/10 text-emerald-600" :
+                  "bg-green-500/10 text-green-600"
+                }`}>
+                  {p.status === "brouillon" ? "Brouillon" : p.status === "en_traitement" ? "En traitement" : p.status === "valide" ? "Validé" : "Publié"}
+                </span>
               </div>
             </button>
           ))

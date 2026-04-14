@@ -26,6 +26,7 @@ interface Product {
   badge_promo: boolean;
   badge_exclusivite: boolean;
   badge_stock_limite: boolean;
+  status?: string;
 }
 
 interface Props {
@@ -133,6 +134,55 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
     setForm((prev) => ({ ...prev, image_url: "" }));
   };
 
+  const STATUS_LABELS: Record<string, string> = {
+    brouillon: "Brouillon",
+    en_traitement: "En traitement",
+    valide: "Validé",
+    publie: "Publié",
+  };
+
+  const STATUS_COLORS: Record<string, string> = {
+    brouillon: "bg-orange-500/10 text-orange-600",
+    en_traitement: "bg-blue-500/10 text-blue-600",
+    valide: "bg-emerald-500/10 text-emerald-600",
+    publie: "bg-green-500/10 text-green-600",
+  };
+
+  const currentStatus = product.status || "brouillon";
+
+  const getNextStatus = (): string | null => {
+    if (role === "backoffice") {
+      if (currentStatus === "brouillon") return "en_traitement";
+      if (currentStatus === "en_traitement") return "valide";
+      return null;
+    }
+    if (role === "superadmin" || role === "admin") {
+      if (currentStatus === "valide") return "publie";
+      if (currentStatus !== "publie") return "publie"; // admin can publish directly
+      return null;
+    }
+    return null;
+  };
+
+  const nextStatus = getNextStatus();
+
+  const handleStatusChange = async () => {
+    if (!nextStatus) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("products")
+      .update({ status: nextStatus } as any)
+      .eq("id", product.id);
+    if (error) {
+      toast.error("Erreur changement de statut");
+    } else {
+      toast.success(`Statut → ${STATUS_LABELS[nextStatus]}`);
+      onUpdated();
+      onClose();
+    }
+    setSaving(false);
+  };
+
   const handleSave = async () => {
     if (!form.name.trim()) {
       toast.error("Le nom est requis");
@@ -170,7 +220,12 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
       <div className="bg-background rounded-2xl w-full max-w-3xl mx-4 shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="text-xl font-bold text-foreground">Fiche produit</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-foreground">Fiche produit</h2>
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[currentStatus] || ""}`}>
+              {STATUS_LABELS[currentStatus] || currentStatus}
+            </span>
+          </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-6 h-6" />
           </button>
@@ -405,16 +460,27 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
                 )}
               </div>
 
-              {/* Save button */}
+              {/* Action buttons */}
               {canEditFields && (
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-base flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-primary/90 transition-colors"
-                >
-                  {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-                  {saving ? "Enregistrement..." : "Enregistrer le produit"}
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="flex-1 h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-base flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-primary/90 transition-colors"
+                  >
+                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+                    {saving ? "..." : "Enregistrer"}
+                  </button>
+                  {nextStatus && (
+                    <button
+                      onClick={handleStatusChange}
+                      disabled={saving}
+                      className="flex-1 h-12 rounded-xl bg-emerald-600 text-white font-semibold text-base flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-emerald-700 transition-colors"
+                    >
+                      {STATUS_LABELS[nextStatus]} →
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>

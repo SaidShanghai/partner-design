@@ -363,6 +363,7 @@ export type Database = {
           qrcode_id: string | null
           reference: string | null
           sell_price: number | null
+          status: Database["public"]["Enums"]["product_status"]
           unb: string | null
           updated_at: string
           utilisation: string | null
@@ -391,6 +392,7 @@ export type Database = {
           qrcode_id?: string | null
           reference?: string | null
           sell_price?: number | null
+          status?: Database["public"]["Enums"]["product_status"]
           unb?: string | null
           updated_at?: string
           utilisation?: string | null
@@ -419,6 +421,7 @@ export type Database = {
           qrcode_id?: string | null
           reference?: string | null
           sell_price?: number | null
+          status?: Database["public"]["Enums"]["product_status"]
           unb?: string | null
           updated_at?: string
           utilisation?: string | null
@@ -671,6 +674,7 @@ export type Database = {
         | "expediee"
         | "livree"
         | "annulee"
+      product_status: "brouillon" | "en_traitement" | "valide" | "publie"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -814,6 +818,7 @@ export const Constants = {
         "livree",
         "annulee",
       ],
+      product_status: ["brouillon", "en_traitement", "valide", "publie"],
     },
   },
 } as const
