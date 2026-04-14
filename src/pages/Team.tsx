@@ -60,6 +60,8 @@ const Team = () => {
   const [showQRUpload, setShowQRUpload] = useState(false);
   const [activeQrcodeId, setActiveQrcodeId] = useState<string | null>(null);
   const [activeSupplierCode, setActiveSupplierCode] = useState<string | null>(null);
+  const [myProducts, setMyProducts] = useState<ProductRow[]>([]);
+  const [loadingMyProducts, setLoadingMyProducts] = useState(false);
 
   const fetchCategories = async (parentId: string | null) => {
     setLoadingCats(true);
