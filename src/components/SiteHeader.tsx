@@ -1,4 +1,4 @@
-import { Search, User, Heart, ShoppingBag, LogOut, Shield, LayoutDashboard } from "lucide-react";
+import { Search, User, Heart, ShoppingBag, LogOut, Shield, LayoutDashboard, Settings } from "lucide-react";
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -249,7 +249,7 @@ const megaMenus: Record<string, MegaMenuData> = {
 
 const SiteHeader = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, role, signOut } = useAuth();
   const { language } = useLanguage();
   const { totalItems } = useCart();
   const location = useLocation();
@@ -334,7 +334,12 @@ const SiteHeader = () => {
           </div>
           {user ? (
             <>
-              {isAdmin && (
+              {role === "superadmin" && (
+                <Link to="/superadmin" className="hidden md:flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+                  <Settings className="w-3.5 h-3.5" /> Superadmin
+                </Link>
+              )}
+              {isAdmin && role !== "superadmin" && (
                 <span className="hidden md:flex items-center gap-1 text-xs font-medium text-primary">
                   <Shield className="w-4 h-4" /> Admin
                 </span>
