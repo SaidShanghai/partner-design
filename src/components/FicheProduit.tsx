@@ -262,6 +262,27 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[currentStatus] || ""}`}>
               {STATUS_LABELS[currentStatus] || currentStatus}
             </span>
+            {currentStatus === "en_traitement" && role === "backoffice" && (
+              <button
+                onClick={async () => {
+                  const { error } = await supabase
+                    .from("products")
+                    .update({ status: "brouillon" } as any)
+                    .eq("id", product.id);
+                  if (error) {
+                    toast.error("Erreur lors du retour en brouillon");
+                  } else {
+                    toast.success("Fiche repassée en brouillon");
+                    onUpdated();
+                    onClose();
+                  }
+                }}
+                className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 hover:bg-red-500/10 hover:text-red-600 transition-colors"
+                title="Repasser en brouillon"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
             {supplierCode && (
               <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-mono">
                 <Store className="w-3 h-3" />
