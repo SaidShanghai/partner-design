@@ -24,11 +24,11 @@ const Login = () => {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) {
-      if (role === "superadmin") navigate("/superadmin");
-      else if (role === "team") navigate("/team");
-      else navigate("/");
-    }
+    if (loading || !user) return;
+    if (role === null) return; // Role not yet loaded
+    if (role === "superadmin") navigate("/superadmin");
+    else if (role === "team") navigate("/team");
+    else navigate("/");
   }, [user, loading, role, navigate]);
 
   const handleGoogleLogin = async () => {

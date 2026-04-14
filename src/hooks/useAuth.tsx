@@ -2,7 +2,7 @@ import { useState, useEffect, createContext, useContext, ReactNode, useCallback 
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
-export type AppRole = "superadmin" | "admin" | "team" | null;
+export type AppRole = "superadmin" | "admin" | "team" | "none" | null;
 
 interface AuthContextType {
   user: User | null;
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       if (!error && data) return r;
     }
-    return null;
+    return "none";
   }, []);
 
   useEffect(() => {
