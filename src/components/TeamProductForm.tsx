@@ -403,11 +403,6 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">¥/m</span>
           </div>
-          {exchangeRate && price && parseFloat(price) > 0 && (
-            <p className="text-xs text-muted-foreground mt-1">
-              ≈ {getConvertedEuroPrice()?.toFixed(2)} € (taux : 1 EUR = {exchangeRate.toFixed(2)} CNY)
-            </p>
-          )}
         </div>
 
         {/* Catégorie */}
