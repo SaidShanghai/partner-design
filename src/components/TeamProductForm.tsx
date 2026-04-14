@@ -379,32 +379,27 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
 
         {/* ── ACTION BUTTONS ── */}
         <div className="space-y-3 pt-4 border-t border-border">
-          {/* Enregistrer + Variante */}
-          <button
-            onClick={() => handleSave("variants")}
-            disabled={saving || !canSave}
-            className="w-full bg-primary text-primary-foreground rounded-2xl p-4 flex items-center gap-3 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
-          >
-            <Palette className="w-6 h-6 shrink-0" />
-            <div className="text-left flex-1">
-              <p className="font-bold">Variante de couleur</p>
-              <p className="text-xs opacity-80">Enregistrer puis ajouter des variantes</p>
-            </div>
-            {saving && <Loader2 className="w-5 h-5 animate-spin" />}
-          </button>
+          {/* Variante + Suivant on same row */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleSave("variants")}
+              disabled={saving || !canSave}
+              className="flex-1 bg-primary text-primary-foreground rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
+            >
+              <Palette className="w-6 h-6" />
+              <p className="font-bold text-sm">Variante</p>
+              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+            </button>
 
-          {/* Enregistrer + Suivant */}
-          <button
-            onClick={() => handleSave("form")}
-            disabled={saving || !canSave}
-            className="w-full bg-card border-2 border-border rounded-2xl p-4 flex items-center gap-3 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
-          >
-            <ArrowRight className="w-6 h-6 text-emerald-600 shrink-0" />
-            <div className="text-left flex-1">
-              <p className="font-bold text-foreground">Suivant</p>
-              <p className="text-xs text-muted-foreground">Enregistrer et passer à la référence suivante</p>
-            </div>
-          </button>
+            <button
+              onClick={() => handleSave("form")}
+              disabled={saving || !canSave}
+              className="flex-1 bg-card border-2 border-border rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-[0.97] transition-transform shadow-md disabled:opacity-40"
+            >
+              <ArrowRight className="w-6 h-6 text-emerald-600" />
+              <p className="font-bold text-sm text-foreground">Suivant</p>
+            </button>
+          </div>
 
           {/* Terminer le magasin */}
           <button
@@ -420,7 +415,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
             <LogOut className="w-6 h-6 text-red-500 shrink-0" />
             <div className="text-left flex-1">
               <p className="font-bold text-foreground">Terminer le magasin</p>
-              <p className="text-xs text-muted-foreground">Saisie terminée, prochain magasin</p>
+              <p className="text-xs text-muted-foreground">Prochain magasin</p>
             </div>
           </button>
         </div>
