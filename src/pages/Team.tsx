@@ -29,7 +29,7 @@ const Team = () => {
     setLoading(true);
     const { data } = await supabase
       .from("products")
-      .select("id, name, image_url, category, created_at")
+      .select("id, name, image_url, category, reference, created_at")
       .order("created_at", { ascending: false })
       .limit(20);
     setRecentProducts(data || []);
