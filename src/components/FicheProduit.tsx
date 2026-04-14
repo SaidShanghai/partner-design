@@ -215,7 +215,6 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
         name: form.name.trim(),
         category: form.category || null,
         reference: form.reference || null,
-        price: form.sell_price ?? null,
         sell_price: form.sell_price ?? null,
         composition: form.composition || null,
         width_cm: form.width_cm || null,
