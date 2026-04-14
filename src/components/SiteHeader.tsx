@@ -100,35 +100,8 @@ const megaMenus: Record<string, MegaMenuData> = {
       { label: "Nouvelle collection 2026" },
       { label: "Tissus Unis Essentiels" },
       { label: "Tissus fêtes & cérémonies" },
-      { label: "Matelassé" },
-      { label: "Viscose" },
     ],
-    columns: [
-      {
-        title: "Par tissu A-I",
-        items: ["Broderie anglaise", "Bord-côte", "Bouclette", "Draps de laine", "Chambray", "Coton", "Crepe", "Tissu crochet", "Double gaze", "Dentelles", "Écossais, Tartan Prince de galles", "Fausse fourrure", "Gabardine", "Imperméables et parka"],
-      },
-      {
-        title: "J-S",
-        items: ["Jacquards habillement", "Jean et denim", "Jersey", "Maille polo", "Lainage et maille", "Lin", "Lycra et Maillot de bain", "Lyocell", "Tissu manteau", "Microfibre et Polyester", "Polaire", "Popeline de coton", "Plumetis", "Satin", "Sequins, paillettes et fête", "Sergé et twill"],
-      },
-      {
-        title: "S-W",
-        items: ["Scuba et Milano", "Seersucker", "Sherpa mouton", "Soie", "Simili cuir Habillement", "Softshell", "Suédine habillement", "Sweat Molleton", "Taffetas", "Tweed", "Tulle et résille", "Viscose", "Velours vesti", "Voile, mousseline", "Wax"],
-      },
-      {
-        title: "Par projet",
-        items: ["Tissu pour robe", "Tissus fêtes & cérémonies"],
-      },
-      {
-        title: "Tissus créateurs",
-        items: ["Katia Fabrics", "Liberty Fabrics", "Petit Pan"],
-      },
-      {
-        title: "Tissus techniques",
-        items: ["Doublure", "PUL", "Toile tailleur", "Toile a patron", "Vlieseline / thermocollant"],
-      },
-    ],
+    columns: [], // Will be filled dynamically from DB
     images: [
       { src: tissuNouvelleImg, alt: "Nouvelle collection", label: "Nouvelle collection" },
     ],
