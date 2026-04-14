@@ -59,6 +59,26 @@ const Team = () => {
     fetchData();
   };
 
+  const loadSubcategories = async (parentId: string) => {
+    if (expandedCategory === parentId) {
+      setExpandedCategory(null);
+      setSubcategories([]);
+      return;
+    }
+    const { data } = await supabase
+      .from("categories")
+      .select("*")
+      .eq("parent_id", parentId)
+      .order("position");
+    setSubcategories(data || []);
+    setExpandedCategory(parentId);
+  };
+
+  const openQRUpload = (sub: Category) => {
+    setSelectedSubcategory(sub);
+    setShowQRUpload(true);
+  };
+
   const todayCount = recentProducts.filter((p) => {
     const today = new Date().toDateString();
     return new Date(p.created_at).toDateString() === today;
