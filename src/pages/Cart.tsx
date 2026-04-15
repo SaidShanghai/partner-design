@@ -159,17 +159,21 @@ const Cart = () => {
                 <h2 className="font-semibold text-lg mb-4">Récapitulatif</h2>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Sous-total</span>
+                    <span className="text-muted-foreground">Sous-total tissu</span>
                     <span className="font-medium">{totalPrice.toFixed(2).replace(".", ",")} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Livraison</span>
-                    <span className="text-muted-foreground">Calculée à l'étape suivante</span>
+                    <span className="text-muted-foreground">Livraison estimée</span>
+                    <span className="font-medium">
+                      {shippingEUR != null
+                        ? `${shippingEUR.toFixed(2).replace(".", ",")} €`
+                        : "—"}
+                    </span>
                   </div>
                 </div>
                 <div className="border-t border-border mt-4 pt-4 flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>{totalPrice.toFixed(2).replace(".", ",")} €</span>
+                  <span>{grandTotal.toFixed(2).replace(".", ",")} €</span>
                 </div>
                 <Button
                   className="w-full mt-6"
