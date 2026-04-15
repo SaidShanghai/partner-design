@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
     // Fetch cart items with product info
     const { data: cartItems, error: cartError } = await supabase
       .from("cart_items")
-      .select("id, product_id, quantity_meters, unit_price, products(name)")
+      .select("id, product_id, quantity_meters, unit_price, products(name, sell_price, price)")
       .eq("user_id", userId);
 
     if (cartError) {
@@ -54,17 +54,21 @@ Deno.serve(async (req) => {
 
     const { returnUrl } = await req.json();
 
-    const lineItems = cartItems.map((item: any) => ({
-      price_data: {
-        currency: "eur",
-        product_data: {
-          name: item.products?.name || "Tissu",
-          metadata: { product_id: item.product_id },
+    const lineItems = cartItems.map((item: any) => {
+      const unitPrice = item.products?.sell_price ?? item.products?.price ?? item.unit_price;
+      const subtotalCents = Math.round(unitPrice * item.quantity_meters * 100);
+      return {
+        price_data: {
+          currency: "eur",
+          product_data: {
+            name: `${item.products?.name || "Tissu"} — ${item.quantity_meters} m`,
+            metadata: { product_id: item.product_id },
+          },
+          unit_amount: subtotalCents,
         },
-        unit_amount: Math.round(item.unit_price * 100), // price per meter in cents
-      },
-      quantity: Math.round(item.quantity_meters * 100), // quantity in centimeters (Stripe needs integers)
-    }));
+        quantity: 1,
+      };
+    });
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
