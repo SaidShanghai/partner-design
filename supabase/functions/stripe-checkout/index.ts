@@ -6,6 +6,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const SHIPPING_BASE_RMB = 150;
+const SHIPPING_EXTRA_PER_500G = 45;
+
+function calcShippingRMB(totalWeightG: number): number {
+  if (totalWeightG < 500) return SHIPPING_BASE_RMB;
+  return SHIPPING_BASE_RMB + Math.ceil((totalWeightG - 500) / 500) * SHIPPING_EXTRA_PER_500G;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -17,10 +25,24 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Non autorisé" }), { status: 401, headers: corsHeaders });
     }
 
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!serviceRoleKey) {
+      return new Response(JSON.stringify({ error: "Backend non configuré" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      serviceRoleKey,
+      { auth: { persistSession: false } }
     );
 
     const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(
@@ -31,32 +53,54 @@ Deno.serve(async (req) => {
     }
     const userId = claimsData.claims.sub;
 
-    // Fetch cart items with product info
     const { data: cartItems, error: cartError } = await supabase
       .from("cart_items")
-      .select("id, product_id, quantity_meters, unit_price, products(name, sell_price, price)")
+      .select("id, product_id, quantity_meters, unit_price, products(name, sell_price, price, weight_per_meter)")
       .eq("user_id", userId);
 
     if (cartError) {
-      return new Response(JSON.stringify({ error: cartError.message }), { status: 400, headers: corsHeaders });
+      return new Response(JSON.stringify({ error: cartError.message }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     if (!cartItems || cartItems.length === 0) {
-      return new Response(JSON.stringify({ error: "Panier vide" }), { status: 400, headers: corsHeaders });
+      return new Response(JSON.stringify({ error: "Panier vide" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { data: exchangeRateRow, error: exchangeError } = await supabaseAdmin
+      .from("exchange_rates")
+      .select("rate_cny_eur")
+      .order("date", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (exchangeError || !exchangeRateRow?.rate_cny_eur) {
+      return new Response(JSON.stringify({ error: "Taux de change indisponible" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) {
-      return new Response(JSON.stringify({ error: "Stripe non configuré" }), { status: 500, headers: corsHeaders });
+      return new Response(JSON.stringify({ error: "Stripe non configuré" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const stripe = new Stripe(stripeKey);
-
     const { returnUrl } = await req.json();
 
-    const lineItems = cartItems.map((item: any) => {
-      const unitPrice = item.products?.sell_price ?? item.products?.price ?? item.unit_price;
-      const subtotalCents = Math.round(unitPrice * item.quantity_meters * 100);
+    const productLineItems = cartItems.map((item: any) => {
+      const unitPrice = Number(item.products?.sell_price ?? item.products?.price ?? item.unit_price);
+      const subtotalCents = Math.round(unitPrice * Number(item.quantity_meters) * 100);
+
       return {
         price_data: {
           currency: "eur",
@@ -69,6 +113,29 @@ Deno.serve(async (req) => {
         quantity: 1,
       };
     });
+
+    const totalWeightG = cartItems.reduce((sum: number, item: any) => {
+      const weightPerMeter = Number(item.products?.weight_per_meter ?? 200);
+      return sum + Number(item.quantity_meters) * weightPerMeter;
+    }, 0);
+
+    const shippingCents = Math.round(
+      (calcShippingRMB(totalWeightG) / Number(exchangeRateRow.rate_cny_eur)) * 100
+    );
+
+    const lineItems = [
+      ...productLineItems,
+      {
+        price_data: {
+          currency: "eur",
+          product_data: {
+            name: "Livraison estimée",
+          },
+          unit_amount: shippingCents,
+        },
+        quantity: 1,
+      },
+    ];
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
