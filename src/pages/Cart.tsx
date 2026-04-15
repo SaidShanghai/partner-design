@@ -86,7 +86,7 @@ const Cart = () => {
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-foreground truncate">{item.product?.name || "Produit"}</h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {(item.product?.price ?? item.unit_price).toFixed(2).replace(".", ",")} € / m
+                      {(item.product?.sell_price ?? item.product?.price ?? item.unit_price).toFixed(2).replace(".", ",")} € / m
                     </p>
                     <div className="flex items-center gap-2 mt-3">
                       <button
@@ -108,7 +108,7 @@ const Cart = () => {
                   </div>
                   <div className="flex flex-col items-end justify-between">
                     <span className="font-semibold text-foreground">
-                      {(item.quantity_meters * (item.product?.price ?? item.unit_price)).toFixed(2).replace(".", ",")} €
+                      {(item.quantity_meters * (item.product?.sell_price ?? item.product?.price ?? item.unit_price)).toFixed(2).replace(".", ",")} €
                     </span>
                     <button
                       onClick={() => removeItem(item.id)}
