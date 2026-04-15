@@ -175,7 +175,7 @@ const Category = () => {
                   image={p.image_url || "/placeholder.svg"}
                   name={p.name}
                   price={p.sell_price != null ? `${p.sell_price.toFixed(2).replace(".", ",")} €` : "—"}
-                  unit="/m"
+                  unit="le mètre"
                   categoryName={category.name}
                 />
               ))}

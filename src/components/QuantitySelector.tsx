@@ -156,7 +156,7 @@ const QuantitySelector = ({
                 <th className="px-2 py-1.5 text-right font-medium">Tissu</th>
                 <th className="px-2 py-1.5 text-right font-medium">Livraison</th>
                 <th className="px-2 py-1.5 text-right font-medium">Total</th>
-                <th className="px-2 py-1.5 text-right font-medium">Prix/m</th>
+                <th className="px-2 py-1.5 text-right font-medium">Prix / mètre</th>
               </tr>
             </thead>
             <tbody>
