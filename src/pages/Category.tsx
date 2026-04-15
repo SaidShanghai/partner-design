@@ -61,7 +61,7 @@ const Category = () => {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [formOpen, setFormOpen] = useState(false);
-  const [dbProducts, setDbProducts] = useState<Array<{id: string; name: string; image_url: string | null; sell_price: number | null; category: string | null}>>([]);
+  const [dbProducts, setDbProducts] = useState<Array<{id: string; name: string; image_url: string | null; sell_price: number | null; category: string | null; badge_nouveaute: boolean; badge_oekotex: boolean; badge_gots: boolean; badge_bio: boolean; badge_promo: boolean; badge_exclusivite: boolean; badge_stock_limite: boolean}>>([]);
   const category = slug ? categoriesData[slug] || buildFallbackCategory(slug) : null;
 
   // Fetch published products from DB matching this category
@@ -70,7 +70,7 @@ const Category = () => {
     const fetchPublished = async () => {
       const { data } = await supabase
         .from("products")
-        .select("id, name, image_url, sell_price, category")
+        .select("id, name, image_url, sell_price, category, badge_nouveaute, badge_oekotex, badge_gots, badge_bio, badge_promo, badge_exclusivite, badge_stock_limite")
         .eq("status", "publie" as any)
         .order("created_at", { ascending: false });
       if (data) {
@@ -169,16 +169,27 @@ const Category = () => {
           <>
             {category.products.length > 0 && <div className="my-6 border-t border-border" />}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-              {dbProducts.map((p) => (
+              {dbProducts.map((p) => {
+                const badgeLabels: string[] = [];
+                if (p.badge_nouveaute) badgeLabels.push("Nouveauté");
+                if (p.badge_oekotex) badgeLabels.push("Oeko-Tex");
+                if (p.badge_gots) badgeLabels.push("GOTS");
+                if (p.badge_bio) badgeLabels.push("Bio");
+                if (p.badge_promo) badgeLabels.push("Promo");
+                if (p.badge_exclusivite) badgeLabels.push("Exclusivité");
+                if (p.badge_stock_limite) badgeLabels.push("Stock limité");
+                return (
                 <CategoryProductCard
                   key={p.id}
                   image={p.image_url || "/placeholder.svg"}
                   name={p.name}
                   price={p.sell_price != null ? `${p.sell_price.toFixed(2).replace(".", ",")} €` : "—"}
                   unit="le mètre"
+                  badge={badgeLabels.join(", ")}
                   categoryName={category.name}
                 />
-              ))}
+                );
+              })}
             </div>
           </>
         )}
