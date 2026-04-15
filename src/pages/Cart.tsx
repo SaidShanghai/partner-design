@@ -7,14 +7,46 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
+
+const SHIPPING_BASE_RMB = 150;
+const SHIPPING_EXTRA_PER_500G = 45;
+
+function calcShippingRMB(totalWeightG: number): number {
+  if (totalWeightG < 500) return SHIPPING_BASE_RMB;
+  return SHIPPING_BASE_RMB + Math.ceil((totalWeightG - 500) / 500) * SHIPPING_EXTRA_PER_500G;
+}
 
 const Cart = () => {
   const { items, loading, updateQuantity, removeItem, totalPrice } = useCart();
   const { user } = useAuth();
   const { toast } = useToast();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("exchange_rates")
+      .select("rate_cny_eur")
+      .order("date", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => {
+        if (data) setExchangeRate(data.rate_cny_eur);
+      });
+  }, []);
+
+  const shippingEUR = useMemo(() => {
+    if (!exchangeRate || items.length === 0) return null;
+    const totalWeightG = items.reduce(
+      (sum, i) => sum + i.quantity_meters * (i.product?.weight_per_meter ?? 200),
+      0
+    );
+    return calcShippingRMB(totalWeightG) / exchangeRate;
+  }, [items, exchangeRate]);
+
+  const grandTotal = shippingEUR != null ? totalPrice + shippingEUR : totalPrice;
 
   const handleCheckout = async () => {
     if (!user) return;
@@ -127,17 +159,21 @@ const Cart = () => {
                 <h2 className="font-semibold text-lg mb-4">Récapitulatif</h2>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Sous-total</span>
+                    <span className="text-muted-foreground">Sous-total tissu</span>
                     <span className="font-medium">{totalPrice.toFixed(2).replace(".", ",")} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Livraison</span>
-                    <span className="text-muted-foreground">Calculée à l'étape suivante</span>
+                    <span className="text-muted-foreground">Livraison estimée</span>
+                    <span className="font-medium">
+                      {shippingEUR != null
+                        ? `${shippingEUR.toFixed(2).replace(".", ",")} €`
+                        : "—"}
+                    </span>
                   </div>
                 </div>
                 <div className="border-t border-border mt-4 pt-4 flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>{totalPrice.toFixed(2).replace(".", ",")} €</span>
+                  <span>{grandTotal.toFixed(2).replace(".", ",")} €</span>
                 </div>
                 <Button
                   className="w-full mt-6"
