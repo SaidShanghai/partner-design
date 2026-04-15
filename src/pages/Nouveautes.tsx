@@ -26,7 +26,7 @@ const Nouveautes = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("id, name, price, image_url, category")
+        .select("id, name, price, sell_price, image_url, category, badge_nouveaute, badge_oekotex, badge_gots, badge_bio, badge_promo, badge_exclusivite, badge_stock_limite")
         .order("created_at", { ascending: false })
         .limit(20);
       if (error) throw error;
