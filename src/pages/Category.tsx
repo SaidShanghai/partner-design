@@ -61,7 +61,7 @@ const Category = () => {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [formOpen, setFormOpen] = useState(false);
-  const [dbProducts, setDbProducts] = useState<Array<{id: string; name: string; image_url: string | null; sell_price: number | null; category: string | null}>>([]);
+  const [dbProducts, setDbProducts] = useState<Array<{id: string; name: string; image_url: string | null; sell_price: number | null; category: string | null; badge_nouveaute: boolean; badge_oekotex: boolean; badge_gots: boolean; badge_bio: boolean; badge_promo: boolean; badge_exclusivite: boolean; badge_stock_limite: boolean}>>([]);
   const category = slug ? categoriesData[slug] || buildFallbackCategory(slug) : null;
 
   // Fetch published products from DB matching this category
@@ -70,7 +70,7 @@ const Category = () => {
     const fetchPublished = async () => {
       const { data } = await supabase
         .from("products")
-        .select("id, name, image_url, sell_price, category")
+        .select("id, name, image_url, sell_price, category, badge_nouveaute, badge_oekotex, badge_gots, badge_bio, badge_promo, badge_exclusivite, badge_stock_limite")
         .eq("status", "publie" as any)
         .order("created_at", { ascending: false });
       if (data) {

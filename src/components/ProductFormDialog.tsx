@@ -117,6 +117,21 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
 
     setSaving(true);
 
+    const badgeMap: Record<string, string> = {
+      "Nouveauté": "badge_nouveaute",
+      "Oeko-Tex": "badge_oekotex",
+      "GOTS": "badge_gots",
+      "Bio": "badge_bio",
+      "Promo": "badge_promo",
+      "Exclusivité": "badge_exclusivite",
+      "Stock limité": "badge_stock_limite",
+    };
+
+    const badgeFields: Record<string, boolean> = {};
+    for (const [label, col] of Object.entries(badgeMap)) {
+      badgeFields[col] = badges.includes(label);
+    }
+
     const { error } = await supabase.from("products").insert({
       name: form.name,
       description: form.description || null,
@@ -129,7 +144,8 @@ const ProductFormDialog = ({ open, onOpenChange, onSaved, initialData }: Product
       category: form.category || null,
       image_url: form.image_url || null,
       unb,
-    });
+      ...badgeFields,
+    } as any);
 
     if (error) {
       toast({ title: "Erreur", description: error.message, variant: "destructive" });
