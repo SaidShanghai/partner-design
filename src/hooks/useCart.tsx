@@ -12,6 +12,7 @@ export interface CartItem {
     name: string;
     image_url: string | null;
     price: number | null;
+    sell_price: number | null;
   };
 }
 
@@ -48,7 +49,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     const { data, error } = await supabase
       .from("cart_items")
-      .select("id, product_id, quantity_meters, unit_price, products(name, image_url, price)")
+      .select("id, product_id, quantity_meters, unit_price, products(name, image_url, price, sell_price)")
       .eq("user_id", user.id);
 
     if (!error && data) {
@@ -105,7 +106,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   const totalItems = items.length;
-  const totalPrice = items.reduce((sum, i) => sum + i.quantity_meters * i.unit_price, 0);
+  const totalPrice = items.reduce((sum, i) => sum + i.quantity_meters * (i.product?.sell_price ?? i.product?.price ?? i.unit_price), 0);
 
   return (
     <CartContext.Provider value={{ items, loading, addToCart, updateQuantity, removeItem, clearCart, totalItems, totalPrice }}>

@@ -86,20 +86,20 @@ const Cart = () => {
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-foreground truncate">{item.product?.name || "Produit"}</h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {item.unit_price.toFixed(2)} € / m
+                      {(item.product?.sell_price ?? item.product?.price ?? item.unit_price).toFixed(2).replace(".", ",")} € / m
                     </p>
                     <div className="flex items-center gap-2 mt-3">
                       <button
-                        onClick={() => updateQuantity(item.id, Math.max(0.5, item.quantity_meters - 0.5))}
+                        onClick={() => updateQuantity(item.id, Math.max(3, item.quantity_meters - 3))}
                         className="w-8 h-8 flex items-center justify-center rounded-full border border-border hover:border-primary transition-colors"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
                       <span className="text-sm font-medium min-w-[60px] text-center">
-                        {item.quantity_meters.toFixed(2)} m
+                        {item.quantity_meters.toFixed(2).replace(".", ",")} m
                       </span>
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity_meters + 0.5)}
+                        onClick={() => updateQuantity(item.id, item.quantity_meters + 3)}
                         className="w-8 h-8 flex items-center justify-center rounded-full border border-border hover:border-primary transition-colors"
                       >
                         <Plus className="w-3 h-3" />
@@ -108,7 +108,7 @@ const Cart = () => {
                   </div>
                   <div className="flex flex-col items-end justify-between">
                     <span className="font-semibold text-foreground">
-                      {(item.quantity_meters * item.unit_price).toFixed(2)} €
+                      {(item.quantity_meters * (item.product?.sell_price ?? item.product?.price ?? item.unit_price)).toFixed(2).replace(".", ",")} €
                     </span>
                     <button
                       onClick={() => removeItem(item.id)}
@@ -128,7 +128,7 @@ const Cart = () => {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Sous-total</span>
-                    <span className="font-medium">{totalPrice.toFixed(2)} €</span>
+                    <span className="font-medium">{totalPrice.toFixed(2).replace(".", ",")} €</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Livraison</span>
@@ -137,7 +137,7 @@ const Cart = () => {
                 </div>
                 <div className="border-t border-border mt-4 pt-4 flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>{totalPrice.toFixed(2)} €</span>
+                  <span>{totalPrice.toFixed(2).replace(".", ",")} €</span>
                 </div>
                 <Button
                   className="w-full mt-6"
