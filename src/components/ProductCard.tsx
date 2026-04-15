@@ -15,9 +15,11 @@ interface ProductCardProps {
   numericPrice?: number;
   isNew?: boolean;
   variants?: number;
+  unit?: string;
+  badge?: string;
 }
 
-const ProductCard = ({ id, image, name, price, numericPrice, isNew = true, variants }: ProductCardProps) => {
+const ProductCard = ({ id, image, name, price, numericPrice, isNew = true, variants, unit, badge }: ProductCardProps) => {
   const { isAdmin } = useAuth();
   const { addToCart } = useCart();
   const { toast } = useToast();
@@ -151,11 +153,23 @@ const ProductCard = ({ id, image, name, price, numericPrice, isNew = true, varia
           <h3 className="text-sm font-medium text-foreground leading-tight line-clamp-2">
             {displayName}
           </h3>
-          <p className="mt-1 text-sm font-semibold text-foreground">{displayPrice}</p>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-sm font-semibold text-foreground">{displayPrice}</span>
+            {unit && <span className="text-xs text-muted-foreground">{unit}</span>}
+          </div>
           {variants && (
             <p className="mt-0.5 text-xs text-muted-foreground">
               {variants} teintes
             </p>
+          )}
+          {badge && (
+            <div className="flex flex-wrap gap-1.5 mt-1">
+              {badge.split(",").map((b) => b.trim()).filter(Boolean).map((b) => (
+                <span key={b} className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary">
+                  {b}
+                </span>
+              ))}
+            </div>
           )}
         </div>
       </div>
