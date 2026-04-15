@@ -86,20 +86,20 @@ const Cart = () => {
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-foreground truncate">{item.product?.name || "Produit"}</h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {item.unit_price.toFixed(2)} € / m
+                      {(item.product?.price ?? item.unit_price).toFixed(2).replace(".", ",")} € / m
                     </p>
                     <div className="flex items-center gap-2 mt-3">
                       <button
-                        onClick={() => updateQuantity(item.id, Math.max(0.5, item.quantity_meters - 0.5))}
+                        onClick={() => updateQuantity(item.id, Math.max(3, item.quantity_meters - 3))}
                         className="w-8 h-8 flex items-center justify-center rounded-full border border-border hover:border-primary transition-colors"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
                       <span className="text-sm font-medium min-w-[60px] text-center">
-                        {item.quantity_meters.toFixed(2)} m
+                        {item.quantity_meters.toFixed(2).replace(".", ",")} m
                       </span>
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity_meters + 0.5)}
+                        onClick={() => updateQuantity(item.id, item.quantity_meters + 3)}
                         className="w-8 h-8 flex items-center justify-center rounded-full border border-border hover:border-primary transition-colors"
                       >
                         <Plus className="w-3 h-3" />
