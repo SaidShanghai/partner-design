@@ -7,14 +7,46 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import SiteFooter from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
+
+const SHIPPING_BASE_RMB = 150;
+const SHIPPING_EXTRA_PER_500G = 45;
+
+function calcShippingRMB(totalWeightG: number): number {
+  if (totalWeightG < 500) return SHIPPING_BASE_RMB;
+  return SHIPPING_BASE_RMB + Math.ceil((totalWeightG - 500) / 500) * SHIPPING_EXTRA_PER_500G;
+}
 
 const Cart = () => {
   const { items, loading, updateQuantity, removeItem, totalPrice } = useCart();
   const { user } = useAuth();
   const { toast } = useToast();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("exchange_rates")
+      .select("rate_cny_eur")
+      .order("date", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => {
+        if (data) setExchangeRate(data.rate_cny_eur);
+      });
+  }, []);
+
+  const shippingEUR = useMemo(() => {
+    if (!exchangeRate || items.length === 0) return null;
+    const totalWeightG = items.reduce(
+      (sum, i) => sum + i.quantity_meters * (i.product?.weight_per_meter ?? 200),
+      0
+    );
+    return calcShippingRMB(totalWeightG) / exchangeRate;
+  }, [items, exchangeRate]);
+
+  const grandTotal = shippingEUR != null ? totalPrice + shippingEUR : totalPrice;
 
   const handleCheckout = async () => {
     if (!user) return;
