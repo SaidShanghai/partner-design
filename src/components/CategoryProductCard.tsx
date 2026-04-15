@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
-import { Camera, Heart, Plus, ShoppingBag, Minus, Check, Loader2 } from "lucide-react";
+import { Camera, Heart, Plus, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ProductFormDialog from "./ProductFormDialog";
+import QuantitySelector from "./QuantitySelector";
 
 interface CategoryProductCardProps {
   image: string;
@@ -37,52 +38,11 @@ const CategoryProductCard = ({
   const [uploading, setUploading] = useState(false);
   const [liked, setLiked] = useState(false);
   const [showMetrage, setShowMetrage] = useState(false);
-  const [metrage, setMetrage] = useState(1);
-  const [addingToCart, setAddingToCart] = useState(false);
 
   // Parse numeric price from string like "5,90 €"
   const parsePrice = (p: string): number => {
     const cleaned = p.replace(/[^\d,\.]/g, "").replace(",", ".");
     return parseFloat(cleaned) || 0;
-  };
-
-  const handleAddToCart = async () => {
-    if (metrage === 0) {
-      setShowMetrage(false);
-      setMetrage(1);
-      return;
-    }
-
-    const numPrice = parsePrice(displayPrice);
-    if (numPrice <= 0) {
-      toast({ title: "Erreur", description: "Prix invalide.", variant: "destructive" });
-      return;
-    }
-
-    setAddingToCart(true);
-    try {
-      // Use RPC to find or create product (works for non-admin users)
-      const { data: productId, error: rpcErr } = await supabase.rpc("find_or_create_product", {
-        _name: displayName,
-        _price: numPrice,
-        _image_url: displayImage || null,
-        _category: categoryName || null,
-      });
-
-      if (rpcErr || !productId) {
-        toast({ title: "Erreur", description: "Impossible d'ajouter ce produit.", variant: "destructive" });
-        setAddingToCart(false);
-        return;
-      }
-
-      await addToCart(productId as string, metrage * 0.5, numPrice);
-    } catch {
-      toast({ title: "Erreur", description: "Une erreur est survenue.", variant: "destructive" });
-    } finally {
-      setAddingToCart(false);
-      setShowMetrage(false);
-      setMetrage(1);
-    }
   };
 
   const canManage = !loading && isAdmin;
@@ -196,25 +156,29 @@ const CategoryProductCard = ({
         </div>
 
         {showMetrage && (
-          <div className="mb-2 flex items-center justify-center gap-0 rounded-full border border-border bg-background shadow-sm overflow-hidden">
-            <button onClick={() => setMetrage((v) => Math.max(0, v - 1))} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
-              <Minus className="w-4 h-4" />
-            </button>
-            <span className="px-4 py-2 text-sm font-medium text-foreground min-w-[80px] text-center">
-              {(metrage * 0.5).toFixed(2)} m
-            </span>
-            <button onClick={() => setMetrage((v) => v + 1)} className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">
-              <Plus className="w-4 h-4" />
-            </button>
-            <button
-              onClick={handleAddToCart}
-              disabled={addingToCart}
-              className={`px-3 py-2 transition-colors ${metrage === 0 ? "bg-muted text-muted-foreground" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
-              aria-label="Valider"
-            >
-              {addingToCart ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-            </button>
-          </div>
+          <QuantitySelector
+            pricePerMeter={parsePrice(displayPrice)}
+            onConfirm={async (meters) => {
+              const numPrice = parsePrice(displayPrice);
+              if (numPrice <= 0) {
+                toast({ title: "Erreur", description: "Prix invalide.", variant: "destructive" });
+                return;
+              }
+              const { data: productId, error: rpcErr } = await supabase.rpc("find_or_create_product", {
+                _name: displayName,
+                _price: numPrice,
+                _image_url: displayImage || null,
+                _category: categoryName || null,
+              });
+              if (rpcErr || !productId) {
+                toast({ title: "Erreur", description: "Impossible d'ajouter ce produit.", variant: "destructive" });
+                return;
+              }
+              await addToCart(productId as string, meters, numPrice);
+              setShowMetrage(false);
+            }}
+            onCancel={() => setShowMetrage(false)}
+          />
         )}
 
         <h3 className="text-sm text-foreground font-medium leading-snug mb-1 group-hover:text-primary transition-colors">
