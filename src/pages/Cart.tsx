@@ -108,7 +108,7 @@ const Cart = () => {
                   </div>
                   <div className="flex flex-col items-end justify-between">
                     <span className="font-semibold text-foreground">
-                      {(item.quantity_meters * item.unit_price).toFixed(2)} €
+                      {(item.quantity_meters * (item.product?.price ?? item.unit_price)).toFixed(2).replace(".", ",")} €
                     </span>
                     <button
                       onClick={() => removeItem(item.id)}
