@@ -84,16 +84,29 @@ const Nouveautes = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-16">
-            {(products || []).map((product) => (
-              <ProductCard
-                key={product.id}
-                id={product.id}
-                image={resolveImage(product.image_url)}
-                name={product.name}
-                price={`${(product.price ?? 0).toFixed(2).replace(".", ",")} €`}
-                numericPrice={product.price ?? 0}
-              />
-            ))}
+            {(products || []).map((product) => {
+              const badgeLabels: string[] = [];
+              if (product.badge_nouveaute) badgeLabels.push("Nouveauté");
+              if (product.badge_oekotex) badgeLabels.push("Oeko-Tex");
+              if (product.badge_gots) badgeLabels.push("GOTS");
+              if (product.badge_bio) badgeLabels.push("Bio");
+              if (product.badge_promo) badgeLabels.push("Promo");
+              if (product.badge_exclusivite) badgeLabels.push("Exclusivité");
+              if (product.badge_stock_limite) badgeLabels.push("Stock limité");
+              const displayPrice = product.sell_price ?? product.price ?? 0;
+              return (
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  image={resolveImage(product.image_url)}
+                  name={product.name}
+                  price={`${displayPrice.toFixed(2).replace(".", ",")} €`}
+                  numericPrice={displayPrice}
+                  unit="le mètre"
+                  badge={badgeLabels.join(", ")}
+                />
+              );
+            })}
           </div>
         )}
 
