@@ -146,36 +146,6 @@ const QuantitySelector = ({
         </div>
       )}
 
-      {/* Pricing table */}
-      {tableRows.length > 0 && (
-        <div className="rounded-lg border border-border overflow-hidden">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="bg-muted/50 text-muted-foreground">
-                <th className="px-2 py-1.5 text-left font-medium">Quantité</th>
-                <th className="px-2 py-1.5 text-right font-medium">Tissu</th>
-                <th className="px-2 py-1.5 text-right font-medium">Livraison</th>
-                <th className="px-2 py-1.5 text-right font-medium">Total</th>
-                <th className="px-2 py-1.5 text-right font-medium">Prix / mètre</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableRows.map((row) => (
-                <tr
-                  key={row.qty}
-                  className={`border-t border-border transition-colors ${row.qty === meters ? "bg-primary/5 font-semibold" : ""}`}
-                >
-                  <td className="px-2 py-1.5">{row.qty} m</td>
-                  <td className="px-2 py-1.5 text-right">{row.fabric.toFixed(2)} €</td>
-                  <td className="px-2 py-1.5 text-right">{row.shipping.toFixed(2)} €</td>
-                  <td className="px-2 py-1.5 text-right">{row.total.toFixed(2)} €</td>
-                  <td className="px-2 py-1.5 text-right">{row.perMeter.toFixed(2)} €</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 };
