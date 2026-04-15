@@ -550,6 +550,36 @@ export type Database = {
         }
         Relationships: []
       }
+      shipping_zones: {
+        Row: {
+          base_fee_rmb: number
+          countries: string[]
+          created_at: string
+          extra_per_500g_rmb: number
+          id: string
+          updated_at: string
+          zone_name: string
+        }
+        Insert: {
+          base_fee_rmb?: number
+          countries?: string[]
+          created_at?: string
+          extra_per_500g_rmb?: number
+          id?: string
+          updated_at?: string
+          zone_name: string
+        }
+        Update: {
+          base_fee_rmb?: number
+          countries?: string[]
+          created_at?: string
+          extra_per_500g_rmb?: number
+          id?: string
+          updated_at?: string
+          zone_name?: string
+        }
+        Relationships: []
+      }
       suppliers: {
         Row: {
           address: string | null
