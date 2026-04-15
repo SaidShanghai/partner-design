@@ -1,10 +1,11 @@
-import { useState, useRef, useCallback } from "react";
-import { Heart, Plus, Camera, ShoppingBag, Minus, Check } from "lucide-react";
+import { useState, useRef } from "react";
+import { Heart, Plus, Camera, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ProductFormDialog from "./ProductFormDialog";
+import QuantitySelector from "./QuantitySelector";
 
 interface ProductCardProps {
   id?: string;
@@ -28,7 +29,6 @@ const ProductCard = ({ id, image, name, price, numericPrice, isNew = true, varia
   const [uploading, setUploading] = useState(false);
   const [liked, setLiked] = useState(false);
   const [showMetrage, setShowMetrage] = useState(false);
-  const [metrage, setMetrage] = useState(1); // in units of 0.5m
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -133,40 +133,18 @@ const ProductCard = ({ id, image, name, price, numericPrice, isNew = true, varia
 
         {/* Metrage selector */}
         {showMetrage && (
-          <div className="mt-2 flex items-center justify-center gap-0 rounded-full border border-border bg-background shadow-sm overflow-hidden">
-            <button
-              onClick={() => setMetrage((v) => Math.max(1, v - 1))}
-              className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Réduire"
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <span className="px-4 py-2 text-sm font-medium text-foreground min-w-[80px] text-center">
-              {(metrage * 0.5).toFixed(2)} m
-            </span>
-            <button
-              onClick={() => setMetrage((v) => v + 1)}
-              className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Augmenter"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-            <button
-              onClick={async () => {
-                if (id && numericPrice) {
-                  await addToCart(id, metrage * 0.5, numericPrice);
-                } else {
-                  toast({ title: "Ajouté au panier", description: `${displayName} — ${(metrage * 0.5).toFixed(2)} m` });
-                }
-                setShowMetrage(false);
-                setMetrage(1);
-              }}
-              className="px-3 py-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              aria-label="Valider"
-            >
-              <Check className="w-4 h-4" />
-            </button>
-          </div>
+          <QuantitySelector
+            pricePerMeter={numericPrice ?? 0}
+            onConfirm={async (meters) => {
+              if (id && numericPrice) {
+                await addToCart(id, meters, numericPrice);
+              } else {
+                toast({ title: "Ajouté au panier", description: `${displayName} — ${meters} m` });
+              }
+              setShowMetrage(false);
+            }}
+            onCancel={() => setShowMetrage(false)}
+          />
         )}
 
         <div className="mt-3">
