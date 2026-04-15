@@ -126,12 +126,6 @@ const QuantitySelector = ({
         ) : null}
       </div>
 
-      {/* Live shipping estimate */}
-      {shippingEUR != null && !overLimit && (
-        <p className="text-xs text-muted-foreground text-center">
-          Tissu : {fabricTotal.toFixed(2)} € · Livraison : {shippingEUR.toFixed(2)} € · <span className="font-semibold text-foreground">Total : {grandTotal!.toFixed(2)} €</span>
-        </p>
-      )}
 
       {/* Over 27m message */}
       {overLimit && (
