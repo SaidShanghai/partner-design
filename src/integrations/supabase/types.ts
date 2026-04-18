@@ -550,6 +550,63 @@ export type Database = {
         }
         Relationships: []
       }
+      shipping_tax_rules: {
+        Row: {
+          active: boolean
+          country_code: string
+          country_name: string
+          created_at: string
+          currency: string
+          customs_fixed_fee: number
+          display_note: string | null
+          duty_rate: number
+          id: string
+          scheme_enabled: boolean
+          scheme_name: string | null
+          threshold_currency: string
+          threshold_value: number
+          updated_at: string
+          vat_rate: number
+          zone: string
+        }
+        Insert: {
+          active?: boolean
+          country_code: string
+          country_name: string
+          created_at?: string
+          currency?: string
+          customs_fixed_fee?: number
+          display_note?: string | null
+          duty_rate?: number
+          id?: string
+          scheme_enabled?: boolean
+          scheme_name?: string | null
+          threshold_currency?: string
+          threshold_value: number
+          updated_at?: string
+          vat_rate?: number
+          zone: string
+        }
+        Update: {
+          active?: boolean
+          country_code?: string
+          country_name?: string
+          created_at?: string
+          currency?: string
+          customs_fixed_fee?: number
+          display_note?: string | null
+          duty_rate?: number
+          id?: string
+          scheme_enabled?: boolean
+          scheme_name?: string | null
+          threshold_currency?: string
+          threshold_value?: number
+          updated_at?: string
+          vat_rate?: number
+          zone?: string
+        }
+        Relationships: []
+      }
       shipping_zones: {
         Row: {
           base_fee_rmb: number
