@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Search, Package, ChevronDown } from "lucide-react";
+import { LogOut, Search, Package } from "lucide-react";
+import { toast } from "sonner";
 import FicheProduit from "@/components/FicheProduit";
 
 interface RawProduct {
@@ -39,6 +40,8 @@ const Backoffice = () => {
   const [filter, setFilter] = useState<"brouillon" | "en_traitement" | "valide" | "all">("brouillon");
   const [selectedProduct, setSelectedProduct] = useState<RawProduct | null>(null);
 
+  const isInitialLoad = useRef(true);
+
   const fetchProducts = async () => {
     setLoading(true);
     const { data } = await supabase
@@ -48,9 +51,61 @@ const Backoffice = () => {
       .limit(200);
     setProducts((data as unknown as RawProduct[]) || []);
     setLoading(false);
+    isInitialLoad.current = false;
   };
 
-  useEffect(() => { fetchProducts(); }, []);
+  useEffect(() => {
+    fetchProducts();
+
+    // Realtime: nouveaux produits + mises à jour
+    const channel = supabase
+      .channel("backoffice-products")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "products" },
+        (payload) => {
+          const newProd = payload.new as RawProduct;
+          setProducts((prev) => {
+            if (prev.some((p) => p.id === newProd.id)) return prev;
+            return [newProd, ...prev];
+          });
+          if (!isInitialLoad.current) {
+            toast.success("🆕 Nouveau produit terrain", {
+              description: `${newProd.name}${newProd.reference ? ` · ${newProd.reference}` : ""}`,
+              duration: 6000,
+            });
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "products" },
+        (payload) => {
+          const updated = payload.new as RawProduct;
+          setProducts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "products" },
+        (payload) => {
+          const deletedId = (payload.old as { id: string }).id;
+          setProducts((prev) => prev.filter((p) => p.id !== deletedId));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const counts = {
+    brouillon: products.filter((p) => p.status === "brouillon").length,
+    en_traitement: products.filter((p) => p.status === "en_traitement").length,
+    valide: products.filter((p) => p.status === "valide").length,
+    all: products.length,
+  };
 
   const filtered = products.filter((p) => {
     if (filter !== "all" && p.status !== filter) return false;
@@ -90,18 +145,33 @@ const Backoffice = () => {
               className="w-full h-10 rounded-lg border border-input bg-background pl-9 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {(["brouillon", "en_traitement", "valide", "all"] as const).map((f) => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 ${
                   filter === f
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground hover:bg-accent"
                 }`}
               >
-                {f === "brouillon" ? "Brouillons" : f === "en_traitement" ? "En traitement" : f === "valide" ? "Validés" : "Tous"}
+                <span>
+                  {f === "brouillon" ? "Brouillons" : f === "en_traitement" ? "En traitement" : f === "valide" ? "Validés" : "Tous"}
+                </span>
+                {counts[f] > 0 && (
+                  <span
+                    className={`min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold flex items-center justify-center ${
+                      filter === f
+                        ? "bg-primary-foreground text-primary"
+                        : f === "brouillon"
+                        ? "bg-orange-500 text-white"
+                        : "bg-foreground/20 text-foreground"
+                    }`}
+                  >
+                    {counts[f]}
+                  </span>
+                )}
               </button>
             ))}
           </div>
