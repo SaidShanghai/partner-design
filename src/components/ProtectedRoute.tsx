@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
-import { useAuth, AppRole } from "@/hooks/useAuth";
+import { useAuth, hasMinRole, AppRole } from "@/hooks/useAuth";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles: AppRole[];
+  allowedRoles: NonNullable<Exclude<AppRole, "none">>[];
 }
 
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
@@ -21,7 +21,8 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     return <Navigate to="/connexion" replace />;
   }
 
-  if (!role || !allowedRoles.includes(role)) {
+  // Grant access if the user meets the minimum level of any listed role.
+  if (!allowedRoles.some((r) => hasMinRole(role, r))) {
     return <Navigate to="/connexion" replace />;
   }
 

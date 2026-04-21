@@ -4,6 +4,21 @@ import type { User, Session } from "@supabase/supabase-js";
 
 export type AppRole = "superadmin" | "admin" | "backoffice" | "team" | "none" | null;
 
+// Hierarchy: superadmin > admin > backoffice > team
+// A higher role inherits all permissions of roles below it.
+export const ROLE_HIERARCHY: Record<string, number> = {
+  superadmin: 4,
+  admin: 3,
+  backoffice: 2,
+  team: 1,
+  none: 0,
+};
+
+export const hasMinRole = (userRole: AppRole, minRole: NonNullable<Exclude<AppRole, "none">>): boolean => {
+  if (!userRole || userRole === "none") return false;
+  return (ROLE_HIERARCHY[userRole] ?? 0) >= (ROLE_HIERARCHY[minRole] ?? 0);
+};
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
