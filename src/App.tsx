@@ -15,6 +15,8 @@ import Nouveautes from "./pages/Nouveautes.tsx";
 import Blog from "./pages/Blog.tsx";
 import BlogArticle from "./pages/BlogArticle.tsx";
 import Login from "./pages/Login.tsx";
+import AuthCallback from "./pages/AuthCallback.tsx";
+import AuthConfirm from "./pages/AuthConfirm.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminCRM from "./pages/AdminCRM.tsx";
 import Cart from "./pages/Cart.tsx";
@@ -42,8 +44,17 @@ const App = () => (
                 <Route path="/blog/:slug" element={<BlogArticle />} />
                 <Route path="/categorie/:slug" element={<Category />} />
                 <Route path="/connexion" element={<Login />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
+                <Route path="/auth/confirm" element={<AuthConfirm />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/admin/crm" element={<AdminCRM />} />
+                <Route
+                  path="/admin/crm"
+                  element={
+                    <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
+                      <AdminCRM />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="/panier" element={<Cart />} />
                 <Route
                   path="/superadmin"
