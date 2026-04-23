@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft, Plus, Pencil, Trash2, ChevronRight, GripVertical, LogOut,
-  Search, Package, FolderTree, ExternalLink
+  Search, Package, FolderTree, ExternalLink, ShieldCheck
 } from "lucide-react";
 import FicheProduit from "@/components/FicheProduit";
 
@@ -61,6 +61,12 @@ const Superadmin = () => {
         <div className="flex items-center justify-between px-4 py-3">
           <h1 className="text-lg font-bold text-foreground">Superadmin</h1>
           <div className="flex items-center gap-2">
+            <a
+              href="/superadmin/roles"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-muted text-foreground hover:bg-accent transition-colors"
+            >
+              <ShieldCheck className="w-3.5 h-3.5" /> Rôles
+            </a>
             <a
               href="/"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"

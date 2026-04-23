@@ -25,6 +25,7 @@ interface AuthContextType {
   isAdmin: boolean;
   role: AppRole;
   loading: boolean;
+  signInWithGoogle: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -34,6 +35,7 @@ const AuthContext = createContext<AuthContextType>({
   isAdmin: false,
   role: null,
   loading: true,
+  signInWithGoogle: async () => ({ error: null }),
   signOut: async () => {},
 });
 
@@ -95,6 +97,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [fetchRole]);
 
+  const signInWithGoogle = async (): Promise<{ error: Error | null }> => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) return { error };
+      return { error: null };
+    } catch (e) {
+      return { error: e instanceof Error ? e : new Error(String(e)) };
+    }
+  };
+
   const signOut = async () => {
     setLoading(true);
     setUser(null);
@@ -116,7 +133,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAdmin = role === "admin" || role === "superadmin";
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, role, loading, signOut }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, role, loading, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

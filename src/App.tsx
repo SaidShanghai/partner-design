@@ -21,6 +21,7 @@ import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminCRM from "./pages/AdminCRM.tsx";
 import Cart from "./pages/Cart.tsx";
 import Superadmin from "./pages/Superadmin.tsx";
+import SuperadminRoles from "./pages/superadmin/Roles.tsx";
 import Team from "./pages/Team.tsx";
 import Backoffice from "./pages/Backoffice.tsx";
 import WeChatView from "./pages/WeChatView.tsx";
@@ -61,6 +62,14 @@ const App = () => (
                   element={
                     <ProtectedRoute allowedRoles={["superadmin"]}>
                       <Superadmin />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/superadmin/roles"
+                  element={
+                    <ProtectedRoute allowedRoles={["superadmin"]}>
+                      <SuperadminRoles />
                     </ProtectedRoute>
                   }
                 />
