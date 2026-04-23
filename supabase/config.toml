@@ -1,1 +1,7 @@
-project_id = "fgynpwgmwogklarknpjx"
+project_id = "bvnxxijorhtucxhymaqo"
+
+[functions.create-user-with-role]
+verify_jwt = false
+
+[functions.list-users-with-roles]
+verify_jwt = false

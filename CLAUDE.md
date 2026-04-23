@@ -13,7 +13,7 @@
 - **PROJET CORRECT** : `textile-partner-europe`
 - **REF PROJET** : `bvnxxijorhtucxhymaqo`
 - **URL API** : `https://bvnxxijorhtucxhymaqo.supabase.co`
-- **REGION** : eu-west-1 (Paris)
+- **REGION** : eu-west-1 (Ireland / Dublin)
 - **ORG** : TEXTILE PARTNER (slug: ooivtzrrrndefiaqhgvn — ce n'est PAS un ref projet)
 
 🚨 **INTERDICTIONS ABSOLUES**
