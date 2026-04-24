@@ -4,12 +4,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { ArrowLeft, ShieldCheck, Copy, Check, Users } from "lucide-react";
+import { ArrowLeft, ShieldCheck, Copy, Check, Users, KeyRound, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 type AllowedRole = "team" | "backoffice" | "admin";
 
 const ROLE_OPTIONS: AllowedRole[] = ["team", "backoffice", "admin"];
+
+// Emails pour lesquels un trigger SQL (assign_superadmin_on_signup)
+// pré-assigne un rôle à la création. Le form force le dropdown sur ce
+// rôle pour éviter un mismatch frontend/backend.
+// s.elkharrouai@gmail.com n'est PAS listé ici : son trigger ne fire que
+// pour provider='google' (jamais via admin.createUser qui est email/password).
+const RESERVED_EMAILS: Record<string, AllowedRole> = {
+  "backoffice@asialinkltd.com": "backoffice",
+};
 
 const ROLE_BADGE: Record<string, string> = {
   superadmin: "bg-purple-500/10 text-purple-600",
@@ -37,6 +46,47 @@ type ListResponse =
   | { error: string }
   | { message: string };
 
+type ResetInfo = { email: string; password: string };
+
+type ResetResponse =
+  | { success: true; user_id: string; email: string }
+  | { error: string }
+  | { message: string };
+
+type DeleteResponse =
+  | { success: true; user_id: string }
+  | { error: string }
+  | { message: string };
+
+function generateStrongPassword(length = 16): string {
+  const lower   = "abcdefghijklmnopqrstuvwxyz";
+  const upper   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const digits  = "0123456789";
+  const symbols = "!@#$%^&*-_=+?";
+  const all     = lower + upper + digits + symbols;
+
+  const rand = (max: number): number => {
+    const arr = new Uint32Array(1);
+    crypto.getRandomValues(arr);
+    return arr[0] % max;
+  };
+
+  const chars: string[] = [
+    lower[rand(lower.length)],
+    upper[rand(upper.length)],
+    digits[rand(digits.length)],
+    symbols[rand(symbols.length)],
+  ];
+  for (let i = chars.length; i < length; i++) {
+    chars.push(all[rand(all.length)]);
+  }
+  for (let i = chars.length - 1; i > 0; i--) {
+    const j = rand(i + 1);
+    [chars[i], chars[j]] = [chars[j], chars[i]];
+  }
+  return chars.join("");
+}
+
 const SuperadminRoles = () => {
   const navigate = useNavigate();
   const [email, setEmail]             = useState("");
@@ -47,6 +97,25 @@ const SuperadminRoles = () => {
   const [copied, setCopied]           = useState(false);
   const [users, setUsers]             = useState<UserWithRole[]>([]);
   const [loadingList, setLoadingList] = useState(true);
+  const [resetInfo, setResetInfo]           = useState<ResetInfo | null>(null);
+  const [resetingUserId, setResetingUserId] = useState<string | null>(null);
+  const [resetCopied, setResetCopied]       = useState(false);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+
+  const reservedExpectedRole =
+    RESERVED_EMAILS[email.trim().toLowerCase()] ?? null;
+  const isRoleLocked = reservedExpectedRole !== null;
+
+  // Auto-force le rôle quand l'email devient réservé. Le tableau de deps
+  // est [reservedExpectedRole] → toast.info ne fire qu'une seule fois par
+  // transition "email non réservé → email réservé", pas à chaque keystroke.
+  useEffect(() => {
+    if (reservedExpectedRole !== null && role !== reservedExpectedRole) {
+      setRole(reservedExpectedRole);
+      toast.info(`Email réservé — rôle forcé à "${reservedExpectedRole}"`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reservedExpectedRole]);
 
   const getHeaders = async (): Promise<Record<string, string> | null> => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -142,8 +211,8 @@ const SuperadminRoles = () => {
         return;
       }
 
-      toast.success(`Compte créé pour ${trimmedEmail} (${role})`);
-      setCreated({ email: trimmedEmail, password, role });
+      toast.success(`Compte créé pour ${trimmedEmail} (${result.role})`);
+      setCreated({ email: trimmedEmail, password, role: result.role });
       setEmail("");
       setPassword("");
       await fetchUsers();
@@ -159,6 +228,113 @@ const SuperadminRoles = () => {
     await navigator.clipboard.writeText(created.password);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleResetPassword = async (user: UserWithRole) => {
+    if (!confirm(`Réinitialiser le mot de passe de ${user.email} ?\nL'ancien mot de passe sera invalidé immédiatement.`)) {
+      return;
+    }
+
+    setResetingUserId(user.id);
+    try {
+      const headers = await getHeaders();
+      if (!headers) {
+        toast.error("Session expirée, reconnectez-vous");
+        return;
+      }
+
+      const newPassword = generateStrongPassword(16);
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/reset-user-password`,
+        {
+          method: "POST",
+          headers: { ...headers, "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: user.id, new_password: newPassword }),
+        }
+      );
+
+      const result = await response.json() as ResetResponse;
+
+      if (!response.ok || "error" in result || "message" in result) {
+        const raw = result as Record<string, unknown>;
+        const msg =
+          (typeof raw.error   === "string" ? raw.error   : null) ??
+          (typeof raw.message === "string" ? raw.message : null) ??
+          `Erreur ${response.status}`;
+        toast.error(msg);
+        return;
+      }
+
+      setResetInfo({ email: user.email, password: newPassword });
+
+      // Auto-copy au clipboard (silencieux si bloqué — le bouton Copier reste dispo)
+      try {
+        await navigator.clipboard.writeText(newPassword);
+        setResetCopied(true);
+        setTimeout(() => setResetCopied(false), 2000);
+      } catch {
+        // ignore — clipboard peut refuser hors contexte sécurisé
+      }
+
+      toast.success(`Mot de passe réinitialisé pour ${user.email}`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erreur réseau");
+    } finally {
+      setResetingUserId(null);
+    }
+  };
+
+  const handleResetCopy = async () => {
+    if (!resetInfo) return;
+    await navigator.clipboard.writeText(resetInfo.password);
+    setResetCopied(true);
+    setTimeout(() => setResetCopied(false), 2000);
+  };
+
+  const handleDeleteUser = async (user: UserWithRole) => {
+    if (!confirm(`Supprimer définitivement ${user.email} ?\nSon profil, panier et adresses seront aussi supprimés.\nCette action est irréversible.`)) {
+      return;
+    }
+
+    setDeletingUserId(user.id);
+    try {
+      const headers = await getHeaders();
+      if (!headers) {
+        toast.error("Session expirée, reconnectez-vous");
+        return;
+      }
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/delete-user`,
+        {
+          method: "POST",
+          headers: { ...headers, "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: user.id }),
+        }
+      );
+
+      const result = await response.json() as DeleteResponse;
+
+      if (!response.ok || "error" in result || "message" in result) {
+        const raw = result as Record<string, unknown>;
+        const msg =
+          (typeof raw.error   === "string" ? raw.error   : null) ??
+          (typeof raw.message === "string" ? raw.message : null) ??
+          `Erreur ${response.status}`;
+        toast.error(msg);
+        return;
+      }
+
+      toast.success(`Utilisateur supprimé : ${user.email}`);
+      await fetchUsers();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erreur réseau");
+    } finally {
+      setDeletingUserId(null);
+    }
   };
 
   return (
@@ -213,7 +389,8 @@ const SuperadminRoles = () => {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as AllowedRole)}
-              className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              disabled={isRoleLocked}
+              className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {ROLE_OPTIONS.map((r) => (
                 <option key={r} value={r}>{r}</option>
@@ -267,6 +444,53 @@ const SuperadminRoles = () => {
           </div>
         )}
 
+        {/* Reset password result card */}
+        {resetInfo && (
+          <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <KeyRound className="w-4 h-4 text-amber-600" />
+                <span className="text-sm font-semibold text-amber-700">Mot de passe réinitialisé</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setResetInfo(null)}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                Fermer
+              </button>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-muted-foreground shrink-0">Email</span>
+                <span className="font-medium text-foreground text-right truncate">{resetInfo.email}</span>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-muted-foreground shrink-0">Nouveau mot de passe</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-mono text-foreground bg-muted px-2 py-0.5 rounded text-xs">
+                    {resetInfo.password}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleResetCopy}
+                    className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+                    title="Copier le mot de passe"
+                  >
+                    {resetCopied
+                      ? <Check className="w-4 h-4 text-emerald-600" />
+                      : <Copy className="w-4 h-4" />
+                    }
+                  </button>
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Copié automatiquement dans le presse-papier. Transmettez-le à l'utilisateur via un canal sécurisé.
+            </p>
+          </div>
+        )}
+
         {/* User list */}
         <div className="bg-card border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
@@ -295,15 +519,41 @@ const SuperadminRoles = () => {
               {users.map((u) => (
                 <li key={u.id} className="flex items-center justify-between gap-3">
                   <span className="text-sm text-foreground truncate">{u.email}</span>
-                  {u.role ? (
-                    <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_BADGE[u.role] ?? "bg-muted text-muted-foreground"}`}>
-                      {u.role}
-                    </span>
-                  ) : (
-                    <span className="shrink-0 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-                      —
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {u.role ? (
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ROLE_BADGE[u.role] ?? "bg-muted text-muted-foreground"}`}>
+                        {u.role}
+                      </span>
+                    ) : (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                        —
+                      </span>
+                    )}
+                    {u.role !== "superadmin" && (
+                      <button
+                        type="button"
+                        onClick={() => handleResetPassword(u)}
+                        disabled={resetingUserId === u.id}
+                        className="p-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                        title="Réinitialiser le mot de passe"
+                        aria-label={`Réinitialiser le mot de passe de ${u.email}`}
+                      >
+                        <KeyRound className="w-4 h-4" />
+                      </button>
+                    )}
+                    {u.role !== "superadmin" && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteUser(u)}
+                        disabled={deletingUserId === u.id}
+                        className="p-1 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
+                        title="Supprimer l'utilisateur"
+                        aria-label={`Supprimer ${u.email}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>

@@ -109,12 +109,41 @@ Deno.serve(async (req: Request) => {
 
   const newUser = newUserData.user;
 
-  // 6. Insérer le rôle dans user_roles
+  // 6a. Un trigger AFTER INSERT sur auth.users (assign_superadmin_on_signup)
+  // peut déjà avoir assigné un rôle à ce user (cas backoffice@asialinkltd.com).
+  // On vérifie avant d'insérer pour éviter une violation UNIQUE(user_id, role)
+  // ET pour éviter de créer une 2e row avec un rôle différent.
+  const { data: existingRole, error: existingErr } = await adminClient
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", newUser.id)
+    .limit(1)
+    .maybeSingle();
+
+  if (existingErr) {
+    console.error("[create-user-with-role] existing role lookup failed:", existingErr);
+    await adminClient.auth.admin.deleteUser(newUser.id);
+    return json({ error: "Failed to check existing role — user creation rolled back" }, 500);
+  }
+
+  // 6b. Si le trigger a déjà assigné un rôle, on le respecte et on le retourne.
+  // Le frontend affichera le vrai rôle dans la carte "Compte créé".
+  if (existingRole) {
+    return json({
+      success: true,
+      user_id:  newUser.id,
+      email:    newUser.email!,
+      role:     existingRole.role as AllowedRole,
+    });
+  }
+
+  // 6c. Sinon, insert normal du rôle demandé.
   const { error: insertErr } = await adminClient
     .from("user_roles")
     .insert({ user_id: newUser.id, role });
 
   if (insertErr) {
+    console.error("[create-user-with-role] role insert failed:", insertErr);
     // Rollback : supprimer le user si l'insertion du rôle échoue
     await adminClient.auth.admin.deleteUser(newUser.id);
     return json({ error: "Failed to assign role — user creation rolled back" }, 500);
