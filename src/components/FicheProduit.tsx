@@ -3,11 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { X, Trash2, Camera, Loader2, Store, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth, AppRole } from "@/hooks/useAuth";
+import ProductImage from "@/components/ProductImage";
 
 interface Product {
   id: string;
   name: string;
   image_url: string | null;
+  image_path: string | null;
   category: string | null;
   reference: string | null;
   unb: string | null;
@@ -94,6 +96,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
     color: product.color || "",
     description: product.description || "",
     image_url: product.image_url || "",
+    image_path: product.image_path || "",
   });
 
   const [badges, setBadges] = useState({
@@ -113,6 +116,11 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
   const [showQrcode, setShowQrcode] = useState(false);
   const [qrcodeLoading, setQrcodeLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [form.image_url]);
 
   useEffect(() => {
     let isActive = true;
@@ -215,13 +223,20 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
       toast.error("Erreur upload image");
       return;
     }
+    // Store the relative path; signed URLs are generated at render time.
+    // image_url is kept in sync with a legacy public URL during the
+    // transition window, will be dropped once all consumers are migrated.
     const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
-    setForm((prev) => ({ ...prev, image_url: urlData.publicUrl }));
+    setForm((prev) => ({
+      ...prev,
+      image_path: path,
+      image_url: urlData.publicUrl,
+    }));
     toast.success("Image mise à jour");
   };
 
   const handleDeleteImage = () => {
-    setForm((prev) => ({ ...prev, image_url: "" }));
+    setForm((prev) => ({ ...prev, image_url: "", image_path: "" }));
   };
 
   const STATUS_LABELS: Record<string, string> = {
@@ -272,6 +287,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
         color: form.color || null,
         description: form.description || null,
         image_url: form.image_url || null,
+        image_path: form.image_path || null,
       } as any)
       .eq("id", product.id);
     if (error) {
@@ -303,6 +319,7 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
         color: form.color || null,
         description: form.description || null,
         image_url: form.image_url || null,
+        image_path: form.image_path || null,
       } as any)
       .eq("id", product.id);
 
@@ -410,8 +427,13 @@ const FicheProduit = ({ product, onClose, onUpdated }: Props) => {
             <div className="md:w-[320px] shrink-0 space-y-4">
               {/* Image */}
               <div className="relative aspect-square rounded-xl overflow-hidden bg-muted border border-border">
-                {form.image_url ? (
-                    <img src={form.image_url} alt={form.name} className="w-full h-full object-cover" />
+                {(form.image_path || form.image_url) && !imgError ? (
+                    <ProductImage
+                      path={form.image_path || null}
+                      url={form.image_url || null}
+                      alt={form.name}
+                      className="w-full h-full"
+                    />
                 ) : canEditFields ? (
                   <button
                     onClick={() => fileRef.current?.click()}

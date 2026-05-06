@@ -5,11 +5,13 @@ import { LogOut, Camera, QrCode, Package, FolderOpen, ArrowLeft, Trash2 } from "
 import TeamProductForm from "@/components/TeamProductForm";
 import WeChatQRUpload from "@/components/WeChatQRUpload";
 import TeamProductReadOnly from "@/components/TeamProductReadOnly";
+import ProductImage from "@/components/ProductImage";
 
 interface ProductRow {
   id: string;
   name: string;
   image_url: string | null;
+  image_path: string | null;
   category: string | null;
   reference: string | null;
   unb: string | null;
@@ -112,13 +114,12 @@ const Team = () => {
                   className="w-full flex items-center gap-3 p-3 border border-border rounded-xl bg-card"
                 >
                   <div className="flex-1 flex items-center gap-3 cursor-pointer" onClick={() => setSelectedProduct(prod)}>
-                    {prod.image_url ? (
-                      <img src={prod.image_url} alt={prod.name} className="w-16 h-16 rounded-lg object-cover shrink-0" />
-                    ) : (
-                      <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                        <Package className="w-6 h-6 text-muted-foreground" />
-                      </div>
-                    )}
+                    <ProductImage
+                      path={prod.image_path}
+                      url={prod.image_url}
+                      alt={prod.name}
+                      className="w-16 h-16 rounded-lg"
+                    />
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-foreground text-sm truncate">{prod.name}</p>
                       {prod.reference && <p className="text-xs font-mono text-primary">{prod.reference}</p>}

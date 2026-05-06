@@ -6,9 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ProductFormDialog from "./ProductFormDialog";
 import QuantitySelector from "./QuantitySelector";
+import ProductImage from "./ProductImage";
 
 interface CategoryProductCardProps {
   image: string;
+  image_path?: string | null;
   name: string;
   price: string;
   unit?: string;
@@ -19,6 +21,7 @@ interface CategoryProductCardProps {
 
 const CategoryProductCard = ({
   image,
+  image_path,
   name,
   price,
   unit,
@@ -31,6 +34,7 @@ const CategoryProductCard = ({
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [displayImage, setDisplayImage] = useState(image);
+  const [displayImagePath, setDisplayImagePath] = useState<string | null>(image_path ?? null);
   const [displayName, setDisplayName] = useState(name);
   const [displayPrice, setDisplayPrice] = useState(price);
   const [displayBadge, setDisplayBadge] = useState(badge ?? "");
@@ -74,6 +78,7 @@ const CategoryProductCard = ({
     } else {
       const { data } = supabase.storage.from("product-images").getPublicUrl(filePath);
       setDisplayImage(data.publicUrl);
+      setDisplayImagePath(filePath);
       toast({ title: "Photo mise à jour" });
     }
 
@@ -87,10 +92,11 @@ const CategoryProductCard = ({
     <>
       <div className="group cursor-pointer">
         <div className="relative aspect-[4/5] rounded-lg overflow-hidden bg-accent/30 mb-3">
-          <img
-            src={displayImage}
+          <ProductImage
+            path={displayImagePath}
+            url={displayImage}
             alt={displayName}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
 

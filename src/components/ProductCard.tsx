@@ -6,10 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ProductFormDialog from "./ProductFormDialog";
 import QuantitySelector from "./QuantitySelector";
+import ProductImage from "./ProductImage";
 
 interface ProductCardProps {
   id?: string;
   image: string;
+  image_path?: string | null;
   name: string;
   price: string;
   numericPrice?: number;
@@ -19,13 +21,14 @@ interface ProductCardProps {
   badge?: string;
 }
 
-const ProductCard = ({ id, image, name, price, numericPrice, isNew = true, variants, unit, badge }: ProductCardProps) => {
+const ProductCard = ({ id, image, image_path, name, price, numericPrice, isNew = true, variants, unit, badge }: ProductCardProps) => {
   const { isAdmin } = useAuth();
   const { addToCart } = useCart();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [displayImage, setDisplayImage] = useState(image);
+  const [displayImagePath, setDisplayImagePath] = useState<string | null>(image_path ?? null);
   const [displayName, setDisplayName] = useState(name);
   const [displayPrice, setDisplayPrice] = useState(price);
   const [uploading, setUploading] = useState(false);
@@ -49,6 +52,7 @@ const ProductCard = ({ id, image, name, price, numericPrice, isNew = true, varia
     } else {
       const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(filePath);
       setDisplayImage(urlData.publicUrl);
+      setDisplayImagePath(filePath);
       toast({ title: "Photo mise à jour" });
     }
 
@@ -123,10 +127,11 @@ const ProductCard = ({ id, image, name, price, numericPrice, isNew = true, varia
             <ShoppingBag className="w-5 h-5" />
           </button>
 
-          <img
-            src={displayImage}
+          <ProductImage
+            path={displayImagePath}
+            url={displayImage}
             alt={name}
-            className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full aspect-square group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
             width={640}
             height={640}

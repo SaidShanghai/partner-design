@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { X, Camera, Store } from "lucide-react";
+import ProductImage from "@/components/ProductImage";
 
 interface Product {
   id: string;
   name: string;
   image_url: string | null;
+  image_path: string | null;
   category: string | null;
   reference: string | null;
   price: number | null;
@@ -36,6 +38,11 @@ const STATUS_COLORS: Record<string, string> = {
 const TeamProductReadOnly = ({ product, onClose }: Props) => {
   const currentStatus = product.status || "brouillon";
   const [supplierCode, setSupplierCode] = useState<string | null>(null);
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [product.image_url]);
 
   useEffect(() => {
     if (product.qrcode_id) {
@@ -75,8 +82,13 @@ const TeamProductReadOnly = ({ product, onClose }: Props) => {
 
         {/* Photo */}
         <div className="w-full aspect-[4/3] rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center bg-muted/30 overflow-hidden">
-          {product.image_url ? (
-            <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+          {(product.image_path || product.image_url) && !imgError ? (
+            <ProductImage
+              path={product.image_path}
+              url={product.image_url}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
           ) : (
             <>
               <Camera className="w-12 h-12 text-muted-foreground mb-2" />

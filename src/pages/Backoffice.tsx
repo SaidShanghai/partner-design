@@ -4,11 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { LogOut, Search, Package } from "lucide-react";
 import { toast } from "sonner";
 import FicheProduit from "@/components/FicheProduit";
+import ProductImage from "@/components/ProductImage";
 
 interface RawProduct {
   id: string;
   name: string;
   image_url: string | null;
+  image_path: string | null;
   category: string | null;
   reference: string | null;
   unb: string | null;
@@ -193,13 +195,12 @@ const Backoffice = () => {
               onClick={() => setSelectedProduct(p)}
               className="w-full flex items-center gap-3 p-3 text-left hover:bg-accent/30 transition-colors border border-border rounded-xl bg-card"
             >
-              {p.image_url ? (
-                <img src={p.image_url} alt={p.name} className="w-16 h-16 rounded-lg object-cover shrink-0" />
-              ) : (
-                <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                  <Package className="w-6 h-6 text-muted-foreground" />
-                </div>
-              )}
+              <ProductImage
+                path={p.image_path}
+                url={p.image_url}
+                alt={p.name}
+                className="w-16 h-16 rounded-lg"
+              />
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-foreground text-sm truncate">{p.name}</p>
                 {p.reference && <p className="text-xs font-mono text-primary">{p.reference}</p>}
