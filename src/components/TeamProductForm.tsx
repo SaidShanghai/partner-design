@@ -96,7 +96,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
     return null;
   };
 
-  const uploadImage = async (file: File): Promise<{ imageUrl: string; overlayCode: string } | null> => {
+  const uploadImage = async (file: File): Promise<{ imageUrl: string; overlayCode: string; imagePath: string } | null> => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("supplier_code", supplierCode);
@@ -121,7 +121,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
     }
 
     const result = await resp.json();
-    return { imageUrl: result.image_url, overlayCode: result.overlay_code };
+    return { imageUrl: result.image_url, overlayCode: result.overlay_code, imagePath: result.image_path };
   };
 
   const handleSave = async (nextStep: Step = "post-save") => {
@@ -137,6 +137,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
     setSaving(true);
     try {
       let imageUrl: string | null = null;
+      let imagePath: string | null = null;
       let overlayCode: string | null = null;
       const convertedEuroPrice = getConvertedEuroPrice();
 
@@ -144,6 +145,7 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
         const result = await uploadImage(imageFile);
         if (result) {
           imageUrl = result.imageUrl;
+          imagePath = result.imagePath;
           overlayCode = result.overlayCode;
         }
       }
@@ -155,7 +157,8 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
         price: rmbPrice,
         sell_price: convertedEuroPrice,
         category: category.trim() || null,
-        image_url: imageUrl || "",
+        image_url: null,
+        image_path: imagePath || null,
         qrcode_id: qrcodeId,
         reference: overlayCode || null,
         created_by: user?.id || null,
@@ -195,7 +198,8 @@ const TeamProductForm = ({ qrcodeId, supplierCode, onClose, onSaved, onFinishSes
           price: rmbPrice,
           sell_price: convertedEuroPrice,
           category: category.trim() || null,
-          image_url: result?.imageUrl || "",
+          image_url: null,
+          image_path: result?.imagePath || null,
           qrcode_id: qrcodeId,
           reference: result?.overlayCode || null,
           created_by: user?.id || null,

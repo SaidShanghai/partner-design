@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
     const dd = String(now.getDate()).padStart(2, "0");
     const nnn = String(counterVal).padStart(3, "0");
     const overlayText = `${supplierCode}_${yy}${mm}${dd}_${nnn}`;
-    const filename = `${overlayText}.jpg`;
+    const filename = `${crypto.randomUUID()}.jpg`;
 
     const imageBytes = new Uint8Array(await file.arrayBuffer());
 
@@ -94,7 +94,7 @@ Deno.serve(async (req) => {
       JSON.stringify({
         image_url: urlData.publicUrl,
         overlay_code: overlayText,
-        filename,
+        image_path: `team/${filename}`,
       }),
       {
         status: 200,
